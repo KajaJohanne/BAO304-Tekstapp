@@ -1,0 +1,1 @@
+//Her kommer opprett tekstnøkkel side
