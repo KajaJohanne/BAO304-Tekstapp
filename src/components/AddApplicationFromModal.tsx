@@ -87,7 +87,10 @@ const AddApplicationFromModal = ({ isVisible, onClose, onAdd}: AddApplicationFor
                     <input 
                         type="text"
                         placeholder="Feks. Trafikk"
-                        {...register("name", { required: "Du må fylle ut navn på applikasjonen før den kan opprettes" })}
+                        {...register("name", { 
+                            required: "Du må fylle ut navn på applikasjonen før den kan opprettes",
+                            // TODO leggt til duplikatsjekk når firestore er klart 
+                        })}
                         style={{ display: "block", width: "100%", marginTop: "0.25rem" }}
                     />
                     {errors.name && (
