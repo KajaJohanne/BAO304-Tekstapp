@@ -2,14 +2,14 @@
 import TextTypeSelector from "../components/TextTypeSelector";
 import CreateTypeSelector from "../components/CreateTypeSelector";
 import TextKeyNameModal from "../components/TextKeyNameModal";
-import type { CSSProperties } from "react";
+import "./CreateNewTextKeyPage.css";
 
 export default function CreateNewTextKeyPage() {
     return (
-        <div style={styles.page}>
-            <div style={styles.content}>
-                <h1 style={styles.title}>Legg til ny tekstnøkkel</h1>
-                <p style={styles.label}>Her kan du lage nye tekstnøkler</p>
+        <div className="create-text-key-page">
+            <div className="create-text-key-page_content">
+                <h1 className="create-text-key-page_title">Legg til ny tekstnøkkel</h1>
+                <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler</p>
 
                  {/* komponent */}
                  <CreateTypeSelector />
@@ -22,7 +22,7 @@ export default function CreateNewTextKeyPage() {
     );
 }
 
-const styles: { [key: string]: CSSProperties } = {
+/*const styles: { [key: string]: CSSProperties } = {
     page: {
         width: "100%",
         minHeight: "100vh",
@@ -50,4 +50,4 @@ const styles: { [key: string]: CSSProperties } = {
         color: "black",
         textAlign: "left",
     },
-};
+};*/

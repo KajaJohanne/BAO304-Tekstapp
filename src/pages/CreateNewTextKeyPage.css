@@ -1,0 +1,27 @@
+/*CSS for lage ny tekstnøkkel side*/
+.create-text-key-page {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+.create-text-key-page_content {
+    width: 900px;
+    margin-left: 150px;
+    padding-top: 80px;
+    text-align: left;
+}
+.create-text-key-page_title {
+    margin: 0;
+    margin-bottom: 12px;
+    color: black;
+    font-size: 40px;
+    font-weight: 400;
+    text-align: left;
+}
+.create-text-key-page_label {
+    margin: 0 0 12px 0;
+    color: black;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: left;
+}

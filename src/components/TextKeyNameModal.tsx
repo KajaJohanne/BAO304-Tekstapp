@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { CSSProperties } from "react";
+import "./TextKeyNameModal.css";
 
 export default function TextKeyNameModal() {
     const [isOpen, setIsOpen] = useState(false);
@@ -38,18 +38,26 @@ export default function TextKeyNameModal() {
 
     return (
         <>
-            <button type="button" onClick={openModal} style={styles.openButton}>
+            <button 
+                type="button" 
+                onClick={openModal} 
+                className="text-key-name-modal_open-button"
+            >
                 Gi nøkkelen et navn
             </button>
 
             {isOpen && (
-                <div style={styles.overlay}>
-                    <div style={styles.modal}>
-                        <button type="button" onClick={closeModal} style={styles.closeButton}>
+                <div className="text-key-name-modal_overlay">
+                    <div className="text-key-name-modal_modal">
+                        <button 
+                            type="button" 
+                            onClick={closeModal} 
+                            className="text-key-name-modal_close-button"
+                        >
                             ×
                         </button>
 
-                        <p style={styles.text}>
+                        <p className="text-key-name-modal_text">
                             Skriv et beskrivende navn for tekstnøkkelen. Ikke bruk mellomrom. 
                             <br />
                             Hvis navnet består av flere ord, skriv dem sammen som ett ord med 
@@ -65,9 +73,13 @@ export default function TextKeyNameModal() {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             placeholder="Skriv navnet her"
-                            style={styles.input}
+                            className="text-key-name-modal_input"
                         />
-                        <button type="button" onClick={handleAdd} style={styles.addButton}>
+                        <button 
+                            type="button" 
+                            onClick={handleAdd} 
+                            className="text-key-name-modal_add-button"
+                        >
                             Legg til
                         </button>
                     </div>
@@ -77,7 +89,7 @@ export default function TextKeyNameModal() {
     );
 }
 
-const styles: { [key: string]: CSSProperties } = {
+/*const styles: { [key: string]: CSSProperties } = {
     openButton: {
         marginTop: "32px",
         width: "250px",
@@ -147,4 +159,4 @@ const styles: { [key: string]: CSSProperties } = {
         fontSize: "18px",
         cursor: "pointer",
     },
-};
+};*/

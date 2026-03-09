@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { CSSProperties } from "react";
+import "./TextTypeSelector.css";
 
 type TextType = "Tittel" | "Brødtekst" | "Feilmelding" | "Knappetekst" | "Hjelpetekst";
 
@@ -38,10 +38,10 @@ export default function TextTypeSelector() {
     };
 
     return (
-        <div style={styles.container}>
-            <p style={styles.label}>Velg type tekst</p>
+        <div className="text-type-selector">
+            <p className="text-type-selector_label">Velg type tekst</p>
 
-            <div style={styles.buttonGroup}>
+            <div className="text-type-selector_button-group">
                 {TEXT_TYPES.map((type) => {
                     const isSelected = selected === type;
 
@@ -50,10 +50,9 @@ export default function TextTypeSelector() {
                             key={type}
                             type="button"
                             onClick={() => handleSelect(type)}
-                            style={{
-                                ...styles.button,
-                                ...(isSelected ? styles.selected : {}),
-                            }}
+                            className={`text-type-selector_button ${
+                                isSelected ? "text-type-selector_button-selected" : ""
+                            }`}
                         >
                             {type}
                         </button>
@@ -64,7 +63,7 @@ export default function TextTypeSelector() {
     );
 }
 
-const styles: { [key: string]: CSSProperties } = {
+/*const styles: { [key: string]: CSSProperties } = {
     container: {
         marginTop: "16px",
         textAlign: "left",
@@ -95,4 +94,4 @@ const styles: { [key: string]: CSSProperties } = {
     selected: {
         border: "2px solid #ff9100",
     },
-};
+};*/

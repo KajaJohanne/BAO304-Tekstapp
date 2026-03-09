@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { CSSProperties } from "react";
+import "./CreateTypeSelector.css";
 
 type CreateType = "Applikasjon" | "Tekstnøkkel";
 
@@ -7,23 +7,21 @@ export default function CreateTypeSelector() {
     const [selected, setSelected] = useState<CreateType>("Tekstnøkkel");
 
     return (
-        <div style={styles.container}>
+        <div className="create-type-selector">
 
             <button
                 onClick={() => setSelected("Applikasjon")}
-                style={{
-                    ...styles.button,
-                    ...(selected === "Applikasjon" ? styles.selected : {}),
-                }}
+                className={`create-type-selector_button ${
+                    selected === "Applikasjon" ? "create-type-selector_button-selected" : ""
+                }`}
             >
                 Applikasjon
             </button>
             <button
                 onClick={() => setSelected("Tekstnøkkel")}
-                style={{
-                    ...styles.button,
-                    ...(selected === "Tekstnøkkel" ? styles.selected : {}),
-                }}
+                className={`create-type-selector_button ${
+                    selected === "Tekstnøkkel" ? "create-type-selector_button-selected" : ""
+                }`}
             >
                 Tekstnøkkel
             </button>
@@ -31,7 +29,7 @@ export default function CreateTypeSelector() {
     );
 }
 
-const styles: { [key: string]: CSSProperties } = {
+/*const styles: { [key: string]: CSSProperties } = {
     container: {
         display: "flex",
         gap: "24px",
@@ -50,4 +48,4 @@ const styles: { [key: string]: CSSProperties } = {
     selected: {
         border: "3px solid #ff9100",
     },
-};
+};*/
