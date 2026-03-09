@@ -88,7 +88,7 @@ const styles: { [key: string]: CSSProperties } = {
         minWidth: "110px",
         backgroundColor: "#F5F5F5",
         color: "black",
-        border: "2px solid #c9c9c9",
+        border: "2px solid #5b6770",
         cursor: "pointer",
         fontSize: "14px",
     },

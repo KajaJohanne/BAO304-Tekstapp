@@ -8,6 +8,7 @@ export default function CreateTypeSelector() {
 
     return (
         <div style={styles.container}>
+
             <button
                 onClick={() => setSelected("Applikasjon")}
                 style={{

@@ -1,6 +1,7 @@
 //Her kommer opprett tekstnøkkel side
 import TextTypeSelector from "../components/TextTypeSelector";
 import CreateTypeSelector from "../components/CreateTypeSelector";
+import TextKeyNameModal from "../components/TextKeyNameModal";
 import type { CSSProperties } from "react";
 
 export default function CreateNewTextKeyPage() {
@@ -12,9 +13,10 @@ export default function CreateNewTextKeyPage() {
 
                  {/* komponent */}
                  <CreateTypeSelector />
-
                 {/* komponent */}
                 <TextTypeSelector />
+                 {/* komponent */}
+                 <TextKeyNameModal />
             </div>
         </div>
     );
