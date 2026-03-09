@@ -7,6 +7,7 @@ import NotFoundPage from "../pages/NotFoundPage"
 import ProfilePage from "../pages/ProfilePage"
 import SectionPage from "../pages/SectionPage"
 import SubSectionPage from "../pages/SubSectionPage"
+import CreateNewTextKeyPage from "../pages/CreateNewTextKeyPage"
 
 
 const AppRouter = () => {
@@ -20,6 +21,7 @@ const AppRouter = () => {
                 <Route path="/subSection" element={<SubSectionPage />}/>
                 <Route path="/textkeyDetails" element={<TextKeyDetailPage />}/>
                 <Route path="/profile" element={<ProfilePage />}/>
+                <Route path="/createNewTextKey" element={<CreateNewTextKeyPage />}/>
                 <Route path="*" element={<NotFoundPage />}/>
             </Routes>
         </BrowserRouter>
