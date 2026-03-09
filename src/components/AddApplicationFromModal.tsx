@@ -32,6 +32,25 @@ const AddApplicationFromModal = ({ isVisible, onClose, onAdd}: AddApplicationFor
         control, 
         name: "sections", 
     }); 
+
+    const onSubmit = (data: FormFields) => {
+        const newApplication: Application = {
+            id: crypto.randomUUID(), //genererer unik id, kan fjernes når firestore er klart 
+            name: data.name.trim(), 
+            createdAt: new Date(), 
+            // Filtrer ut tomme kategorifelt og bygg section objekter
+            sections: data.sections
+                .filter((s) => s.name.trim() !== "")
+                .map((s) => ({
+                    id: crypto.randomUUID(), //genererer unik id, kan fjernes når firestore er klart 
+                    name: s.name.trim(),
+                })),
+        }; 
+
+        // send til homepage for lagring
+        onAdd(newApplication); 
+        onClose(); 
+    }
     
     if (!isVisible) return null; 
 
@@ -59,6 +78,9 @@ const AddApplicationFromModal = ({ isVisible, onClose, onAdd}: AddApplicationFor
                 <p>Her kan du opprette en ny applikasjon og kategoriene som hører til den.</p>
                 <p>Hvis du ønsker flere nivåer med underkategorier, må du først trykke "Legg til applikasjon", og deretter redigere videre.</p>
 
+
+                {/* handleSubmit fra useForm validerer feltene før onSubmit kalles */}
+                <form onSubmit={handleSubmit(onSubmit)}>
                 {/* Applikasjonsnavn */}
                 <div>
                     <label>Navn på applikasjon</label>
@@ -96,8 +118,11 @@ const AddApplicationFromModal = ({ isVisible, onClose, onAdd}: AddApplicationFor
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
-                    <button onClick={onClose}>Avbryt</button>
+                    <button type="button" onClick={onClose}>Avbryt</button>
+                    <button type="submit">Opprett applikasjon</button>
                 </div>
+
+                </form>
             </div> 
         </div>
     )

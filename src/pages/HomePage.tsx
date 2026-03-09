@@ -5,6 +5,7 @@ import AddApplicationFromModal from "../components/AddApplicationFromModal";
 
 
 // Mockdata for å lage komponenten til listeelementet
+// TODO fjern dette når firebase er klart 
 const mockApplications: Application[] = [
     {
         id: "1", 
@@ -25,12 +26,14 @@ const mockApplications: Application[] = [
 ];
 
 const HomePage = () => {
+    // TODO erstatt mockApplications med data hentet fra Firestore
     const [applications, setApplications] = useState<Application[]>(mockApplications); 
     const [showModal, setShowModal] = useState(false); 
 
     // Kalles fra modalen når det opprettes ny applikasjon 
     // legger den nye applikasjonen i lista 
     const handleAdd = (application: Application) => {
+        // TODO gare applikasjonen i Firestore, istede for lokal state, så hent lista på nytt
         setApplications([...applications, application]); 
     };
 
