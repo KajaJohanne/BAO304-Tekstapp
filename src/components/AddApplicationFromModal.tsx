@@ -6,6 +6,7 @@
 
 import { useFieldArray, useForm } from "react-hook-form";
 import type { Application } from "../types";
+import toast from "react-hot-toast";
 
 // Definerer hva skjemaet inneholder, altså det brukeren fyller inn 
 type FormFields = {
@@ -49,6 +50,7 @@ const AddApplicationFromModal = ({ isVisible, onClose, onAdd}: AddApplicationFor
 
         // send til homepage for lagring
         onAdd(newApplication); 
+        toast.success(`Applikasjonen "${data.name.trim()}" ble opprettet`);
         onClose(); 
     }
     
