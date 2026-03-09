@@ -21,7 +21,7 @@ interface AddApplicationFormModalProps {
 
 const AddApplicationFromModal = ({ isVisible, onClose, onAdd}: AddApplicationFormModalProps) => {
 
-    const { register, handleSubmit, control } = useForm<FormFields>({
+    const { register, handleSubmit, control, formState: { errors } } = useForm<FormFields>({
         defaultValues: {
             name: "", 
             sections: [], 
@@ -87,9 +87,12 @@ const AddApplicationFromModal = ({ isVisible, onClose, onAdd}: AddApplicationFor
                     <input 
                         type="text"
                         placeholder="Feks. Trafikk"
-                        {...register("name", { required: true })}
+                        {...register("name", { required: "Du må fylle ut navn på applikasjonen før den kan opprettes" })}
                         style={{ display: "block", width: "100%", marginTop: "0.25rem" }}
                     />
+                    {errors.name && (
+                        <p style={{ color: "red", marginTop: "0.25rem" }}>{errors.name.message}</p>
+                    )}
                 </div>
 
                 {/* Kategorifelt */}
