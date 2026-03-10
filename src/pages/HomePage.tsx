@@ -1,67 +1,59 @@
-import { useState } from "react";
-import type { Application } from "../types";
-import ApplicationCard from "../components/ApplicationCard";
-import AddApplicationFromModal from "../components/AddApplicationFromModal";
-
-
-// Mockdata for å lage komponenten til listeelementet
-// TODO fjern dette når firebase er klart 
-const mockApplications: Application[] = [
-    {
-        id: "1", 
-        name: "Trafikk", 
-        createdAt: new Date(), 
-        sections: [
-            { id: "s1", name: "Reiseinformasjon" }, 
-            { id: "s2", name: "Langs veien" }, 
-            { id: "s3", name: "Trafikksikkerhet" }
-        ]
-    }, 
-    {
-        id: "2", 
-        name: "Førerkort", 
-        createdAt: new Date(), 
-        sections: [], 
-    },
-];
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAllApplications, type ApplicationListItem } from "../../api";
 
 const HomePage = () => {
-    // TODO erstatt mockApplications med data hentet fra Firestore
-    const [applications, setApplications] = useState<Application[]>(mockApplications); 
-    const [showModal, setShowModal] = useState(false); 
+  const navigate = useNavigate();
+  const [applications, setApplications] = useState<ApplicationListItem[]>([]);
 
-    // Kalles fra modalen når det opprettes ny applikasjon 
-    // legger den nye applikasjonen i lista 
-    const handleAdd = (application: Application) => {
-        // TODO gare applikasjonen i Firestore, istede for lokal state, så hent lista på nytt
-        setApplications([...applications, application]); 
+  useEffect(() => {
+    const fetchApplications = async () => {
+      const data = await getAllApplications();
+      setApplications(data);
     };
 
-    return (
-        <div>
-            <h1>Applikasjoner</h1>
+    fetchApplications();
+  }, []);
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}> 
-                <p>Her finner du alle applikasjoner. Du kan filtrere og søke etter ønsket applikasjon, eller legge til en ny.</p>
-                <button onClick={() => setShowModal(true)}>
-                    +
-                </button>
-            </div>
-            
-            {applications.map((application) => (
-                <ApplicationCard 
-                  key={application.id}
-                  application={application}
-                />
-            ))}
+  return (
+    <div style={{ padding: "24px" }}>
+      <button
+        onClick={() => navigate("/create-textkey")}
+        style={{ marginBottom: "20px" }}
+      >
+        ← Tilbake til tekstnøkler
+      </button>
+      <h1>Applikasjoner</h1>
 
-            <AddApplicationFromModal 
-                isVisible={showModal}
-                onClose={() => setShowModal(false)}
-                onAdd={handleAdd}
-            />
-        </div>
-    )
+      <button
+        onClick={() => navigate("/create-application")}
+        style={{ marginBottom: "20px" }}
+      >
+        Opprett ny applikasjon
+      </button>
+
+      {applications.length === 0 ? (
+        <p>Ingen applikasjoner funnet.</p>
+      ) : (
+        applications.map((application) => (
+          <div
+            key={application.id}
+            onClick={() => navigate(`/applicationDetails/${application.id}`)}
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              padding: "16px",
+              marginBottom: "12px",
+              cursor: "pointer",
+            }}
+          >
+            <h3>{application.name}</h3>
+            <p>{application.description}</p>
+          </div>
+        ))
+      )}
+    </div>
+  );
 };
 
-export default HomePage; 
+export default HomePage;
