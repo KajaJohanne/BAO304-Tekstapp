@@ -2,6 +2,7 @@
 import TextTypeSelector from "../components/TextTypeSelector";
 import CreateTypeSelector from "../components/CreateTypeSelector";
 import TextKeyNameModal from "../components/TextKeyNameModal";
+import TextKeyPlacementSelector from "../components/TextKeyPlacementSelector";
 import "./CreateNewTextKeyPage.css";
 
 export default function CreateNewTextKeyPage() {
@@ -17,6 +18,8 @@ export default function CreateNewTextKeyPage() {
                 <TextTypeSelector />
                  {/* komponent */}
                  <TextKeyNameModal />
+                 {/* komponent */}
+                 <TextKeyPlacementSelector />
             </div>
         </div>
     );
