@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllApplications, type ApplicationListItem } from "../../api";
+import { getAllApplications, type ApplicationListItem } from "../../../../api";
 
 const HomePage = () => {
   const navigate = useNavigate();
