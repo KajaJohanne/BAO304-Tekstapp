@@ -1,15 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "../pages/HomePage";
-import CreateApplicationPage from "../pages/CreateApplicationPage";
-import ApplicationDetailPage from "../pages/ApplicationDetailPage";
-import CreateTextKeyPage from "../pages/CreateTextKeyPage";
+import HomePage from "../pages/applications/HomePage/HomePage";
+import CreateApplicationPage from "../pages/applications/CreateApplicationPage/CreateApplicationPage";
+import ApplicationDetailPage from "../pages/applications/ApplicationDetailPage/ApplicationDetailPage";
+import CreateTextKeyPage from "../pages/textKeys/CreateTextKeyPage/CreateTextKeyPage";
 import LoginPage from "../pages/LoginPage";
-import TextKeyDetailPage from "../pages/TextKeyDetailPage";
+import TextKeyDetailPage from "../pages/textKeys/TextKeyDetailPage/TextKeyDetailPage";
 import NotFoundPage from "../pages/NotFoundPage";
-import ProfilePage from "../pages/ProfilePage";
-import SectionPage from "../pages/SectionPage";
-import SubSectionPage from "../pages/SubSectionPage";
-import AllTextKeysPage from "../pages/AllTextKeysPage";
+import SectionPage from "../pages/applications/SectionPage/SectionPage";
+import SubSectionPage from "../pages/applications/SubSectionPage/SubSectionPage";
+import AllTextKeysPage from "../pages/textKeys/AllTextKeysPage/AllTextKeysPage";
 
 const AppRouter = () => {
   return (
@@ -28,7 +27,6 @@ const AppRouter = () => {
         <Route path="/section" element={<SectionPage />} />
         <Route path="/subSection" element={<SubSectionPage />} />
         <Route path="/textkeyDetails/:id" element={<TextKeyDetailPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
