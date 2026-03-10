@@ -44,7 +44,7 @@ const LoginPage = () => {
       );
 
       window.alert("Bruker lagret i Firebase");
-      navigate("/create-textkey");
+      navigate("/home");
     }
   };
 

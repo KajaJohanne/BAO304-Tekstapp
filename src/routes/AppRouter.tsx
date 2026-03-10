@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "../pages/HomePage";
+import CreateApplicationPage from "../pages/CreateApplicationPage";
 import ApplicationDetailPage from "../pages/ApplicationDetailPage";
 import CreateTextKeyPage from "../pages/CreateTextKeyPage";
 import LoginPage from "../pages/LoginPage";
@@ -17,7 +18,11 @@ const AppRouter = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/applicationDetails" element={<ApplicationDetailPage />} />
+        <Route path="/create-application" element={<CreateApplicationPage />} />
+        <Route
+          path="/applicationDetails/:id"
+          element={<ApplicationDetailPage />}
+        />
         <Route path="/create-textkey" element={<CreateTextKeyPage />} />
         <Route path="/textkeys" element={<AllTextKeysPage />} />
         <Route path="/section" element={<SectionPage />} />

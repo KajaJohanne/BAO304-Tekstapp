@@ -17,6 +17,12 @@ const AllTextKeysPage = () => {
 
   return (
     <div style={{ padding: "24px" }}>
+      <button
+        onClick={() => navigate("/home")}
+        style={{ marginBottom: "20px" }}
+      >
+        ← Tilbake til applikasjoner
+      </button>
       <h1>Alle tekstnøkler</h1>
 
       <button onClick={() => navigate("/create-textkey")}>

@@ -25,9 +25,16 @@ export interface User {
   allowedEnvironments: Environment[];
 }
 
+export interface Application {
+  name: string;
+  description: string;
+}
+
 // Hvordan dataen skal lagres i Firebase
 export interface TextKeyDocument {
   name: string;
+  applicationId: string;
+  applicationName: string;
   default: TextValues;
   environments: {
     utv: TextValues;
@@ -41,14 +48,23 @@ export interface TextKeyListItem extends TextKeyDocument {
   id: string;
 }
 
+export interface ApplicationListItem extends Application {
+  id: string;
+}
+
+
 // Oppretter tekstnøkkel i Firebase med default-tekst
 export async function saveDefaultText(
   name: string,
+  applicationId: string,
+  applicationName: string,
   defaultText: TextValues
 ): Promise<string | null> {
   try {
     const data: TextKeyDocument = {
       name,
+      applicationId,
+      applicationName,
       default: defaultText,
       environments: {
         utv: { bokmål: "", nynorsk: "", engelsk: "" },
@@ -146,5 +162,36 @@ export async function getUser(email: string): Promise<User | null> {
   } catch (e) {
     console.error("Feil ved henting av bruker:", e);
     return null;
+  }
+}
+
+
+// Oppretter ny applikasjon i Firebase
+export async function saveApplication(
+  application: Application
+): Promise<string | null> {
+  try {
+    await addDoc(collection(db, "applications"), application);
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved lagring av applikasjon.";
+  }
+}
+
+// Henter alle applikasjoner fra Firebase
+export async function getAllApplications(): Promise<ApplicationListItem[]> {
+  try {
+    const snapshot = await getDocs(collection(db, "applications"));
+
+    return snapshot.docs.map((docSnapshot) => ({
+      id: docSnapshot.id,
+      ...(docSnapshot.data() as Application),
+    }));
+  } catch (e) {
+    console.error("Feil ved henting av applikasjoner:", e);
+    return [];
   }
 }
