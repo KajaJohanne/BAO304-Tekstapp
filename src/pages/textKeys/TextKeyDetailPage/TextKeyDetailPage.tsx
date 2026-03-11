@@ -7,7 +7,7 @@ import {
   type TextKeyDocument,
   type TextValues,
   type User,
-} from "../../api";
+} from "../../../../api";
 
 const TextKeyDetailPage = () => {
   const { id } = useParams();

@@ -5,7 +5,7 @@ import {
   getAllApplications,
   type TextValues,
   type ApplicationListItem,
-} from "../../api";
+} from "../../../../api";
 
 const CreateTextKeyPage = () => {
   const navigate = useNavigate();
