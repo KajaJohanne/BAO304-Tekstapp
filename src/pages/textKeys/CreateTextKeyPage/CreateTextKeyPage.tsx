@@ -6,11 +6,17 @@ import {
   type TextValues,
   type ApplicationListItem,
 } from "../../../../api";
+import TextTypeSelector from "../../../components/TextTypeSelector";
+import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
+import TextKeyNameModal from "../../../components/TextKeyNameModal";
+import TextKeyPlacementSelector from "../../../components/TextKeyPlacementSelector";
+import "./CreateTextKeyPage.css";
 
 const CreateTextKeyPage = () => {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
+  const [selectedPlacement, setSelectedPlacement] = useState("");
   const [applications, setApplications] = useState<ApplicationListItem[]>([]);
   const [selectedApplicationId, setSelectedApplicationId] = useState("");
   const [formData, setFormData] = useState<TextValues>({
@@ -63,8 +69,10 @@ const CreateTextKeyPage = () => {
       return;
     }
 
+    const fullKeyName = `${selectedPlacement} > ${name}`;
+
     const response = await saveDefaultText(
-      name,
+      fullKeyName,
       selectedApplication.id,
       selectedApplication.name,
       formData,
@@ -78,45 +86,52 @@ const CreateTextKeyPage = () => {
   };
 
   return (
-    <div style={{ padding: "24px", maxWidth: "600px" }}>
+    <div className="create-text-key-page_content">
+      {/* Tilbake knapp, tilbake til tekstnøkler */}
       <button
         onClick={() => navigate("/textkeys")}
-        style={{ marginBottom: "20px" }}
+        className="back-button"
       >
-        ← Tilbake til tekstnøkler
+        <span className="back-arrow">‹</span>
+        <span className="back-text">Tilbake til tekstnøkler</span>
       </button>
 
-      <h1>Opprett tekstnøkkel</h1>
+      <h1 className="create-text-key-page_title">Legg til ny tekstnøkkel</h1>
+        <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler</p>
+            {/* komponent */}
+            <CreateTypeSelector />
+            {/* komponent */}
+            <TextTypeSelector />
+            {/* komponent */}
+            <TextKeyNameModal
+              value={name}
+              onSave={setName}
+            />
+            {/* komponent */}
+            <TextKeyPlacementSelector 
+              selectedPlacement={selectedPlacement}
+              onSavePlacement={setSelectedPlacement}
+              textKeyName={name}
+            />
 
-      <div style={{ marginBottom: "16px" }}>
-        <label>Velg applikasjon</label>
-        <br />
-        <select
-          value={selectedApplicationId}
-          onChange={(e) => setSelectedApplicationId(e.target.value)}
-        >
-          {applications.length === 0 ? (
-            <option value="">Ingen applikasjoner tilgjengelig</option>
-          ) : (
-            applications.map((application) => (
-              <option key={application.id} value={application.id}>
-                {application.name}
-              </option>
-            ))
-          )}
-        </select>
+            {(selectedPlacement || name) && (
+              <div className="text-key-preview">
+                <p className="text-key-preview_label">Forhåndsvisning av nøkkel</p>
+                <p className="text-key-preview_value">
+                  {selectedPlacement && name
+                      ? `${selectedPlacement} > ${name}`
+                      : selectedPlacement || name || "Ingen nøkkel valgt"}
+                </p>
+              </div>
+            )}
+
+            {/* Midlertidig lagreknapp hvis du vil teste */}
+            <button type="button" onClick={handleSave} className="save-main-button">
+              Lagre tekstnøkkel
+            </button>  
       </div>
 
-      <div style={{ marginBottom: "16px" }}>
-        <label>Navn på tekstnøkkel</label>
-        <br />
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="f.eks. Trafikkmeldinger"
-        />
-      </div>
+    /*<div style={{ padding: "24px", maxWidth: "600px" }}>
 
       <div style={{ marginBottom: "16px" }}>
         <label>Bokmål</label>
@@ -149,7 +164,7 @@ const CreateTextKeyPage = () => {
       </div>
 
       <button onClick={handleSave}>Lagre tekstnøkkel</button>
-    </div>
+    </div>*/
   );
 };
 

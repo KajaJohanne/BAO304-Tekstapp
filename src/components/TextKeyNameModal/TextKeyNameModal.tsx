@@ -1,36 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./TextKeyNameModal.css";
+import React from "react";
 
-export default function TextKeyNameModal() {
+type TextKeyNameModalProps = {
+    value: string;
+    onSave: (value: string) => void;
+};
+
+export default function TextKeyNameModal({value, onSave}: TextKeyNameModalProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
+
+    useEffect(() => {
+        setInputValue(value);
+    }, [value]);
 
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
     
     //feil validering
     const handleAdd = () => {
-        const value = inputValue.trim();
+        const trimmedValue = inputValue.trim();
 
         //Tom verdi
-        if (value.length === 0) {
+        if (trimmedValue.length === 0) {
             alert("Nøkkelen kan ikke være tom.");
             return;
         }
 
         //Mellomrom
-        if (value.includes(" ")) {
+        if (trimmedValue.includes(" ")) {
             alert("Nøkkelen kan ikke inneholde mellomrom.");
             return;
         }
 
         //Kun bokstaver
         const onlyLetters = /^[A-Za-zÆØÅæøå]+$/;
-        if (!onlyLetters.test(value)) {
+        if (!onlyLetters.test(trimmedValue)) {
             alert("Nøkkelen kan kun inneholde bokstaver.");
             return;
         }
 
+        onSave(trimmedValue);
         //Hvis alt er gyldig
         console.log("Ny tekstnøkkel:", inputValue);
         closeModal();
@@ -88,75 +99,3 @@ export default function TextKeyNameModal() {
         </>
     );
 }
-
-/*const styles: { [key: string]: CSSProperties } = {
-    openButton: {
-        marginTop: "32px",
-        width: "250px",
-        height: "70px",
-        backgroundColor: "#F5F5F5",
-        color: "#4f5b62",
-        border: "2px solid #5b6770",
-        fontSize: "18px",
-        cursor: "pointer",
-        textAlign: "left",
-        paddingLeft: "16px",
-    },
-    overlay: {
-        position: "fixed",
-        inset: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.2)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-    },
-    modal: {
-        position: "relative",
-        width: "880px",
-        backgroundColor: "#F5F5F5",
-        padding: "48px 64px 56px 64px",
-        boxShadow: "0 8px 30px rgba(0, 0, 0, 0.2)",
-    },
-    closeButton: {
-        position: "absolute",
-        top: "20px",
-        right: "24px",
-        border: "none",
-        background: "transparent",
-        fontSize: "36px",
-        color: "#4f5b62",
-        cursor: "pointer",
-        lineHeight: 1,
-    },
-    text: {
-        margin: 0,
-        marginBottom: "32px",
-        fontSize: "18px",
-        color: "#4f5b62",
-        maxWidth: "620px",
-        lineHeight: 1.4,
-        whiteSpace: "pre-line",
-    },
-    input: {
-        display: "block",
-        width: "500px",
-        height: "56px",
-        border: "2px solid #ff9100",
-        backgroundColor: "#F5F5F5",
-        fontSize: "18px",
-        color: "#4f5b62",
-        padding: "0 16px",
-        marginBottom: "32px",
-        outline: "none",
-    },
-    addButton: {
-        width: "140px",
-        height: "56px",
-        border: "none",
-        backgroundColor: "#4f5b62",
-        color: "white",
-        fontSize: "18px",
-        cursor: "pointer",
-    },
-};*/

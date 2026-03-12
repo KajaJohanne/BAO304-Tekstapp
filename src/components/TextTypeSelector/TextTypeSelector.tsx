@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./TextTypeSelector.css";
+import React from "react";
 
 type TextType = "Tittel" | "Brødtekst" | "Feilmelding" | "Knappetekst" | "Hjelpetekst";
 
@@ -62,36 +63,3 @@ export default function TextTypeSelector() {
         </div>
     );
 }
-
-/*const styles: { [key: string]: CSSProperties } = {
-    container: {
-        marginTop: "16px",
-        textAlign: "left",
-    },
-    label: {
-        margin: 0,
-        marginBottom: "12px",
-        fontWeight: 400,
-        fontSize: "16px",
-        color: "black",
-        textAlign: "left",
-    },
-    buttonGroup: {
-        display: "flex",
-        gap: "12px",
-        flexWrap: "wrap",
-        justifyContent: "flex-start",
-    },
-    button: {
-        padding: "10px 14px",
-        minWidth: "110px",
-        backgroundColor: "#F5F5F5",
-        color: "black",
-        border: "2px solid #5b6770",
-        cursor: "pointer",
-        fontSize: "14px",
-    },
-    selected: {
-        border: "2px solid #ff9100",
-    },
-};*/

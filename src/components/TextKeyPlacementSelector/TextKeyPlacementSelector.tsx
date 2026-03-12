@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./TextKeyPlacementSelector.css";
+import React from "react";
 
 type PlacementTree = {
     [key: string]: string[];
@@ -14,7 +15,13 @@ const keyStructure: PlacementTree = {
     Fag: [],
 };
 
-export default function TextKeyPlacementSelector() {
+type TextKeyPlacementSelectorProps = {
+    selectedPlacement: string;
+    onSavePlacement: (placement: string) => void;
+    textKeyName: string;
+};
+
+export default function TextKeyPlacementSelector({ selectedPlacement, onSavePlacement, textKeyName,}: TextKeyPlacementSelectorProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedLevelOne, setSelectedLevelOne] = useState<string | null>(null);
     const [selectedLevelTwo, setSelectedLevelTwo] = useState<string | null>(null);
@@ -32,12 +39,12 @@ export default function TextKeyPlacementSelector() {
     };
     const handleSave = () => {
         if (selectedLevelOne && selectedLevelTwo) {
-            setSelectedPath(`${selectedLevelOne} > ${selectedLevelTwo}`);
+            onSavePlacement(`${selectedLevelOne} > ${selectedLevelTwo}`);
             closeModal();
             return;
         }
         if (selectedLevelOne) {
-            setSelectedPath(selectedLevelOne);
+            onSavePlacement(selectedLevelOne);
             closeModal();
             return;
         }
@@ -47,13 +54,18 @@ export default function TextKeyPlacementSelector() {
 
     const levelOne = Object.keys(keyStructure);
     const levelTwo = selectedLevelOne && keyStructure[selectedLevelOne] ? keyStructure[selectedLevelOne] : [];
+    const buttonText = selectedPlacement
+        ? textKeyName
+            ? `${selectedPlacement} > ${textKeyName}`
+            : selectedPlacement
+        : "Velg applikasjon";
 
     return (
         <>
         <div className="placement-wrapper">
-            <p className="placement-label">Plasser nøkkelen</p>
+            <p className="placement-label">Plasser nøkkelen her</p>
 
-            <button className="placement-button" onClick={openModal}>
+            <button className="placement-button" onClick={openModal} type="button">
                 <span>{selectedPath}</span>
                 <span className="arrow">›</span>
             </button>
@@ -64,7 +76,7 @@ export default function TextKeyPlacementSelector() {
                 <div className="modal">
 
                     <div className="modal-header">
-                        <button className="back-button" onClick={closeModal}>
+                        <button className="back-button" onClick={closeModal} type="button">
                             ‹ applikasjoner
                         </button>
 
@@ -77,6 +89,7 @@ export default function TextKeyPlacementSelector() {
                                     key={item}
                                     className={`option ${selectedLevelOne === item ? "selected" : ""}`}
                                     onClick={() => handleLevelOne(item)}
+                                    type="button"
                                 >
                                     <span>{item}</span>
                                     <span className="arrow">›</span>
@@ -89,6 +102,7 @@ export default function TextKeyPlacementSelector() {
                                     key={item}
                                     className={`option ${selectedLevelTwo === item ? "selected" : ""}`}
                                     onClick={() => handleLevelTwo(item)}
+                                    type="button"
                                 >
                                     <span>{item}</span>
                                     <span className="arrow">›</span>
@@ -98,7 +112,7 @@ export default function TextKeyPlacementSelector() {
                     </div>
 
                     <div className="modal-footer">
-                        <button className="save-button" onClick={handleSave}>
+                        <button className="save-button" onClick={handleSave} type="button">
                             Legg til plassering
                         </button>
                     </div>

@@ -9,6 +9,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import SectionPage from "../pages/applications/SectionPage/SectionPage";
 import SubSectionPage from "../pages/applications/SubSectionPage/SubSectionPage";
 import AllTextKeysPage from "../pages/textKeys/AllTextKeysPage/AllTextKeysPage";
+import React from "react";
 
 const AppRouter = () => {
   return (
