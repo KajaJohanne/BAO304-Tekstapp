@@ -63,7 +63,7 @@ export default function TextKeyPlacementSelector({ selectedPlacement, onSavePlac
     return (
         <>
         <div className="placement-wrapper">
-            <p className="placement-label">Plasser nøkkelen her</p>
+            <p className="placement-label">Plasser nøkkelen</p>
 
             <button className="placement-button" onClick={openModal} type="button">
                 <span>{selectedPath}</span>
