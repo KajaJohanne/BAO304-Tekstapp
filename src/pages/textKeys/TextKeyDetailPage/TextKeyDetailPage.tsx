@@ -15,10 +15,10 @@ const TextKeyDetailPage = () => {
   // Henter id fra URL
   const { id } = useParams();
 
-  // Brukes for navigasjon mellom sider
+  // Navigasjon mellom sider
   const navigate = useNavigate();
 
-  // State for valgt tekstnøkkel
+  // Valgt tekstnøkkel
   const [textKey, setTextKey] = useState<TextKeyDocument | null>(null);
 
   // Miljøer brukeren har tilgang til
@@ -36,17 +36,15 @@ const TextKeyDetailPage = () => {
     engelsk: "",
   });
 
-  // Henter innlogget bruker fra localStorage
+  // Henter bruker fra localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
 
     if (storedUser) {
       const parsedUser: User = JSON.parse(storedUser);
 
-      // Setter hvilke miljøer brukeren kan redigere
       setAllowedEnvironments(parsedUser.allowedEnvironments);
 
-      // Setter første miljø som standard
       if (parsedUser.allowedEnvironments.length > 0) {
         setCurrentEnvironment(parsedUser.allowedEnvironments[0]);
       }
@@ -68,7 +66,7 @@ const TextKeyDetailPage = () => {
     fetchTextKey();
   }, [id]);
 
-  // Oppdaterer tekstfeltene når miljø eller tekstnøkkel endres
+  // Oppdaterer tekstfeltene når miljø endres
   useEffect(() => {
     if (!textKey || !currentEnvironment) return;
 
@@ -81,7 +79,7 @@ const TextKeyDetailPage = () => {
     });
   }, [textKey, currentEnvironment]);
 
-  // Oppdaterer state når brukeren skriver i inputfeltene
+  // Oppdaterer state når bruker skriver
   const handleChange = (field: keyof TextValues, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -89,7 +87,7 @@ const TextKeyDetailPage = () => {
     }));
   };
 
-  // Lagrer endringer til databasen
+  // Lagrer endringer
   const handleSave = async () => {
     if (!id || !currentEnvironment) return;
 
@@ -104,24 +102,26 @@ const TextKeyDetailPage = () => {
     } else {
       window.alert("Miljøtekst lagret");
 
-      // Henter oppdatert tekst etter lagring
       const updatedTextKey = await getTextKey(id);
-
       if (updatedTextKey) {
         setTextKey(updatedTextKey);
       }
     }
   };
 
-  // Viser melding mens tekstnøkkel lastes
+  // Laster tekstnøkkel
   if (!textKey) {
     return <div className="container">Laster tekstnøkkel...</div>;
   }
 
+  // Tom-state: sjekker om alle tekstfeltene er tomme
+  const noText =
+    !formData.bokmål && !formData.nynorsk && !formData.engelsk;
+
   return (
     <div className="container">
 
-      {/* Navigasjon tilbake til oversikt */}
+      {/* Tilbakeknapp */}
       <button
         className="backButton"
         onClick={() => navigate("/textkeys")}
@@ -158,13 +158,19 @@ const TextKeyDetailPage = () => {
         </div>
       </div>
 
-      {/* Redigeringsfeltene */}
       {currentEnvironment && (
         <>
           <p className="currentEnvironment">
             Du redigerer nå miljø:{" "}
             <strong>{currentEnvironment.toUpperCase()}</strong>
           </p>
+
+          {/* Tom state melding */}
+          {noText && (
+            <p className="emptyState">
+              Ingen tekst finnes for dette miljøet enda. Legg til tekst under.
+            </p>
+          )}
 
           {/* Bokmål */}
           <div className="inputGroup">
@@ -205,7 +211,7 @@ const TextKeyDetailPage = () => {
             />
           </div>
 
-          {/* Handlingsknapper */}
+          {/* Knapper */}
           <div className="buttonRow">
             <button
               className="saveButton"
