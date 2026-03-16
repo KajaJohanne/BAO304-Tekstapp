@@ -119,6 +119,7 @@ const TextKeyDetailPage = () => {
     !formData.bokmål && !formData.nynorsk && !formData.engelsk;
 
   return (
+    <div className="page">
     <div className="container">
 
       {/* Tilbakeknapp */}
@@ -229,6 +230,7 @@ const TextKeyDetailPage = () => {
           </div>
         </>
       )}
+    </div>
     </div>
   );
 };
