@@ -7,6 +7,9 @@ import {
   getDoc,
   getDocs,
   updateDoc,
+  query,
+  where,
+  limit,
 } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
@@ -52,6 +55,19 @@ export interface ApplicationListItem extends Application {
   id: string;
 }
 
+// Sjekker om det allerede finnes en tekstnøkkel med samme navn
+export async function textKeyExists(name: string): Promise<boolean> {
+  try {
+    const textKeysRef = collection(db, "textKeys");
+    const q = query(textKeysRef, where("name", "==", name), limit(1));
+    const snapshot = await getDocs(q);
+
+    return !snapshot.empty;
+  } catch (e) {
+    console.error("Feil ved sjekk av duplikat tekstnøkkel:", e);
+    return false;
+  }
+}
 
 // Oppretter tekstnøkkel i Firebase med default-tekst
 export async function saveDefaultText(
@@ -61,6 +77,13 @@ export async function saveDefaultText(
   defaultText: TextValues
 ): Promise<string | null> {
   try {
+    //Sjekker om tekstnøkkel finnes allerede
+    const exists = await textKeyExists(name);
+
+    if (exists) {
+      return "Denne tekstnøkkelen finnes allerede.";
+    }
+
     const data: TextKeyDocument = {
       name,
       applicationId,
