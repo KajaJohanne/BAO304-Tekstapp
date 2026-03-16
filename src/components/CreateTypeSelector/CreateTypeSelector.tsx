@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./CreateTypeSelector.css";
-import React from "react";
 
 type CreateType = "Applikasjon" | "Tekstnøkkel";
 

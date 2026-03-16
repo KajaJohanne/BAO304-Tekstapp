@@ -1,22 +1,25 @@
 import { useState, useEffect } from "react";
 import "./TextKeyNameModal.css";
-import React from "react";
+import type { TextKeyNameModalProps } from "../../types/textKeyName.ts";
 
-type TextKeyNameModalProps = {
-    value: string;
-    onSave: (value: string) => void;
-};
-
-export default function TextKeyNameModal({value, onSave}: TextKeyNameModalProps) {
+export default function TextKeyNameModal({value, onSave, error}: TextKeyNameModalProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
+    const [localError, setLocalError] = useState("");
 
     useEffect(() => {
         setInputValue(value);
     }, [value]);
 
+    useEffect(() => {
+        setLocalError(error || "");
+    }, [error]);
+
     const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
+    const closeModal = () => {
+        setIsOpen(false);
+        setLocalError("");
+    };
     
     //Feil validering
     const handleAdd = () => {
@@ -24,23 +27,24 @@ export default function TextKeyNameModal({value, onSave}: TextKeyNameModalProps)
 
         //Tom verdi
         if (trimmedValue.length === 0) {
-            alert("Nøkkelen kan ikke være tom.");
+            setLocalError("Nøkkelen kan ikke være tom.");
             return;
         }
 
         //Mellomrom
         if (trimmedValue.includes(" ")) {
-            alert("Nøkkelen kan ikke inneholde mellomrom.");
+            setLocalError("Nøkkelen kan ikke inneholde mellomrom.");
             return;
         }
 
         //Kun bokstaver
         const onlyLetters = /^[A-Za-zÆØÅæøå]+$/;
         if (!onlyLetters.test(trimmedValue)) {
-            alert("Nøkkelen kan kun inneholde bokstaver.");
+            setLocalError("Nøkkelen kan kun inneholde bokstaver.");
             return;
         }
 
+        setLocalError("");
         onSave(trimmedValue);
         //Hvis alt er gyldig
         console.log("Ny tekstnøkkel:", inputValue);
@@ -83,10 +87,18 @@ export default function TextKeyNameModal({value, onSave}: TextKeyNameModalProps)
                         <input 
                             type="text"
                             value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
+                            onChange={(e) => {
+                                setInputValue(e.target.value)
+                                setLocalError("");
+                            }}
                             placeholder="Skriv navnet her"
-                            className="text-key-name-modal_input"
+                            className={`text-key-name-modal_input ${localError ? "input-error" : ""}`}
                         />
+                        
+                        {localError && (
+                            <p className="field-error">{localError}</p>
+                        )}
+
                         <button 
                             type="button" 
                             onClick={handleAdd} 

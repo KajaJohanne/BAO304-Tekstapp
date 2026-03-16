@@ -69,3 +69,7 @@ body {
     font-size: 18px;
     cursor: pointer;
 }
+.save-main-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

@@ -1,27 +1,16 @@
 import { useState } from "react";
 import "./TextKeyPlacementSelector.css";
-import React from "react";
 import type { ApplicationListItem } from "../../../api";
-
-type PlacementTree = {
-    [key: string]: string[];
-};
+import type { PlacementTree, TextKeyPlacementSelectorProps } from "../../types/textKeyPlacementTree";
 
 const keyStructure: PlacementTree = {
-    HovedSide: ["Reiseinformasjon"],
-    Trafikk: ["Langs veien", "Trafikksikkerhet"],
-    Kjøretøy: [],
-    Fagkort: [],
-    Veiprosjekter: [],
-    Fag: [],
-};
-
-type TextKeyPlacementSelectorProps = {
-    applications: ApplicationListItem[];
-    selectedPlacement: string;
-    onSavePlacement: (placement: string) => void;
-    onSelectApplication: (applicationId: string) => void;
-    textKeyName: string;
+    DinSide: [],
+    Trafikk: ["Reiseinformasjon", "Langs veien", "Trafikksikkerhet"],
+    Kjøretøy: ["Kjøp og salg", "Eie og vedlikeholde", "Yrkestransport"],
+    Fagkort: ["Ta førerkort", "Har førerkort", "Utdanning for yrkessjåfører"],
+    Veiprosjekter: ["Finn veiprosjekter", "Prosessen fram til ny vei", "Nasjonal transportplan (NTP)", "Høringer veiprosjekter", "For entrepenører"],
+    Fag: ["Vei og gate", "Trafikk", "Teknologi", "Fokusområder", "Leverandør", "Publikasjoner"],
+    OmOss: ["Kontakt oss", "Om organisasjonen", "Jobb i Statens vegvesen", "Presse"],
 };
 
 export default function TextKeyPlacementSelector({ applications, onSavePlacement, onSelectApplication,}: TextKeyPlacementSelectorProps) {
