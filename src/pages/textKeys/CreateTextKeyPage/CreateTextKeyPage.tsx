@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   saveDefaultText,
   getAllApplications,
+  textKeyExists,
   type TextValues,
   type ApplicationListItem,
 } from "../../../../api";
@@ -71,6 +72,7 @@ const CreateTextKeyPage = () => {
     setErrors((prev) => ({
       ...prev,
       name: "",
+      duplicate: "",
     }));
   };
 
@@ -135,6 +137,17 @@ const CreateTextKeyPage = () => {
 
     const fullKeyName = `${selectedPlacement} > ${name}`;
 
+    //Sjekker om tekstnøkkel finnes allerede
+    const alreadyExists = await textKeyExists(fullKeyName);
+
+    if (alreadyExists) {
+      setErrors((prev) => ({
+        ...prev,
+        duplicate: "Denne tekstnøkkelen finnes allerede.",
+      }));
+      return;
+    }
+
     const response = await saveDefaultText(
       fullKeyName,
       selectedApplication.id,
@@ -186,6 +199,7 @@ const CreateTextKeyPage = () => {
                 setErrors((prev) => ({
                   ...prev,
                   placement: "",
+                  duplicate: "",
                 }));
               }}
               onSelectApplication={(applicationId) => {
@@ -215,6 +229,10 @@ const CreateTextKeyPage = () => {
                       : selectedPlacement || name || "Ingen nøkkel valgt"}
                 </p>
               </div>
+            )}
+
+            {errors.duplicate && (
+              <p className="field-error">{errors.duplicate}</p>
             )}
 
             {/* Input felt for bokmål, nynorsk og engelsk */}
