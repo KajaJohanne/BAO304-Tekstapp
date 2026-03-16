@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import "./TextKeyDetailPage.css";
+
 import {
   getTextKey,
   updateEnviormentText,
@@ -10,27 +12,37 @@ import {
 } from "../../../../api";
 
 const TextKeyDetailPage = () => {
+  // Henter id fra URL
   const { id } = useParams();
+
+  // Navigasjon mellom sider
   const navigate = useNavigate();
+
+  // Valgt tekstnøkkel
   const [textKey, setTextKey] = useState<TextKeyDocument | null>(null);
-  const [allowedEnvironments, setAllowedEnvironments] = useState<Environment[]>(
-    [],
-  );
+
+  // Miljøer brukeren har tilgang til
+  const [allowedEnvironments, setAllowedEnvironments] =
+    useState<Environment[]>([]);
+
+  // Hvilket miljø som er valgt
   const [currentEnvironment, setCurrentEnvironment] =
     useState<Environment | null>(null);
 
+  // Tekstfeltene som kan redigeres
   const [formData, setFormData] = useState<TextValues>({
     bokmål: "",
     nynorsk: "",
     engelsk: "",
   });
 
-  // Henter innlogget bruker fra localStorage
+  // Henter bruker fra localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
 
     if (storedUser) {
       const parsedUser: User = JSON.parse(storedUser);
+
       setAllowedEnvironments(parsedUser.allowedEnvironments);
 
       if (parsedUser.allowedEnvironments.length > 0) {
@@ -39,7 +51,7 @@ const TextKeyDetailPage = () => {
     }
   }, []);
 
-  // Henter tekstnøkkelen fra Firebase
+  // Henter tekstnøkkel fra databasen
   useEffect(() => {
     const fetchTextKey = async () => {
       if (!id) return;
@@ -54,7 +66,7 @@ const TextKeyDetailPage = () => {
     fetchTextKey();
   }, [id]);
 
-  // Oppdaterer feltene når tekstnøkkel eller miljø endrer seg
+  // Oppdaterer tekstfeltene når miljø endres
   useEffect(() => {
     if (!textKey || !currentEnvironment) return;
 
@@ -67,7 +79,7 @@ const TextKeyDetailPage = () => {
     });
   }, [textKey, currentEnvironment]);
 
-  // Oppdaterer input-feltene når brukeren skriver
+  // Oppdaterer state når bruker skriver
   const handleChange = (field: keyof TextValues, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -75,62 +87,79 @@ const TextKeyDetailPage = () => {
     }));
   };
 
-  // Lagrer tekst for valgt miljø
+  // Lagrer endringer
   const handleSave = async () => {
-    if (!id || !currentEnvironment) return;
+  if (!id || !currentEnvironment) return;
 
-    const response = await updateEnviormentText(
-      id,
-      currentEnvironment,
-      formData,
-    );
+  const response = await updateEnviormentText(
+    id,
+    currentEnvironment,
+    formData
+  );
 
-    if (response) {
-      window.alert(`Feil: ${response}`);
-    } else {
-      window.alert("Miljøtekst lagret");
+  if (response) {
+    window.alert(`Feil: ${response}`);
+  } else {
+    window.alert("Miljøtekst lagret");
 
-      const updatedTextKey = await getTextKey(id);
-      if (updatedTextKey) {
-        setTextKey(updatedTextKey);
-      }
+    const updatedTextKey = await getTextKey(id);
+
+    if (updatedTextKey) {
+      setTextKey(updatedTextKey);
+
+      const environmentData =
+        updatedTextKey.environments[currentEnvironment];
+
+      setFormData({
+        bokmål: environmentData.bokmål || updatedTextKey.default.bokmål,
+        nynorsk: environmentData.nynorsk || updatedTextKey.default.nynorsk,
+        engelsk: environmentData.engelsk || updatedTextKey.default.engelsk,
+      });
     }
-  };
-
+  }
+};
+ 
+  // Laster tekstnøkkel
   if (!textKey) {
-    return <div style={{ padding: "24px" }}>Laster tekstnøkkel...</div>;
+    return <div className="container">Laster tekstnøkkel...</div>;
   }
 
-  return (
-    <div style={{ padding: "24px" }}>
-      <button
-        onClick={() => navigate("/textkeys")}
-        style={{
-          marginBottom: "20px",
-          padding: "8px 14px",
-          cursor: "pointer",
-        }}
-      >
-        ← Tilbake til tekstnøkler
-      </button>
-      <h1>{textKey.name}</h1>
+  // Tom-state: sjekker om alle tekstfeltene er tomme
+  const noText =
+    !formData.bokmål && !formData.nynorsk && !formData.engelsk;
 
-      <div style={{ marginBottom: "24px" }}>
+  return (
+    <div className="container">
+
+      {/* Tilbakeknapp */}
+      <p
+        className="backLink"
+        onClick={() => navigate("/textkeys")}>
+        ← Tekstnøkler
+      </p>
+
+      {/* Tittel */}
+      <h1 className="title">Rediger tekstnøkkel</h1>
+
+      <p className="subtitle">
+        Her kan du redigere tekstnøkkelen
+      </p>
+
+      {/* Navn på tekstnøkkel */}
+      <h2 className="textKeyName">{textKey.name}</h2>
+
+      {/* Miljøvalg */}
+      <div className="environmentSection">
         <h3>Velg miljø</h3>
 
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div className="environmentButtons">
           {allowedEnvironments.map((environment) => (
             <button
               key={environment}
               onClick={() => setCurrentEnvironment(environment)}
-              style={{
-                padding: "10px 16px",
-                borderRadius: "8px",
-                border: "1px solid #ccc",
-                backgroundColor:
-                  currentEnvironment === environment ? "#ddd" : "#fff",
-                cursor: "pointer",
-              }}
+              className={`environmentButton ${
+                currentEnvironment === environment ? "active" : ""
+              }`}
             >
               {environment.toUpperCase()}
             </button>
@@ -140,45 +169,73 @@ const TextKeyDetailPage = () => {
 
       {currentEnvironment && (
         <>
-          <p>
+          <p className="currentEnvironment">
             Du redigerer nå miljø:{" "}
             <strong>{currentEnvironment.toUpperCase()}</strong>
           </p>
 
-          <div style={{ marginBottom: "16px" }}>
+          {/* Tom state melding */}
+          {noText && (
+            <p className="emptyState">
+              Ingen tekst finnes for dette miljøet enda. Legg til tekst under.
+            </p>
+          )}
+
+          {/* Bokmål */}
+          <div className="inputGroup">
             <label>Bokmål</label>
-            <br />
             <input
               type="text"
+              className="textInput"
               value={formData.bokmål}
-              onChange={(e) => handleChange("bokmål", e.target.value)}
-              style={{ width: "100%", maxWidth: "500px" }}
+              onChange={(e) =>
+                handleChange("bokmål", e.target.value)
+              }
             />
           </div>
 
-          <div style={{ marginBottom: "16px" }}>
+          {/* Nynorsk */}
+          <div className="inputGroup">
             <label>Nynorsk</label>
-            <br />
             <input
               type="text"
+              className="textInput"
               value={formData.nynorsk}
-              onChange={(e) => handleChange("nynorsk", e.target.value)}
-              style={{ width: "100%", maxWidth: "500px" }}
+              onChange={(e) =>
+                handleChange("nynorsk", e.target.value)
+              }
             />
           </div>
 
-          <div style={{ marginBottom: "16px" }}>
+          {/* Engelsk */}
+          <div className="inputGroup">
             <label>Engelsk</label>
-            <br />
             <input
               type="text"
+              className="textInput"
               value={formData.engelsk}
-              onChange={(e) => handleChange("engelsk", e.target.value)}
-              style={{ width: "100%", maxWidth: "500px" }}
+              onChange={(e) =>
+                handleChange("engelsk", e.target.value)
+              }
             />
           </div>
 
-          <button onClick={handleSave}>Lagre endringer</button>
+          {/* Knapper */}
+          <div className="buttonRow">
+            <button
+              className="saveButton"
+              onClick={handleSave}
+            >
+              Lagre
+            </button>
+
+            <button
+              className="cancelButton"
+              onClick={() => navigate("/textkeys")}
+            >
+              Avbryt
+            </button>
+          </div>
         </>
       )}
     </div>
