@@ -104,7 +104,7 @@ const CreateTextKeyPage = () => {
       </button>
 
       <h1 className="create-text-key-page_title">Legg til ny tekstnøkkel</h1>
-        <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler</p>
+        <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler </p>
             {/* komponent */}
             <TextTypeSelector />
             {/* komponent */}
