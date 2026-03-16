@@ -48,7 +48,6 @@ const HomePage = () => {
             }}
           >
             <h3>{application.name}</h3>
-            <p>{application.description}</p>
           </div>
         ))
       )}
