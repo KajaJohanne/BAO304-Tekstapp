@@ -6,7 +6,7 @@ body {
   margin: 0;
 }
 
-/* Contentkolonne (venstrejustert) */
+/* Contentkolonne */
 .container {
   width: 900px;
   margin-left: 320px;
@@ -15,12 +15,17 @@ body {
 }
 
 /* Tilbakeknapp */
-.backButton {
-  margin-bottom: 30px;
-  padding: 8px 16px;
-  border: 1px solid #868D90;
-  background: white;
+.backLink {
+  font-size: 16px;
+  color: #868D90;
   cursor: pointer;
+  margin-bottom: 20px;
+  text-decoration: underline;
+  display: inline-block;
+}
+
+.backLink:hover {
+  color: #444F56;
 }
 
 /* Hovedtittel */

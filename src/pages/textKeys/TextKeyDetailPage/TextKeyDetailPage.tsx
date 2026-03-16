@@ -89,26 +89,36 @@ const TextKeyDetailPage = () => {
 
   // Lagrer endringer
   const handleSave = async () => {
-    if (!id || !currentEnvironment) return;
+  if (!id || !currentEnvironment) return;
 
-    const response = await updateEnviormentText(
-      id,
-      currentEnvironment,
-      formData
-    );
+  const response = await updateEnviormentText(
+    id,
+    currentEnvironment,
+    formData
+  );
 
-    if (response) {
-      window.alert(`Feil: ${response}`);
-    } else {
-      window.alert("Miljøtekst lagret");
+  if (response) {
+    window.alert(`Feil: ${response}`);
+  } else {
+    window.alert("Miljøtekst lagret");
 
-      const updatedTextKey = await getTextKey(id);
-      if (updatedTextKey) {
-        setTextKey(updatedTextKey);
-      }
+    const updatedTextKey = await getTextKey(id);
+
+    if (updatedTextKey) {
+      setTextKey(updatedTextKey);
+
+      const environmentData =
+        updatedTextKey.environments[currentEnvironment];
+
+      setFormData({
+        bokmål: environmentData.bokmål || updatedTextKey.default.bokmål,
+        nynorsk: environmentData.nynorsk || updatedTextKey.default.nynorsk,
+        engelsk: environmentData.engelsk || updatedTextKey.default.engelsk,
+      });
     }
-  };
-
+  }
+};
+ 
   // Laster tekstnøkkel
   if (!textKey) {
     return <div className="container">Laster tekstnøkkel...</div>;
@@ -119,16 +129,14 @@ const TextKeyDetailPage = () => {
     !formData.bokmål && !formData.nynorsk && !formData.engelsk;
 
   return (
-    <div className="page">
     <div className="container">
 
       {/* Tilbakeknapp */}
-      <button
-        className="backButton"
-        onClick={() => navigate("/textkeys")}
-      >
-        ← Tilbake til tekstnøkler
-      </button>
+      <p
+        className="backLink"
+        onClick={() => navigate("/textkeys")}>
+        ← Tekstnøkler
+      </p>
 
       {/* Tittel */}
       <h1 className="title">Rediger tekstnøkkel</h1>
@@ -230,7 +238,6 @@ const TextKeyDetailPage = () => {
           </div>
         </>
       )}
-    </div>
     </div>
   );
 };
