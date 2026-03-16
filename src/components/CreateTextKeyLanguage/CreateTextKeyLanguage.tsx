@@ -9,6 +9,7 @@ type CreateTextKeyLanguageProps = {
 
 const CreateTextKeyLanguagePage = ({ values, onChange }: CreateTextKeyLanguageProps) => {
     return (
+        /* Inputfelt for bokmål */
         <div className="create-text-key-language">
             <div className="create-text-key-language_field">
             <label htmlFor="bokmal-text">Bokmål</label>
@@ -19,6 +20,7 @@ const CreateTextKeyLanguagePage = ({ values, onChange }: CreateTextKeyLanguagePr
                 />
             </div>
 
+            {/* Inputfelt for nynorsk */}
             <div className="create-text-key-language_field">
             <label htmlFor="nynorsk-text">Nynorsk</label>
                 <Textarea 
@@ -28,6 +30,7 @@ const CreateTextKeyLanguagePage = ({ values, onChange }: CreateTextKeyLanguagePr
                 />
             </div>
 
+            {/* Inputfelt for engelsk */}
             <div className="create-text-key-language_field">
                 <label htmlFor="english-text">Engelsk</label>
                 <Textarea 

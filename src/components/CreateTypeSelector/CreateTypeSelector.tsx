@@ -8,6 +8,7 @@ export default function CreateTypeSelector() {
     const [selected, setSelected] = useState<CreateType>("Tekstnøkkel");
 
     return (
+        /* Velg mellom applikasjon og tekstnøkkel */
         <div className="create-type-selector">
 
             <button

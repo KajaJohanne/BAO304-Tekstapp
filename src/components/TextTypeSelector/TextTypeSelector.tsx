@@ -39,6 +39,7 @@ export default function TextTypeSelector() {
     };
 
     return (
+        /* Valg av type tekst */
         <div className="text-type-selector">
             <p className="text-type-selector_label">Velg type tekst</p>
 

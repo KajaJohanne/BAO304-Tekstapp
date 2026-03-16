@@ -1,10 +1,10 @@
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyARAewEUX04wL6m3StrK__Wl6pRVPrsnZA",
+  authDomain: "bao304-tekstapp.firebaseapp.com",
+  projectId: "bao304-tekstapp",
+  storageBucket: "bao304-tekstapp.firebasestorage.app",
+  messagingSenderId: "106205360488",
+  appId: "1:106205360488:web:8860fc1ec162c84e3a66dd"
 };
 
 export default firebaseConfig;

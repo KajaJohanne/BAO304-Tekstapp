@@ -18,7 +18,7 @@ export default function TextKeyNameModal({value, onSave}: TextKeyNameModalProps)
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
     
-    //feil validering
+    //Feil validering
     const handleAdd = () => {
         const trimmedValue = inputValue.trim();
 
@@ -68,6 +68,7 @@ export default function TextKeyNameModal({value, onSave}: TextKeyNameModalProps)
                             ×
                         </button>
 
+                        {/* Navn på tekstnøkkel popup */}
                         <p className="text-key-name-modal_text">
                             Skriv et beskrivende navn for tekstnøkkelen. Ikke bruk mellomrom. 
                             <br />

@@ -106,8 +106,6 @@ const CreateTextKeyPage = () => {
       <h1 className="create-text-key-page_title">Legg til ny tekstnøkkel</h1>
         <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler</p>
             {/* komponent */}
-            <CreateTypeSelector />
-            {/* komponent */}
             <TextTypeSelector />
             {/* komponent */}
             <TextKeyNameModal
@@ -116,8 +114,10 @@ const CreateTextKeyPage = () => {
             />
             {/* komponent */}
             <TextKeyPlacementSelector 
+              applications={applications}
               selectedPlacement={selectedPlacement}
               onSavePlacement={setSelectedPlacement}
+              onSelectApplication={setSelectedApplicationId}
               textKeyName={name}
             />
 
