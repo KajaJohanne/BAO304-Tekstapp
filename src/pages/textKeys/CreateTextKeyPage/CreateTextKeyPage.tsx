@@ -28,6 +28,16 @@ const CreateTextKeyPage = () => {
     engelsk: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  
+  const isFormValid =
+  !!name.trim() &&
+  !name.trim().includes(" ") &&
+  /^[A-Za-zÆØÅæøå]+$/.test(name.trim()) &&
+  !!selectedApplicationId &&
+  !!selectedPlacement.trim() &&
+  !!formData.bokmål.trim() &&
+  !!formData.nynorsk.trim() &&
+  !!formData.engelsk.trim();
 
   // Henter alle applikasjoner når siden lastes
   useEffect(() => {
@@ -65,29 +75,40 @@ const CreateTextKeyPage = () => {
   };
 
   // Lagrer tekstnøkkelen i Firebase
-  const validateForm = async () => {
+  const validateForm = () => {
     const newErrors: FormErrors = {};
+    const trimmedValue = name.trim();
 
-    if (!name.trim()) {
+    //Validering av navn på tekstnøkkel input felt
+    if (!trimmedValue) {
       newErrors.name ="Du må fylle inn navn på tekstnøkkelen.";
+    } else if (trimmedValue.includes(" ")) {
+      newErrors.name = "Nøkkelen kan ikke inneholde mellomrom.";
+    } else if (!/^[A-Za-zÆØÅæøå]+$/.test(trimmedValue)) {
+      newErrors.name = "Nøkkelen kan kun inneholde bokstaver.";
     }
 
+    //Valg av applikasjon validering
     if (!selectedApplicationId) {
       newErrors.application = "Du må velge en applikasjon.";
     }
 
+    //Valg av plassering validering
     if (!selectedPlacement.trim()) {
       newErrors.placement = "Du må velge hvor tekstnøkkelen skal ligge.";
     }
 
+    //Validering av bokmål input felt
     if (!formData.bokmål.trim()) {
       newErrors.bokmål = "Du må fylle inn bokmål feltet.";
     }
 
+    //Validering av nynorsk input felt
     if (!formData.nynorsk.trim()) {
       newErrors.nynorsk = "Du må fylle inn nynorsk feltet.";
     }
 
+    //Validering av engelsk input felt
     if (!formData.engelsk.trim()) {
       newErrors.engelsk = "Du må fylle inn engelsk feltet.";
     }
@@ -96,8 +117,10 @@ const CreateTextKeyPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  //Lagring, lagrer kun hvis det er gyldig input
   const handleSave = async () => {
-    if (!validateForm()) {
+    const isValid = validateForm();
+    if (!isValid) {
       return;
     }
 
@@ -151,6 +174,9 @@ const CreateTextKeyPage = () => {
               onSave={handleNameSave}
               error={errors.name}
             />
+            {errors.name && (
+              <p className="field-error">{errors.name}</p>
+            )}
             {/* komponent */}
             <TextKeyPlacementSelector 
               applications={applications}
@@ -199,7 +225,12 @@ const CreateTextKeyPage = () => {
             />
 
             {/* Lagreknapp */}
-            <button type="button" onClick={handleSave} className="save-main-button">
+            <button  
+              type="button" 
+              onClick={handleSave}
+              className="save-main-button" 
+              disabled={!isFormValid}
+            >
               Lagre tekstnøkkel
             </button>  
 
