@@ -7,13 +7,13 @@ import {
   type ApplicationListItem,
 } from "../../../../api";
 import TextTypeSelector from "../../../components/TextTypeSelector/TextTypeSelector";
-import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
 import TextKeyNameModal from "../../../components/TextKeyNameModal/TextKeyNameModal";
 import TextKeyPlacementSelector from "../../../components/TextKeyPlacementSelector/TextKeyPlacementSelector";
 import CreateTextKeyLanguagePage from "../../../components/CreateTextKeyLanguage/CreateTextKeyLanguage";
 import "./CreateTextKeyPage.css";
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
+import type { FormErrors } from "../../../types/formErrors";
 
 const CreateTextKeyPage = () => {
   const navigate = useNavigate();
@@ -27,6 +27,7 @@ const CreateTextKeyPage = () => {
     nynorsk: "",
     engelsk: "",
   });
+  const [errors, setErrors] = useState<FormErrors>({});
 
   // Henter alle applikasjoner når siden lastes
   useEffect(() => {
@@ -49,17 +50,54 @@ const CreateTextKeyPage = () => {
       ...prev,
       [field]: value,
     }));
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
+
+  const handleNameSave = (value: string) => {
+    setName(value);
+    setErrors((prev) => ({
+      ...prev,
+      name: "",
+    }));
   };
 
   // Lagrer tekstnøkkelen i Firebase
-  const handleSave = async () => {
+  const validateForm = async () => {
+    const newErrors: FormErrors = {};
+
     if (!name.trim()) {
-      toast.error("Du må fylle inn navn på tekstnøkkelen.");
-      return;
+      newErrors.name ="Du må fylle inn navn på tekstnøkkelen.";
     }
 
     if (!selectedApplicationId) {
-      toast.error("Du må velge en applikasjon.");
+      newErrors.application = "Du må velge en applikasjon.";
+    }
+
+    if (!selectedPlacement.trim()) {
+      newErrors.placement = "Du må velge hvor tekstnøkkelen skal ligge.";
+    }
+
+    if (!formData.bokmål.trim()) {
+      newErrors.bokmål = "Du må fylle inn bokmål feltet.";
+    }
+
+    if (!formData.nynorsk.trim()) {
+      newErrors.nynorsk = "Du må fylle inn nynorsk feltet.";
+    }
+
+    if (!formData.engelsk.trim()) {
+      newErrors.engelsk = "Du må fylle inn engelsk feltet.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSave = async () => {
+    if (!validateForm()) {
       return;
     }
 
@@ -110,16 +148,37 @@ const CreateTextKeyPage = () => {
             {/* komponent */}
             <TextKeyNameModal
               value={name}
-              onSave={setName}
+              onSave={handleNameSave}
+              error={errors.name}
             />
             {/* komponent */}
             <TextKeyPlacementSelector 
               applications={applications}
               selectedPlacement={selectedPlacement}
-              onSavePlacement={setSelectedPlacement}
-              onSelectApplication={setSelectedApplicationId}
+              onSavePlacement={(placement) => {
+                setSelectedPlacement(placement);
+                setErrors((prev) => ({
+                  ...prev,
+                  placement: "",
+                }));
+              }}
+              onSelectApplication={(applicationId) => {
+                setSelectedApplicationId(applicationId)
+                setErrors((prev) => ({
+                  ...prev,
+                  application: "",
+                }));
+              }}
               textKeyName={name}
             />
+            
+            {errors.application && (
+              <p className="field-error">{errors.application}</p>
+            )}
+
+            {errors.placement && (
+              <p className="field-error">{errors.placement}</p>
+            )}
 
             {(selectedPlacement || name) && (
               <div className="text-key-preview">
@@ -136,6 +195,7 @@ const CreateTextKeyPage = () => {
             <CreateTextKeyLanguagePage
               values={formData}
               onChange={handleChange}
+              errors={errors}
             />
 
             {/* Lagreknapp */}

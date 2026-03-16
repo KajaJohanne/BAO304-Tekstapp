@@ -1,20 +1,26 @@
 /* CSS for tekst input felt, engelsk, bokmål og nynorsk */
 .create-text-key-language {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 24px;
-    margin-bottom: 24px;
-  }
-  
-  .create-text-key-language_field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .create-text-key-language_label {
-    font-size: 18px;
-    color: #1f2937;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+.create-text-key-language_field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.create-text-key-language_label {
+  font-size: 18px;
+  color: #1f2937;
+}
+.field-error {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #b42318;
+}
+.input-error {
+  border: 1px solid #b42318;
+}
  

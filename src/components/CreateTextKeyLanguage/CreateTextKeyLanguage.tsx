@@ -1,13 +1,8 @@
 import "./CreateTextKeyLanguage.css";
-import type { TextValues } from "../../../api";
-import { Input, Textarea } from "@digdir/designsystemet-react";
+import { Textarea } from "@digdir/designsystemet-react";
+import type { CreateTextKeyLanguageProps } from "../../types/createTextKeyLanguage";
 
-type CreateTextKeyLanguageProps = {
-    values: TextValues;
-    onChange: (field: keyof TextValues, value: string) => void;
-};
-
-const CreateTextKeyLanguagePage = ({ values, onChange }: CreateTextKeyLanguageProps) => {
+const CreateTextKeyLanguagePage = ({ values, onChange, errors, }: CreateTextKeyLanguageProps) => {
     return (
         /* Inputfelt for bokmål */
         <div className="create-text-key-language">
@@ -18,6 +13,8 @@ const CreateTextKeyLanguagePage = ({ values, onChange }: CreateTextKeyLanguagePr
                     value={values.bokmål}
                     onChange={(e) => onChange("bokmål", e.target.value)}
                 />
+                {/* Feilmelding bokmål felt */}
+                {errors?.bokmål && <p className="field-error">{errors.bokmål}</p>}
             </div>
 
             {/* Inputfelt for nynorsk */}
@@ -28,6 +25,8 @@ const CreateTextKeyLanguagePage = ({ values, onChange }: CreateTextKeyLanguagePr
                     value={values.nynorsk}
                     onChange={(e) => onChange("nynorsk", e.target.value)}
                 />
+                {/* Feilmelding nynorsk felt */}
+                {errors?.nynorsk && <p className="field-error">{errors.nynorsk}</p>}
             </div>
 
             {/* Inputfelt for engelsk */}
@@ -38,6 +37,8 @@ const CreateTextKeyLanguagePage = ({ values, onChange }: CreateTextKeyLanguagePr
                     value={values.engelsk}
                     onChange={(e) => onChange("engelsk", e.target.value)}
                 />
+                {/* Feilmelding engelsk felt */}
+                {errors?.engelsk && <p className="field-error">{errors.engelsk}</p>}
             </div>
         </div>
     );

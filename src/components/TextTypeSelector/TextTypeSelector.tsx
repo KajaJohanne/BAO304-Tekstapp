@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "./TextTypeSelector.css";
-import React from "react";
 
 type TextType = "Tittel" | "Brødtekst" | "Feilmelding" | "Knappetekst" | "Hjelpetekst";
 
