@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllTextKeys, type TextKeyListItem } from "../../api";
+import { getAllTextKeys, type TextKeyListItem } from "../../../../api";
 
 const AllTextKeysPage = () => {
   const navigate = useNavigate();
