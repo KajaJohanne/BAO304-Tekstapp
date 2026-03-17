@@ -5,12 +5,12 @@ import type { PlacementTree, TextKeyPlacementSelectorProps } from "../../types/t
 
 const keyStructure: PlacementTree = {
     DinSide: [],
-    Trafikk: ["Reiseinformasjon", "Langs veien", "Trafikksikkerhet"],
-    Kjøretøy: ["Kjøp og salg", "Eie og vedlikeholde", "Yrkestransport"],
-    Fagkort: ["Ta førerkort", "Har førerkort", "Utdanning for yrkessjåfører"],
-    Veiprosjekter: ["Finn veiprosjekter", "Prosessen fram til ny vei", "Nasjonal transportplan (NTP)", "Høringer veiprosjekter", "For entrepenører"],
-    Fag: ["Vei og gate", "Trafikk", "Teknologi", "Fokusområder", "Leverandør", "Publikasjoner"],
-    OmOss: ["Kontakt oss", "Om organisasjonen", "Jobb i Statens vegvesen", "Presse"],
+    Trafikk: ["Reiseinformasjon", "LangsVeien", "Trafikksikkerhet"],
+    Kjøretøy: ["KjøpOgSalg", "EieOgVedlikeholde", "Yrkestransport"],
+    Fagkort: ["TaFørerkort", "HarFørerkort", "UtdanningForYrkessjåfører"],
+    Veiprosjekter: ["FinnVeiprosjekter", "ProsessenFramTilNyVei", "NasjonalTransportplan", "HøringerVeiprosjekter", "ForEntrepenører"],
+    Fag: ["VeiOgGate", "Trafikk", "Teknologi", "Fokusområder", "Leverandør", "Publikasjoner"],
+    OmOss: ["KontaktOss", "OmOrganisasjonen", "JobbIStatensVegvesen", "Presse"],
 };
 
 export default function TextKeyPlacementSelector({ applications, onSavePlacement, onSelectApplication,}: TextKeyPlacementSelectorProps) {
@@ -43,8 +43,8 @@ export default function TextKeyPlacementSelector({ applications, onSavePlacement
         }
 
         const placement = selectedLevelTwo
-            ? `${selectedApplication.name} > ${selectedLevelOne} > ${selectedLevelTwo}`
-            : `${selectedApplication.name} > ${selectedLevelOne}`;
+            ? `${selectedApplication.name}.${selectedLevelOne}.${selectedLevelTwo}`
+            : `${selectedApplication.name}.${selectedLevelOne}`;
 
         onSelectApplication(selectedApplication.id);
         onSavePlacement(placement);

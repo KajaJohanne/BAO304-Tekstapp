@@ -12,6 +12,7 @@ import TextKeyNameModal from "../../../components/TextKeyNameModal/TextKeyNameMo
 import TextKeyPlacementSelector from "../../../components/TextKeyPlacementSelector/TextKeyPlacementSelector";
 import CreateTextKeyLanguagePage from "../../../components/CreateTextKeyLanguage/CreateTextKeyLanguage";
 import "./CreateTextKeyPage.css";
+
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
 import type { FormErrors } from "../../../types/formErrors";
@@ -30,6 +31,7 @@ const CreateTextKeyPage = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   
+  // Validering
   const isFormValid =
   !!name.trim() &&
   !name.trim().includes(" ") &&
@@ -67,6 +69,7 @@ const CreateTextKeyPage = () => {
     }));
   };
 
+  // Lagrer tekstnøkkelnavn
   const handleNameSave = (value: string) => {
     setName(value);
     setErrors((prev) => ({
@@ -136,7 +139,7 @@ const CreateTextKeyPage = () => {
     }
 
     const placementPath = selectedPlacement
-      .split(" > ")
+      .split(".")
       .map((part) => part.trim())
       .filter(Boolean);
     const fullKeyName = [...placementPath, name.trim()].join(".");
@@ -225,12 +228,13 @@ const CreateTextKeyPage = () => {
               <p className="field-error">{errors.placement}</p>
             )}
 
+            {/* Forhåndsvisning av nøkkel navnet */}
             {(selectedPlacement || name) && (
               <div className="text-key-preview">
                 <p className="text-key-preview_label">Forhåndsvisning av nøkkelnavn</p>
                 <p className="text-key-preview_value">
                   {selectedPlacement && name
-                      ? `${selectedPlacement} > ${name}`
+                      ? `${selectedPlacement}.${name}`
                       : selectedPlacement || name || "Ingen nøkkel valgt"}
                 </p>
               </div>

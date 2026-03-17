@@ -24,10 +24,10 @@ body {
 }
 
 .create-text-key-page_content {
-    width: 900px;
-    margin-left: 150px;
-    padding-top: 80px;
-    text-align: left;
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 24px;
+    box-sizing: border-box;
 }
 .create-text-key-page_title {
     margin: 0;
