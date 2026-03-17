@@ -221,3 +221,16 @@ export async function getAllApplications(): Promise<ApplicationListItem[]> {
     return [];
   }
 }
+
+// Sjekker om det finnes en applikasjon med samme navn fra før
+export async function applicationExists(name: string): Promise<boolean> {
+  try {
+    const applicationsRef = collection(db, "applications"); 
+    const q = query(applicationsRef, where("name", "==", name), limit(1));
+    const snapshot = await getDocs(q); 
+    return !snapshot.empty; 
+  } catch (e) {
+    console.error("Feil ved sjekk av duplikat applikasjon", e);
+    return false; 
+  }
+}

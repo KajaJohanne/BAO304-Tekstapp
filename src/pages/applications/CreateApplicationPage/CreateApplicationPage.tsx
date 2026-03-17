@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { saveApplication } from "../../../../api";
+import { saveApplication, applicationExists } from "../../../../api";
 import { useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import "./CreateApplicationPage.css"
@@ -97,6 +97,14 @@ const CreateApplicationPage = () => {
               placeholder="Feks. Trafikk"
               {...register("name", {
                 required: "Du må gi et navn til applikasjonen", 
+                validate: async (value) => {
+                  // Sjekker mot firestore om navnet finnes 
+                  const exists = await applicationExists(value.trim()); 
+                  if (exists) {
+                    return "Det finnes allerede en applikasjon med dette navnet, velg et annet";
+                  }
+                  return true; 
+                }
               })} 
               style={{ display: "block", width: "100%", marginTop: "0.25rem" }}
             />
