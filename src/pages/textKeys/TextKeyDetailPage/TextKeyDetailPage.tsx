@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./TextKeyDetailPage.css";
-
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify"
 import {
   getTextKey,
   updateEnviormentText,
@@ -11,32 +12,25 @@ import {
   type User,
 } from "../../../../api";
 
-const TextKeyDetailPage = () => {
-  // Henter id fra URL
-  const { id } = useParams();
+import CreateTextKeyLanguagePage from "../../../components/CreateTextKeyLanguage/CreateTextKeyLanguage";
 
-  // Navigasjon mellom sider
+const TextKeyDetailPage = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  // Valgt tekstnøkkel
   const [textKey, setTextKey] = useState<TextKeyDocument | null>(null);
-
-  // Miljøer brukeren har tilgang til
   const [allowedEnvironments, setAllowedEnvironments] =
     useState<Environment[]>([]);
-
-  // Hvilket miljø som er valgt
   const [currentEnvironment, setCurrentEnvironment] =
     useState<Environment | null>(null);
 
-  // Tekstfeltene som kan redigeres
   const [formData, setFormData] = useState<TextValues>({
     bokmål: "",
     nynorsk: "",
     engelsk: "",
   });
 
-  // Henter bruker fra localStorage
+  // Hent bruker
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
 
@@ -51,7 +45,7 @@ const TextKeyDetailPage = () => {
     }
   }, []);
 
-  // Henter tekstnøkkel fra databasen
+  // Hent tekstnøkkel
   useEffect(() => {
     const fetchTextKey = async () => {
       if (!id) return;
@@ -66,7 +60,7 @@ const TextKeyDetailPage = () => {
     fetchTextKey();
   }, [id]);
 
-  // Oppdaterer tekstfeltene når miljø endres
+  // Sett formData når miljø endres
   useEffect(() => {
     if (!textKey || !currentEnvironment) return;
 
@@ -79,7 +73,7 @@ const TextKeyDetailPage = () => {
     });
   }, [textKey, currentEnvironment]);
 
-  // Oppdaterer state når bruker skriver
+  // Input change
   const handleChange = (field: keyof TextValues, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -87,65 +81,63 @@ const TextKeyDetailPage = () => {
     }));
   };
 
-  // Lagrer endringer
+
   const handleSave = async () => {
-  if (!id || !currentEnvironment) return;
+    if (!id || !currentEnvironment) return;
 
-  const response = await updateEnviormentText(
-    id,
-    currentEnvironment,
-    formData
-  );
+    const response = await updateEnviormentText(
+      id,
+      currentEnvironment,
+      formData
+    );
 
-  if (response) {
-    window.alert(`Feil: ${response}`);
-  } else {
-    window.alert("Miljøtekst lagret");
-
-    const updatedTextKey = await getTextKey(id);
-
-    if (updatedTextKey) {
-      setTextKey(updatedTextKey);
-
-      const environmentData =
-        updatedTextKey.environments[currentEnvironment];
-
-      setFormData({
-        bokmål: environmentData.bokmål || updatedTextKey.default.bokmål,
-        nynorsk: environmentData.nynorsk || updatedTextKey.default.nynorsk,
-        engelsk: environmentData.engelsk || updatedTextKey.default.engelsk,
-      });
+    if (response) {
+      toast.error(`Feil: ${response}`);
+      return;
     }
-  }
-};
- 
-  // Laster tekstnøkkel
+
+    toast.success("Endringer lagret");
+
+    //  Oppdater UI direkte 
+    setTextKey((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        environments: {
+          ...prev.environments,
+          [currentEnvironment]: {
+            ...prev.environments[currentEnvironment],
+            ...formData,
+          },
+        },
+      };
+    });
+  };
+
   if (!textKey) {
     return <div className="container">Laster tekstnøkkel...</div>;
   }
 
-  // Tom-state: sjekker om alle tekstfeltene er tomme
   const noText =
     !formData.bokmål && !formData.nynorsk && !formData.engelsk;
 
   return (
     <div className="container">
 
-      {/* Tilbakeknapp */}
+      {/* Breadcrumb */}
       <p
         className="backLink"
-        onClick={() => navigate("/textkeys")}>
+        onClick={() => navigate("/textkeys")}
+      >
         ← Tekstnøkler
       </p>
 
       {/* Tittel */}
       <h1 className="title">Rediger tekstnøkkel</h1>
+      <p className="subtitle">Her kan du redigere tekstnøkkelen</p>
 
-      <p className="subtitle">
-        Her kan du redigere tekstnøkkelen
-      </p>
-
-      {/* Navn på tekstnøkkel */}
+      {/* Navn */}
       <h2 className="textKeyName">{textKey.name}</h2>
 
       {/* Miljøvalg */}
@@ -166,7 +158,7 @@ const TextKeyDetailPage = () => {
           ))}
         </div>
       </div>
-
+      <ToastContainer position="top-center" autoClose={3000} />
       {currentEnvironment && (
         <>
           <p className="currentEnvironment">
@@ -174,58 +166,23 @@ const TextKeyDetailPage = () => {
             <strong>{currentEnvironment.toUpperCase()}</strong>
           </p>
 
-          {/* Tom state melding */}
+          {/* Tom state */}
           {noText && (
             <p className="emptyState">
               Ingen tekst finnes for dette miljøet enda. Legg til tekst under.
             </p>
           )}
 
-          {/* Bokmål */}
-          <div className="inputGroup">
-            <label>Bokmål</label>
-            <input
-              type="text"
-              className="textInput"
-              value={formData.bokmål}
-              onChange={(e) =>
-                handleChange("bokmål", e.target.value)
-              }
-            />
-          </div>
-
-          {/* Nynorsk */}
-          <div className="inputGroup">
-            <label>Nynorsk</label>
-            <input
-              type="text"
-              className="textInput"
-              value={formData.nynorsk}
-              onChange={(e) =>
-                handleChange("nynorsk", e.target.value)
-              }
-            />
-          </div>
-
-          {/* Engelsk */}
-          <div className="inputGroup">
-            <label>Engelsk</label>
-            <input
-              type="text"
-              className="textInput"
-              value={formData.engelsk}
-              onChange={(e) =>
-                handleChange("engelsk", e.target.value)
-              }
-            />
-          </div>
+          {/* Språk komponent */}
+          <CreateTextKeyLanguagePage
+            values={formData}
+            onChange={handleChange}
+            errors={{}}
+          />
 
           {/* Knapper */}
           <div className="buttonRow">
-            <button
-              className="saveButton"
-              onClick={handleSave}
-            >
+            <button className="saveButton" onClick={handleSave}>
               Lagre
             </button>
 
