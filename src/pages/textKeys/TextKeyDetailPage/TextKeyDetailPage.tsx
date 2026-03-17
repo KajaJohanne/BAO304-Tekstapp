@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./TextKeyDetailPage.css";
 import "react-toastify/dist/ReactToastify.css";
-import { toast, ToastContainer } from "react-toastify"
+
+import { Button } from "@digdir/designsystemet-react";
+import { PencilIcon } from "@navikt/aksel-icons";
+import { toast, ToastContainer } from "react-toastify";
+
 import {
   getTextKey,
   updateEnviormentText,
+  updateTextKeyName,
   type Environment,
   type TextKeyDocument,
   type TextValues,
@@ -30,13 +35,16 @@ const TextKeyDetailPage = () => {
     engelsk: "",
   });
 
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState("");
+  const [nameError, setNameError] = useState("");
+
   // Hent bruker
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
 
     if (storedUser) {
       const parsedUser: User = JSON.parse(storedUser);
-
       setAllowedEnvironments(parsedUser.allowedEnvironments);
 
       if (parsedUser.allowedEnvironments.length > 0) {
@@ -51,16 +59,13 @@ const TextKeyDetailPage = () => {
       if (!id) return;
 
       const data = await getTextKey(id);
-
-      if (data) {
-        setTextKey(data);
-      }
+      if (data) setTextKey(data);
     };
 
     fetchTextKey();
   }, [id]);
 
-  // Sett formData når miljø endres
+  // Sett formData
   useEffect(() => {
     if (!textKey || !currentEnvironment) return;
 
@@ -73,7 +78,6 @@ const TextKeyDetailPage = () => {
     });
   }, [textKey, currentEnvironment]);
 
-  // Input change
   const handleChange = (field: keyof TextValues, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -81,7 +85,19 @@ const TextKeyDetailPage = () => {
     }));
   };
 
+  // Validering
+  const validateName = (value: string) => {
+    const trimmed = value.trim();
 
+    if (!trimmed) return "Du må fylle inn navn på tekstnøkkelen.";
+    if (trimmed.includes(" ")) return "Nøkkelen kan ikke inneholde mellomrom.";
+    if (!/^[A-Za-zÆØÅæøå]+$/.test(trimmed))
+      return "Nøkkelen kan kun inneholde bokstaver.";
+
+    return "";
+  };
+
+  // Lagre tekst
   const handleSave = async () => {
     if (!id || !currentEnvironment) return;
 
@@ -98,7 +114,6 @@ const TextKeyDetailPage = () => {
 
     toast.success("Endringer lagret");
 
-    //  Oppdater UI direkte 
     setTextKey((prev) => {
       if (!prev) return prev;
 
@@ -124,21 +139,76 @@ const TextKeyDetailPage = () => {
 
   return (
     <div className="container">
-
-      {/* Breadcrumb */}
-      <p
-        className="backLink"
-        onClick={() => navigate("/textkeys")}
-      >
+      <p className="backLink" onClick={() => navigate("/textkeys")}>
         ← Tekstnøkler
       </p>
 
-      {/* Tittel */}
       <h1 className="title">Rediger tekstnøkkel</h1>
       <p className="subtitle">Her kan du redigere tekstnøkkelen</p>
 
-      {/* Navn */}
-      <h2 className="textKeyName">{textKey.name}</h2>
+      {/* Navn og redigering */}
+      <div className="headerRow">
+        {isEditingName ? (
+          <>
+            <input
+              className="editInput"
+              value={editedName}
+              onChange={(e) => {
+                setEditedName(e.target.value);
+                setNameError("");
+              }}
+              onKeyDown={async (e) => {
+                if (e.key === "Enter") {
+                  const error = validateName(editedName);
+
+                  if (error) {
+                    setNameError(error);
+                    return;
+                  }
+
+                  const response = await updateTextKeyName(id!, editedName);
+
+                  if (response) {
+                    toast.error(`Feil: ${response}`);
+                    return;
+                  }
+
+                  setTextKey((prev) => {
+                    if (!prev) return prev;
+                    return { ...prev, name: editedName };
+                  });
+
+                  setIsEditingName(false);
+                  toast.success("Navn lagret");
+                }
+
+                if (e.key === "Escape") {
+                  setIsEditingName(false);
+                  setNameError("");
+                }
+              }}
+              autoFocus
+            />
+
+            {nameError && (
+              <p className="field-error">{nameError}</p>
+            )}
+          </>
+        ) : (
+          <h2 className="textKeyName">{textKey.name}</h2>
+        )}
+
+        <Button
+          className="iconButton"
+          aria-label="Rediger"
+          onClick={() => {
+            setIsEditingName(true);
+            setEditedName(textKey.name);
+          }}
+        >
+          <PencilIcon aria-hidden />
+        </Button>
+      </div>
 
       {/* Miljøvalg */}
       <div className="environmentSection">
@@ -158,7 +228,9 @@ const TextKeyDetailPage = () => {
           ))}
         </div>
       </div>
+
       <ToastContainer position="top-center" autoClose={3000} />
+
       {currentEnvironment && (
         <>
           <p className="currentEnvironment">
@@ -166,21 +238,18 @@ const TextKeyDetailPage = () => {
             <strong>{currentEnvironment.toUpperCase()}</strong>
           </p>
 
-          {/* Tom state */}
           {noText && (
             <p className="emptyState">
-              Ingen tekst finnes for dette miljøet enda. Legg til tekst under.
+              Ingen tekst finnes for dette miljøet enda.
             </p>
           )}
 
-          {/* Språk komponent */}
           <CreateTextKeyLanguagePage
             values={formData}
             onChange={handleChange}
             errors={{}}
           />
 
-          {/* Knapper */}
           <div className="buttonRow">
             <button className="saveButton" onClick={handleSave}>
               Lagre

@@ -218,3 +218,22 @@ export async function getAllApplications(): Promise<ApplicationListItem[]> {
     return [];
   }
 }
+
+// Oppdaterer tekstnøkkel navn og lager det
+export async function updateTextKeyName(
+  documentId: string,
+  newName: string
+): Promise<string | null> {
+  try {
+    await updateDoc(doc(db, "textKeys", documentId), {
+      name: newName,
+    });
+
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved oppdatering av navn";
+  }
+}
