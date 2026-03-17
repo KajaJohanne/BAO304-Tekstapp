@@ -27,7 +27,10 @@ export interface User {
 
 export interface Application {
   name: string;
-  description: string;
+  sections: { 
+    name: string;
+    subSections: { name: string }[];
+  }[]; 
 }
 
 // Hvordan dataen skal lagres i Firebase

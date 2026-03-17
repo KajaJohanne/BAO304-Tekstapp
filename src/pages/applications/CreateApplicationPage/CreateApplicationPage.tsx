@@ -33,10 +33,14 @@ const CreateApplicationPage = () => {
 
 
   const onSubmit = async (data: FormFields) => {
-    // TODO oppdater saveApplication til å støtte sections og fjern description 
     const error = await saveApplication({
       name: data.name.trim(), 
-      description: "", 
+      sections: data.sections 
+        .filter(s => s.name.trim() !== "")
+        .map(s => ({
+          name: s.name.trim(), 
+          subSections: [], //tom ved opprettelse
+        })), 
     }); 
 
     if (error) {
