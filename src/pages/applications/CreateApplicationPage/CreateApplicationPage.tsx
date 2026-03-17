@@ -20,6 +20,7 @@ const CreateApplicationPage = () => {
 
   const [currentStep, setCurrentStep] = useState<Step>(1); 
 
+  // Bruker react hook form for å håndtere oppretting av ny applikasjon
   const { register, handleSubmit, control, getValues, trigger, formState: { errors } } = useForm<FormFields>({
     defaultValues: {
       name: "", 
@@ -69,7 +70,7 @@ const CreateApplicationPage = () => {
 
         <div className="step-divider"/>
 
-        <div className={`step ${currentStep === 2 ? "active" : currentStep > 1 ? "completed" : ""}`}> 
+        <div className={`step ${currentStep === 2 ? "active" : currentStep > 2 ? "completed" : ""}`}> 
           <div className="step-number">2</div>
           <span>Kategorier</span>
         </div>
@@ -97,6 +98,10 @@ const CreateApplicationPage = () => {
               placeholder="Feks. Trafikk"
               {...register("name", {
                 required: "Du må gi et navn til applikasjonen", 
+                pattern: {
+                  value: /^[a-zA-ZæøåÆØÅ0-9\s]+$/,
+                  message: "Navnet kan bare inneholde bokstaver og tall"
+                },
                 validate: async (value) => {
                   // Sjekker mot firestore om navnet finnes 
                   const exists = await applicationExists(value.trim()); 
