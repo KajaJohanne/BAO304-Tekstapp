@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllApplications, type ApplicationListItem } from "../../../../api";
+import "./HomePage.css"; 
+import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard";
+import { Button } from "@digdir/designsystemet-react"
+import { BiPlus } from "react-icons/bi";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -16,39 +20,36 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div style={{ padding: "24px" }}>
+    <div className="home-page">
       <button
         onClick={() => navigate("/create-textkey")}
         style={{ marginBottom: "20px" }}
       >
         ← Tilbake til tekstnøkler
       </button>
+      
       <h1>Applikasjoner</h1>
+      
+      <div className="info-and-btn-container">
 
-      <button
-        onClick={() => navigate("/create-application")}
-        style={{ marginBottom: "20px" }}
-      >
-        Opprett ny applikasjon
-      </button>
+        <p>Her finner du alle applikasjoner. Du kan filtrere og søke etter ønsket applikasjon, eller legge til en ny. </p>
+        
+        {/* TODO stilsett knappen bedre */}
+        <Button onClick={() => navigate("/create-application")} className="add-button">
+          <BiPlus aria-hidden />
+          Legg til ny applikasjon
+        </Button>
+      </div>
+
 
       {applications.length === 0 ? (
         <p>Ingen applikasjoner funnet.</p>
       ) : (
         applications.map((application) => (
-          <div
+          <ApplicationCard
             key={application.id}
-            onClick={() => navigate(`/applicationDetails/${application.id}`)}
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "16px",
-              marginBottom: "12px",
-              cursor: "pointer",
-            }}
-          >
-            <h3>{application.name}</h3>
-          </div>
+            application={application}
+          />
         ))
       )}
     </div>

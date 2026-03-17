@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { saveApplication } from "../../../../api";
 import { useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import "./CreateApplicationPage.css"
 
 // Hva skjemaet inneholder
 type FormFields = { 
@@ -52,18 +53,40 @@ const CreateApplicationPage = () => {
   }
 
   return (
-    <div style={{ padding: "24px", maxWidth: "600px" }}>
+    <div className="create-application">
 
       <button onClick={() => navigate("/home")}>← Tilbake</button>
 
       <h1>Opprett applikasjon</h1>
 
-      {/* For å vise trinn */}
-      <p>Trinn {currentStep} av 3</p>
+      {/* Stegindikator */}
+      <div className="step-indicator">
+
+        <div className={`step ${currentStep === 1 ? "active" : currentStep > 1 ? "completed" : ""}`}> 
+          <div className="step-number">1</div>
+          <span>Navn</span>
+        </div>
+
+        <div className="step-divider"/>
+
+        <div className={`step ${currentStep === 2 ? "active" : currentStep > 1 ? "completed" : ""}`}> 
+          <div className="step-number">2</div>
+          <span>Kategorier</span>
+        </div>
+
+        <div className="step-divider"/>
+
+        <div className={`step ${currentStep === 3 ? "active" : ""}`}> 
+          <div className="step-number">3</div>
+          <span>Oppsummering</span>
+        </div>
+
+
+      </div>
 
       {/* Trinn 1 Navn */}
       {currentStep === 1 && (
-        <div>
+        <div className="step-content">
           <h2>Navn på applikasjon</h2>
           <p>Fyll inn navnet på applikasjonen du vil opprette.</p>
 
@@ -97,7 +120,7 @@ const CreateApplicationPage = () => {
 
       {/* Trinn 2 Kategorier */}
       {currentStep === 2 && (
-        <div>
+        <div className="step-content">
           <h2>Kategorier</h2>
           <p>Legg til kategorer for applikasjonen. Dette er valgfritt og kan også gjøres senere.</p>
 
@@ -128,9 +151,11 @@ const CreateApplicationPage = () => {
         </div>
       )}
 
+      {/* TODO!!!!! stilsett knapper!! */}
+
       {/* Trinn 3 Oppsummering */}
       {currentStep === 3 && (
-        <div>
+        <div className="step-content">
           <h2>Oppsummering</h2>
           <p>Se over informasjonen før du oppretter applikasjonen.</p>
 

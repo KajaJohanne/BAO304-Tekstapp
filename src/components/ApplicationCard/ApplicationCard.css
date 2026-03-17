@@ -1,0 +1,28 @@
+.application-card {
+    cursor: pointer; 
+    margin-bottom: 15px;
+    transition: box-shadow 0.2s ease; 
+    border-bottom: 2px solid #ff9600;
+    --dsc-card-border-color: #444f55;
+    --dsc-card-border-width: 0px;
+    padding: 15px; 
+    --dsc-card-block-border-width: 0px;  
+    background-color: white;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.application-card * {
+    text-decoration: none;
+    color: inherit;
+}
+
+.application-card h3 {
+    font-weight: 400;
+    font-size: 20px;
+}
+
+
+.application-card:hover {
+    box-shadow: 0 0px 12px rgba(0, 0, 0, 0.3);
+    border-bottom: 3px solid #ff9600;
+}
