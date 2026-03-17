@@ -9,25 +9,31 @@ import NotFoundPage from "../pages/NotFoundPage";
 import SectionPage from "../pages/applications/SectionPage/SectionPage";
 import SubSectionPage from "../pages/applications/SubSectionPage/SubSectionPage";
 import AllTextKeysPage from "../pages/textKeys/AllTextKeysPage/AllTextKeysPage";
+import LayoutAndHeader from "../components/layoutAndHeader/layoutAndHeader";
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/create-application" element={<CreateApplicationPage />} />
-        <Route
-          path="/applicationDetails/:id"
-          element={<ApplicationDetailPage />}
-        />
-        <Route path="/create-textkey" element={<CreateTextKeyPage />} />
-        <Route path="/textkeys" element={<AllTextKeysPage />} />
-        <Route path="/section" element={<SectionPage />} />
-        <Route path="/subSection" element={<SubSectionPage />} />
-        <Route path="/textkeyDetails/:id" element={<TextKeyDetailPage />} />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route element={<LayoutAndHeader />}>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route
+            path="/create-application"
+            element={<CreateApplicationPage />}
+          />
+          <Route
+            path="/applicationDetails/:id"
+            element={<ApplicationDetailPage />}
+          />
+          <Route path="/create-textkey" element={<CreateTextKeyPage />} />
+          <Route path="/textkeys" element={<AllTextKeysPage />} />
+          <Route path="/section" element={<SectionPage />} />
+          <Route path="/subSection" element={<SubSectionPage />} />
+          <Route path="/textkeyDetails/:id" element={<TextKeyDetailPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
