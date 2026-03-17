@@ -44,6 +44,7 @@ export interface TextKeyDocument {
     test: TextValues;
     prod: TextValues;
   };
+  placementPath: string[];
 }
 
 // Brukes når vi henter en liste med tekstnøkler og også trenger document id
@@ -74,7 +75,8 @@ export async function saveDefaultText(
   name: string,
   applicationId: string,
   applicationName: string,
-  defaultText: TextValues
+  defaultText: TextValues,
+  placementPath: string[]
 ): Promise<string | null> {
   try {
     //Sjekker om tekstnøkkel finnes allerede
@@ -94,6 +96,7 @@ export async function saveDefaultText(
         test: { bokmål: "", nynorsk: "", engelsk: "" },
         prod: { bokmål: "", nynorsk: "", engelsk: "" },
       },
+      placementPath,
     };
 
     await addDoc(collection(db, "textKeys"), data);
@@ -135,6 +138,23 @@ export async function getAllTextKeys(): Promise<TextKeyListItem[]> {
     }));
   } catch (e) {
     console.error("Feil ved henting av tekstnøkler:", e);
+    return [];
+  }
+}
+
+// Henter tekstnøkler for valgt applikasjon
+export async function getTextKeysByApplication(applicationId: string): Promise<TextKeyListItem[]> {
+  try {
+    const textKeysRef = collection(db, "textKeys");
+    const q = query(textKeysRef, where("applicationId", "==", applicationId));
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((docSnapshot) => ({
+      id: docSnapshot.id,
+      ...(docSnapshot.data() as TextKeyDocument),
+    }));
+  } catch (e) {
+    console.error("Feil ved henting av tekstnøkler for applikasjon:", e);
     return [];
   }
 }

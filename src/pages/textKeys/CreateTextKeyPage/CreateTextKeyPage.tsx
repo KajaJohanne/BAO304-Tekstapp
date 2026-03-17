@@ -135,7 +135,11 @@ const CreateTextKeyPage = () => {
       return;
     }
 
-    const fullKeyName = `${selectedPlacement} > ${name}`;
+    const placementPath = selectedPlacement
+      .split(" > ")
+      .map((part) => part.trim())
+      .filter(Boolean);
+    const fullKeyName = [...placementPath, name.trim()].join(".");
 
     //Sjekker om tekstnøkkel finnes allerede
     const alreadyExists = await textKeyExists(fullKeyName);
@@ -153,6 +157,7 @@ const CreateTextKeyPage = () => {
       selectedApplication.id,
       selectedApplication.name,
       formData,
+      placementPath,
     );
 
     if (response) {
