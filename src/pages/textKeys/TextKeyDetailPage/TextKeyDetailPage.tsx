@@ -147,68 +147,68 @@ const TextKeyDetailPage = () => {
       <p className="subtitle">Her kan du redigere tekstnøkkelen</p>
 
       {/* Navn og redigering */}
-      <div className="headerRow">
-        {isEditingName ? (
-          <>
-            <input
-              className="editInput"
-              value={editedName}
-              onChange={(e) => {
-                setEditedName(e.target.value);
-                setNameError("");
-              }}
-              onKeyDown={async (e) => {
-                if (e.key === "Enter") {
-                  const error = validateName(editedName);
-
-                  if (error) {
-                    setNameError(error);
-                    return;
-                  }
-
-                  const response = await updateTextKeyName(id!, editedName);
-
-                  if (response) {
-                    toast.error(`Feil: ${response}`);
-                    return;
-                  }
-
-                  setTextKey((prev) => {
-                    if (!prev) return prev;
-                    return { ...prev, name: editedName };
-                  });
-
-                  setIsEditingName(false);
-                  toast.success("Navn lagret");
-                }
-
-                if (e.key === "Escape") {
-                  setIsEditingName(false);
-                  setNameError("");
-                }
-              }}
-              autoFocus
-            />
-
-            {nameError && (
-              <p className="field-error">{nameError}</p>
-            )}
-          </>
-        ) : (
-          <h2 className="textKeyName">{textKey.name}</h2>
-        )}
-
-        <Button
-          className="iconButton"
-          aria-label="Rediger"
-          onClick={() => {
-            setIsEditingName(true);
-            setEditedName(textKey.name);
+     <div className="headerRow">
+    <div className="nameSection">
+    {isEditingName ? (
+      <>
+        <input
+          className="editInput"
+          value={editedName}
+          onChange={(e) => {
+            setEditedName(e.target.value);
+            setNameError("");
           }}
-        >
-          <PencilIcon aria-hidden />
-        </Button>
-      </div>
+          onKeyDown={async (e) => {
+            if (e.key === "Enter") {
+              const error = validateName(editedName);
+
+              if (error) {
+                setNameError(error);
+                return;
+              }
+
+              const response = await updateTextKeyName(id!, editedName);
+
+              if (response) {
+                toast.error(`Feil: ${response}`);
+                return;
+              }
+
+              setTextKey((prev) => {
+                if (!prev) return prev;
+                return { ...prev, name: editedName };
+              });
+
+              setIsEditingName(false);
+              toast.success("Navn lagret");
+            }
+
+            if (e.key === "Escape") {
+              setIsEditingName(false);
+              setNameError("");
+            }
+          }}
+          autoFocus
+        />
+
+        <p className="field-error">{nameError || ""}</p>
+      </>
+    ) : (
+      <h2 className="textKeyName">{textKey.name}</h2>
+    )}
+  </div>
+
+  <Button
+    className="iconButton"
+    aria-label="Rediger"
+    onClick={() => {
+      setIsEditingName(true);
+      setEditedName(textKey.name);
+    }}
+  >
+    <PencilIcon aria-hidden />
+  </Button>
+</div>
 
       {/* Miljøvalg */}
       <div className="environmentSection">
