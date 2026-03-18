@@ -30,7 +30,10 @@ export interface User {
 
 export interface Application {
   name: string;
-  description: string;
+  sections: { 
+    name: string;
+    subSections: { name: string }[];
+  }[]; 
 }
 
 // Hvordan dataen skal lagres i Firebase
@@ -236,5 +239,18 @@ export async function getAllApplications(): Promise<ApplicationListItem[]> {
   } catch (e) {
     console.error("Feil ved henting av applikasjoner:", e);
     return [];
+  }
+}
+
+// Sjekker om det finnes en applikasjon med samme navn fra før
+export async function applicationExists(name: string): Promise<boolean> {
+  try {
+    const applicationsRef = collection(db, "applications"); 
+    const q = query(applicationsRef, where("name", "==", name), limit(1));
+    const snapshot = await getDocs(q); 
+    return !snapshot.empty; 
+  } catch (e) {
+    console.error("Feil ved sjekk av duplikat applikasjon", e);
+    return false; 
   }
 }
