@@ -7,8 +7,8 @@ const SectionPage = () => {
     const navigate = useNavigate();
 
     const subSections: Record<string, string[]> = {
-        Trafikk: ["Reiseinformasjon", "Langs veien", "Trafikksikkerhet"],
-        Kjøretøy: ["Kjøp og salg", "Eie og vedlikeholde", "Yrkestransport"],
+        Trafikk: ["Reiseinformasjon", "LangsVeien", "Trafikksikkerhet"],
+        Kjøretøy: ["KjøpOgSalg", "EieOgVedlikeholde", "Yrkestransport"],
     };
 
     const currentSections = sectionName ? subSections[sectionName] || [] : [];

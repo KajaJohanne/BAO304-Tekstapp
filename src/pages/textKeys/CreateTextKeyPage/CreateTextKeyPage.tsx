@@ -155,6 +155,10 @@ const CreateTextKeyPage = () => {
       return;
     }
 
+    console.log("selectedPlacement:", selectedPlacement);
+    console.log("placementPath:", placementPath);
+    console.log("fullKeyName:", fullKeyName);
+
     const response = await saveDefaultText(
       fullKeyName,
       selectedApplication.id,

@@ -1,19 +1,31 @@
-// Her vises detaljer over valgt applikasjon
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ApplicationDetailPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-    return (
-        <div>
-            <button
-                onClick={() => navigate("/subSection")}
-                style={{ marginBottom: "20px" }}
-            >
-                Kategori side
-            </button>
-        </div>
-    ) 
+  const handleGoToSubSection = () => {
+    if (!id) return;
+
+    const state = {
+      applicationId: id,
+      sectionName: "Trafikk",
+      subSectionName: "LangsVeien",
+    };
+
+    sessionStorage.setItem("subSectionState", JSON.stringify(state));
+
+    navigate("/subSection", { state });
+  };
+
+  return (
+    <div>
+      <h1>Application details</h1>
+      <button onClick={handleGoToSubSection}>
+        Gå til underkategori
+      </button>
+    </div>
+  );
 };
 
-export default ApplicationDetailPage; 
+export default ApplicationDetailPage;

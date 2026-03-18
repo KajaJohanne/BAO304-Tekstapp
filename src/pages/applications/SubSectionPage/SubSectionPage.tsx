@@ -1,49 +1,87 @@
 // andre lag med underkategori? Applikasjon/Section/her
-import { useEffect, useState  } from "react";
+import { useEffect, useMemo, useState  } from "react";
 import {
     getTextKeysByApplication,
     type TextKeyListItem,
 } from "../../../../api";
 import { useLocation } from "react-router-dom";
 import type { LocationState } from "../../../types/location";
+import type { subSectionState } from "../../../types/subSection";
 
 const SubSectionPage = () => {
     const location = useLocation();
-    const state = location.state as LocationState | null;
 
     const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const pageState = useMemo(() => {
+        if (location.state) {
+            return location.state as subSectionState;
+        }
+
+        const savedState = sessionStorage.getItem("subSectionState");
+        if (!savedState) return null;
+
+        try {
+            return JSON.parse(savedState) as subSectionState;
+        } catch {
+            return null;
+        }
+    }, [location.state]);
     
     useEffect(() => {
         const fetchTextKeys = async () => {
-            if (!state) return;
-            const { applicationId, sectionName, subSectionName } = state;
-
-            if (!applicationId || !sectionName || !subSectionName) return;
-
+          try {
+            if (!pageState) {
+              return;
+            }
+    
+            const { applicationId, sectionName, subSectionName } = pageState;
+    
+            if (!applicationId || !sectionName || !subSectionName) {
+              return;
+            }
+    
             const allKeys = await getTextKeysByApplication(applicationId);
-
+    
             const filtered = allKeys.filter((key) => {
-                if (!key.placementPath) return false;
+                console.log("placementPath:", key.placementPath);
+                console.log("matcher section?:", key.placementPath[1], sectionName);
+                console.log("matcher subSection?:", key.placementPath[2], subSectionName);
 
-                return (
-                    key.placementPath[1] === sectionName &&
-                    key.placementPath[2] === subSectionName
-                );
+              if (!key.placementPath) return false;
+    
+              return (
+                key.placementPath[1] === sectionName &&
+                key.placementPath[2] === subSectionName
+              );
             });
+    
             setTextKeys(filtered);
+          } catch (error) {
+            console.error("Feil ved henting av tekstnøkler:", error);
+          } finally {
+            setIsLoading(false);
+          }
         };
+    
         fetchTextKeys();
-    }, [state]);
-
-    if (!state) {
-        return <p>Ingen data tilgjengelig. Gå tilbake og velg på nytt.</p>
+      }, [pageState]);
+    
+    if (isLoading) {
+        return <p>Laster...</p>;
+    }
+    
+    if (!pageState) {
+        return <p>Ingen data tilgjengelig. Gå tilbake og velg på nytt.</p>;
     }
 
-    const { subSectionName } = state;
+    console.log("side state:", pageState);
+    console.log("tekstnøkler:", textKeys);
 
     return (
         <div style={{ padding: "24px" }}>
-            <h1>{subSectionName}</h1>
+            <h1>{pageState.subSectionName}</h1>
 
             {textKeys.length === 0 ? (
                 <p>Ingen tekstnøkler funnet.</p>
