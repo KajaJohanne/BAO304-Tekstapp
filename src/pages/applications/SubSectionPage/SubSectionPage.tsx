@@ -4,12 +4,12 @@ import {
     getTextKeysByApplication,
     type TextKeyListItem,
 } from "../../../../api";
-import { useLocation } from "react-router-dom";
-import type { LocationState } from "../../../types/location";
+import { useLocation, useNavigate} from "react-router-dom";
 import type { subSectionState } from "../../../types/subSection";
 
 const SubSectionPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
 
     const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -32,29 +32,25 @@ const SubSectionPage = () => {
     useEffect(() => {
         const fetchTextKeys = async () => {
           try {
-            if (!pageState) {
-              return;
-            }
+            if (!pageState) return;
+
+            sessionStorage.setItem("subSectionState", JSON.stringify(pageState));
     
             const { applicationId, sectionName, subSectionName } = pageState;
-    
-            if (!applicationId || !sectionName || !subSectionName) {
-              return;
-            }
-    
             const allKeys = await getTextKeysByApplication(applicationId);
     
             const filtered = allKeys.filter((key) => {
-                console.log("placementPath:", key.placementPath);
-                console.log("matcher section?:", key.placementPath[1], sectionName);
-                console.log("matcher subSection?:", key.placementPath[2], subSectionName);
+                if (!key.placementPath || key.placementPath.length < 2) return false;
 
-              if (!key.placementPath) return false;
-    
-              return (
-                key.placementPath[1] === sectionName &&
-                key.placementPath[2] === subSectionName
-              );
+                const keySection = key.placementPath[1];
+                const keySubSection = key.placementPath[2];
+
+                const matchesSection = keySection === sectionName;
+                const matchesSubSection = subSectionName
+                    ? keySubSection === subSectionName
+                    : true;
+                
+                    return matchesSection && matchesSubSection;
             });
     
             setTextKeys(filtered);
@@ -68,9 +64,7 @@ const SubSectionPage = () => {
         fetchTextKeys();
       }, [pageState]);
     
-    if (isLoading) {
-        return <p>Laster...</p>;
-    }
+    if (isLoading) return <p>Laster...</p>;
     
     if (!pageState) {
         return <p>Ingen data tilgjengelig. Gå tilbake og velg på nytt.</p>;
@@ -81,7 +75,15 @@ const SubSectionPage = () => {
 
     return (
         <div style={{ padding: "24px" }}>
-            <h1>{pageState.subSectionName}</h1>
+            <button onClick={() => navigate(-1)}>‹ Tilbake</button>
+            <h1>Tekstnøkler</h1>
+
+            <p>
+                Her er alle tekstnøkler tilhørende {pageState.sectionName}
+                {pageState.subSectionName ? `, ${pageState.subSectionName}`: ""}
+            </p>
+
+            <h2>{pageState.subSectionName || pageState.sectionName}</h2>
 
             {textKeys.length === 0 ? (
                 <p>Ingen tekstnøkler funnet.</p>

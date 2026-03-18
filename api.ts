@@ -162,6 +162,27 @@ export async function getTextKeysByApplication(applicationId: string): Promise<T
   }
 }
 
+export async function getApplication(documentId: string): Promise<ApplicationListItem | null> {
+  try {
+    const snapshot = await getDoc(doc(db, "applications", documentId));
+
+    if (!snapshot.exists()) {
+      return null;
+    }
+
+    const data = snapshot.data() as Application;
+
+    return {
+      id: snapshot.id,
+      name: data.name,
+      sections: data.sections ?? [],
+    };
+  } catch (e) {
+    console.error("Feil ved henting av applikasjon:", e);
+    return null;
+  }
+}
+
 // Oppdaterer tekstnøkler når de blir redigert i de ulike miljøene
 export async function updateEnviormentText(
   documentId: string,

@@ -3,15 +3,6 @@ import "./TextKeyPlacementSelector.css";
 import type { ApplicationListItem } from "../../../api";
 import type { PlacementTree, TextKeyPlacementSelectorProps } from "../../types/textKeyPlacementTree";
 
-const keyStructure: PlacementTree = {
-    DinSide: [],
-    Trafikk: ["Reiseinformasjon", "LangsVeien", "Trafikksikkerhet"],
-    Kjøretøy: ["KjøpOgSalg", "EieOgVedlikeholde", "Yrkestransport"],
-    Fagkort: ["TaFørerkort", "HarFørerkort", "UtdanningForYrkessjåfører"],
-    Veiprosjekter: ["FinnVeiprosjekter", "ProsessenFramTilNyVei", "NasjonalTransportplan", "HøringerVeiprosjekter", "ForEntrepenører"],
-    Fag: ["VeiOgGate", "Trafikk", "Teknologi", "Fokusområder", "Leverandør", "Publikasjoner"],
-    OmOss: ["KontaktOss", "OmOrganisasjonen", "JobbIStatensVegvesen", "Presse"],
-};
 
 export default function TextKeyPlacementSelector({ applications, onSavePlacement, onSelectApplication,}: TextKeyPlacementSelectorProps) {
     const [isOpen, setIsOpen] = useState(false);
@@ -51,11 +42,11 @@ export default function TextKeyPlacementSelector({ applications, onSavePlacement
         closeModal();
     };
 
-    const levelOne = Object.keys(keyStructure);
-    const levelTwo = 
-        selectedLevelOne && keyStructure[selectedLevelOne] 
-        ? keyStructure[selectedLevelOne] 
-        : [];
+    const levelOne = selectedApplication?.sections ?? [];
+    const selectedSectionObject = selectedApplication?.sections.find(
+        (section) => section.name === selectedLevelOne
+    );
+    const levelTwo = selectedSectionObject?.subSections ?? [];
 
     const buttonText = "Velg applikasjon";
 
@@ -106,14 +97,14 @@ export default function TextKeyPlacementSelector({ applications, onSavePlacement
                         {/* Valg av hovednivå */}
                         <div className="column">
                             <p><strong>Hovednivå</strong></p>
-                            {levelOne.map((item) => (
+                            {levelOne.map((section) => (
                             <button
-                                key={item}
-                                className={`option ${selectedLevelOne === item ? "selected" : ""}`}
-                                onClick={() => handleLevelOne(item)}
+                                key={section.name}
+                                className={`option ${selectedLevelOne === section.name ? "selected" : ""}`}
+                                onClick={() => handleLevelOne(section.name)}
                                 type="button"
                             >
-                                <span>{item}</span>
+                                <span>{section.name}</span>
                                 <span className="arrow">›</span>
                             </button>
                             ))}
@@ -122,14 +113,14 @@ export default function TextKeyPlacementSelector({ applications, onSavePlacement
                         {/* Valg av undernivå */}
                         <div className="column">
                             <p><strong>Undernivå</strong></p>
-                            {levelTwo.map((item) => (
+                            {levelTwo.map((subSection) => (
                             <button
-                                key={item}
-                                className={`option ${selectedLevelTwo === item ? "selected" : ""}`}
-                                onClick={() => handleLevelTwo(item)}
+                                key={subSection.name}
+                                className={`option ${selectedLevelTwo === subSection.name ? "selected" : ""}`}
+                                onClick={() => handleLevelTwo(subSection.name)}
                                 type="button"
                             >
-                                <span>{item}</span>
+                                <span>{subSection.name}</span>
                                 <span className="arrow">›</span>
                             </button>
                             ))}
