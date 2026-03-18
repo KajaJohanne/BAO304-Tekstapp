@@ -87,19 +87,19 @@ export default function LayoutAndHeader() {
                 }}
               >
                 <img src="/images/user-icon.svg" className="profile-icon" />
-                Din side
+                {currentUser?.name}
               </button>
 
               {isOpen && (
                 <div className="dropdown-menu">
-                  {currentUser && (
-                    <div className="dropdown-item">{currentUser.name}</div>
-                  )}
                   <button
                     className="dropdown-item dropdown-toggle"
                     onClick={() => setShowEnvironments(!showEnvironments)}
                   >
-                    Utviklingsmiljø
+                    Dine utviklingsmiljø
+                    <span
+                      className={`arrow ${showEnvironments ? "open" : ""}`}
+                    ></span>
                   </button>
 
                   {showEnvironments && currentUser && (
