@@ -6,6 +6,7 @@ import {
 } from "../../../../api";
 import { useLocation, useNavigate} from "react-router-dom";
 import type { subSectionState } from "../../../types/subSection";
+import "./SubSectionPage.css";
 
 const SubSectionPage = () => {
     const location = useLocation();
@@ -13,6 +14,7 @@ const SubSectionPage = () => {
 
     const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchValue, setSearchValue] = useState("");
 
     const pageState = useMemo(() => {
         if (location.state) {
@@ -50,7 +52,7 @@ const SubSectionPage = () => {
                     ? keySubSection === subSectionName
                     : true;
                 
-                    return matchesSection && matchesSubSection;
+                return matchesSection && matchesSubSection;
             });
     
             setTextKeys(filtered);
@@ -64,37 +66,87 @@ const SubSectionPage = () => {
         fetchTextKeys();
       }, [pageState]);
     
-    if (isLoading) return <p>Laster...</p>;
+    if (isLoading) {
+        return <p className="subsection-loading">Laster...</p>;
+    }
     
     if (!pageState) {
-        return <p>Ingen data tilgjengelig. Gå tilbake og velg på nytt.</p>;
+        return (
+            <p className="subsection-error">
+                Ingen data tilgjengelig. Gå tilbake og velg på nytt.
+            </p>
+        );
     }
+
+    const filteredTextKeys = textKeys.filter((textKey) =>
+        textKey.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
 
     console.log("side state:", pageState);
     console.log("tekstnøkler:", textKeys);
 
     return (
-        <div style={{ padding: "24px" }}>
-            <button onClick={() => navigate(-1)}>‹ Tilbake</button>
-            <h1>Tekstnøkler</h1>
+        <div className="subsection-page">
+            <div className="subsection-container">
+                <button
+                    className="subsection-back-button"
+                    onClick={() => navigate(-1)}
+                    type="button"
+                >
+                    <span>‹</span>
+                    <span>{pageState.sectionName}</span>
+                </button>
 
-            <p>
-                Her er alle tekstnøkler tilhørende {pageState.sectionName}
-                {pageState.subSectionName ? `, ${pageState.subSectionName}`: ""}
-            </p>
+                <h1 className="subsection-title">Tekstnøkler</h1>
 
-            <h2>{pageState.subSectionName || pageState.sectionName}</h2>
+                <p className="subsection-description">
+                    Her er alle tekstnøkler tilhørende {pageState.sectionName || pageState.sectionName}
+                    {pageState.subSectionName ? `, ${pageState.subSectionName}`: ""}
+                </p>
 
-            {textKeys.length === 0 ? (
-                <p>Ingen tekstnøkler funnet.</p>
+                <h2 className="subsection-current-title">
+                    {pageState.subSectionName || pageState.sectionName}
+                </h2>
+
+                <button className="subsection-add-button" type="button">
+                    Legg til tekstnøkkel
+                </button>
+            </div>
+
+            <div className="subsection-list-header">
+                <div />
+                <div className="subsection-marker-title">Marker</div>
+            </div>
+
+            {filteredTextKeys.length === 0 ? (
+                <p className="subsection-empty">Ingen tekstnøkler funnet.</p>
             ) : (
-                textKeys.map((textKey) => (
-                    <div key={textKey.id} className="text-key">
-                        <h3>{textKey.name}</h3>
-                        <p>Bokmål: {textKey.default.bokmål}</p>
-                    </div>
-            ))
-        )}
+                <div className="subsection-list">
+                    {filteredTextKeys.map((textKey) => (
+                        <div key={textKey.id} className="subsection-row">
+                            <div className="subsection-card">
+                                <h3 className="subsection-card-title">{textKey.name}</h3>
+
+                                <button
+                                    className="subsection-edit-button"
+                                    type="button"
+                                    aria-label={`Rediger ${textKey.name}`}
+                                >
+                                    ✎
+                                </button>
+                            </div>
+
+                            <div className="subsection-checkbox-wrapper">
+                                <input
+                                    className="subsection-checkbox"
+                                    type="checkbox"
+                                    aria-label={`Marker ${textKey.name}`}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
