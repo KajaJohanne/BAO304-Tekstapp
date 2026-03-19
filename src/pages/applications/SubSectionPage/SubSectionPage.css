@@ -120,52 +120,7 @@
     flex-direction: column;
     gap: 20px;
   }
-  
-  .subsection-row {
-    display: grid;
-    grid-template-columns: 1fr 120px;
-    align-items: center;
-    gap: 24px;
-  }
-  
-  .subsection-card {
-    min-height: 80px;
-    background: #fff;
-    border-bottom: 2px solid #f2a900;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 18px;
-  }
-  
-  .subsection-card-title {
-    font-size: 22px;
-    font-weight: 400;
-    color: #444f55;
-    margin: 0;
-    word-break: break-word;
-  }
-  
-  .subsection-edit-button {
-    border: none;
-    background: transparent;
-    font-size: 22px;
-    cursor: pointer;
-    color: #9da3a8;
-    margin-left: 16px;
-  }
-  
-  .subsection-checkbox-wrapper {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .subsection-checkbox {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-  }
-  
+ 
   .subsection-loading,
   .subsection-error {
     padding: 24px 40px;
