@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./TextKeyPlacementSelector.css";
 import type { ApplicationListItem } from "../../../api";
-import type { PlacementTree, TextKeyPlacementSelectorProps } from "../../types/textKeyPlacementTree";
+import type { TextKeyPlacementSelectorProps } from "../../types/textKeyPlacementTree";
 
 
 export default function TextKeyPlacementSelector({ applications, onSavePlacement, onSelectApplication,}: TextKeyPlacementSelectorProps) {

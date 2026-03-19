@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getApplication, type ApplicationListItem, addSubSectionToApplication } from "../../../../api";
+import "./ApplicationDetailPage.css"; 
 
 const ApplicationDetailPage = () => {
     const navigate = useNavigate();
@@ -79,7 +80,8 @@ const ApplicationDetailPage = () => {
     const sections = application.sections ?? [];
 
   return (
-    <div style={{ padding: "24px" }}>
+    <div className="application-detail">
+        
       <button onClick={() => navigate(-1)}>‹ Tilbake</button>
       
       <h1>Oversikt applikasjon</h1>
@@ -88,13 +90,15 @@ const ApplicationDetailPage = () => {
       <h2>{application.name}</h2>
 
       {sections.length === 0 ? (
-        <p>Ingen kategorier funnet.</p>
+        <p>Ingen kategorier lagt til ennå</p>
       ) : (
         sections.map((section) => (
             <div key={section.name} style={{ marginBottom: "32px" }}>
-                <div className="section-name">
-                    <h3 style={{ margin: 0 }}>{section.name}</h3>
 
+                {/* Section overskrift med knapp */}
+                <div className="section-header">
+
+                    <h3>{section.name}</h3>
                     <button
                         type="button"
                         onClick={() =>
@@ -106,42 +110,45 @@ const ApplicationDetailPage = () => {
                         + Legg til underkategori
                     </button>
                 </div>
-                
-            {openSection === section.name && (
-              <div style={{ marginBottom: "16px" }}>
-                <input
-                  type="text"
-                  value={newSubSectionName}
-                  onChange={(e) => setNewSubSectionName(e.target.value)}
-                  placeholder="Skriv navn på underkategori"
-                  style={{ marginRight: "8px" }}
-                />
-                <button
-                  type="button"
-                  onClick={() => handleAddSubSection(section.name)}
-                  disabled={isSaving}
-                >
-                  Lagre
-                </button>
-              </div>
-            )}
 
-            {(section.subSections ?? []).length === 0 ? (
-              <p>Ingen underkategorier ennå.</p>
-            ) : (
-              section.subSections.map((subSection) => (
-                <div key={subSection.name} style={{ marginBottom: "8px" }}>
-                  <button
+                {/* Inputfelt for ny subsection */}
+                {openSection === section.name && (
+                <div className="add-subsection-form">
+                    <input
+                        type="text"
+                        value={newSubSectionName}
+                        onChange={(e) => setNewSubSectionName(e.target.value)}
+                        placeholder="Navn på underkategori"
+                    />
+                    <button
                     type="button"
-                    onClick={() =>
-                      handleSubSectionClick(section.name, subSection.name)
-                    }
-                  >
-                    {subSection.name}
-                  </button>
+                    onClick={() => handleAddSubSection(section.name)}
+                    disabled={isSaving}
+                    >
+                    Lagre
+                    </button>
                 </div>
-              ))
-            )}
+                )}
+
+                {/* Liste over subsections */}
+
+                {(section.subSections ?? []).length === 0 ? (
+                <p>Ingen underkategorier ennå.</p>
+                ) : (
+                  <ul className="subsection-list">
+                    {section.subSections.map((subSection) => (
+                        <li
+                          key={subSection.name}
+                          className="subsection-item"
+                          onClick={() => handleSubSectionClick(section.name, subSection.name)}
+                        >
+                            <span>{subSection.name}</span>
+                            <span>›</span>
+                        </li>
+                    ))}
+                  </ul>
+                )}
+
           </div>
         ))
       )}
