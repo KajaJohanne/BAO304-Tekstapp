@@ -1,0 +1,72 @@
+.text-key-card-row {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    align-items: center;
+    gap: 24px;
+  }
+  
+  .text-key-card {
+    width: 100%;
+    padding: 0;
+  }
+  
+  .text-key-card-content {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+  }
+  
+  .text-key-card-text {
+    min-width: 0;
+    flex: 1;
+  }
+  
+  .text-key-card-title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 400;
+    word-break: break-word;
+  }
+  
+  .text-key-card-description {
+    margin: 8px 0 0;
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .text-key-card-edit-button {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+    color: #9da3a8;
+    margin-left: 16px;
+    flex-shrink: 0;
+  }
+  
+  .text-key-card-checkbox-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .text-key-card-checkbox {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 900px) {
+    .text-key-card-row {
+      grid-template-columns: 1fr 80px;
+    }
+  
+    .text-key-card-title {
+      font-size: 18px;
+    }
+  
+    .text-key-card-description {
+      font-size: 14px;
+    }
+  }
