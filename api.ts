@@ -162,6 +162,7 @@ export async function getTextKeysByApplication(applicationId: string): Promise<T
   }
 }
 
+// Henter applikasjon
 export async function getApplication(documentId: string): Promise<ApplicationListItem | null> {
   try {
     const snapshot = await getDoc(doc(db, "applications", documentId));
@@ -181,6 +182,61 @@ export async function getApplication(documentId: string): Promise<ApplicationLis
     console.error("Feil ved henting av applikasjon:", e);
     return null;
   }
+}
+
+// Legger til og lagrer underkategorier for hver kategori
+export async function addSubSectionToApplication(
+  applicationId: string, 
+  sectionName: string, 
+  subSectionName: string
+  ): Promise<string | null> {
+    try {
+      const applicationsRef = doc(db, "applications", applicationId);
+      const snapshot = await getDoc(applicationsRef);
+
+      if (!snapshot.exists()) {
+        return "Fant ikke applikasjonen.";
+      }
+
+      const data = snapshot.data() as Application;
+
+      const updatedSections = (data.sections ?? []).map((section) => {
+        if (section.name !== sectionName) {
+          return section;
+        }
+
+        const existingSubSections = section.subSections ?? [];
+
+        const alreadyExists = existingSubSections.some(
+          (subSection) =>
+            subSection.name.trim().toLowerCase() === 
+            subSectionName.trim().toLowerCase()
+        );
+
+        if (alreadyExists) {
+          return section;
+        }
+
+        return {
+          ...section,
+          subSections: [
+            ...existingSubSections,
+            { name: subSectionName.trim() },
+          ],
+        };
+      });
+
+      await updateDoc(applicationsRef, {
+        sections: updatedSections,
+      });
+
+      return null;
+    } catch (e) {
+      if (e instanceof FirebaseError) {
+        return e.message;
+      }
+      return "Ukjent feil ved lagring av underkategori.";    
+    }
 }
 
 // Oppdaterer tekstnøkler når de blir redigert i de ulike miljøene

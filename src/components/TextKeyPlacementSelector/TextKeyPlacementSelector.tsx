@@ -96,7 +96,7 @@ export default function TextKeyPlacementSelector({ applications, onSavePlacement
 
                         {/* Valg av hovednivå */}
                         <div className="column">
-                            <p><strong>Hovednivå</strong></p>
+                            <p>Kategori</p>
                             {levelOne.map((section) => (
                             <button
                                 key={section.name}
@@ -112,7 +112,7 @@ export default function TextKeyPlacementSelector({ applications, onSavePlacement
 
                         {/* Valg av undernivå */}
                         <div className="column">
-                            <p><strong>Undernivå</strong></p>
+                            <p>Under kategori</p>
                             {levelTwo.map((subSection) => (
                             <button
                                 key={subSection.name}
