@@ -7,6 +7,7 @@ import {
 import { useLocation, useNavigate} from "react-router-dom";
 import type { subSectionState } from "../../../types/subSection";
 import "./SubSectionPage.css";
+import TextKeyCard from "../../../components/TextKeyCard/TextKeyCard";
 
 const SubSectionPage = () => {
     const location = useLocation();
@@ -123,27 +124,16 @@ const SubSectionPage = () => {
             ) : (
                 <div className="subsection-list">
                     {filteredTextKeys.map((textKey) => (
-                        <div key={textKey.id} className="subsection-row">
-                            <div className="subsection-card">
-                                <h3 className="subsection-card-title">{textKey.name}</h3>
-
-                                <button
-                                    className="subsection-edit-button"
-                                    type="button"
-                                    aria-label={`Rediger ${textKey.name}`}
-                                >
-                                    ✎
-                                </button>
-                            </div>
-
-                            <div className="subsection-checkbox-wrapper">
-                                <input
-                                    className="subsection-checkbox"
-                                    type="checkbox"
-                                    aria-label={`Marker ${textKey.name}`}
-                                />
-                            </div>
-                        </div>
+                        <TextKeyCard
+                            key={textKey.id}
+                            textKey={textKey}
+                            onEdit={(selectedTextKey) => {
+                                console.log("Rediger tekstnøkkel:", selectedTextKey);
+                            }}
+                            onCheckChange={(isChecked) => {
+                                console.log(textKey.name, isChecked);
+                            }}
+                        />
                     ))}
                 </div>
             )}
