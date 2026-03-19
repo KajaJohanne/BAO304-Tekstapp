@@ -1,7 +1,9 @@
 // Første "lag" med underkategori under applikasjon?
 
 const SectionPage = () => {
-    return <div>Første lag med underkategori?</div>;
+    return(
+        <div>Kategori side, f.eks Reiseinformasjon</div>
+    )
 };
 
 export default SectionPage; 

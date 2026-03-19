@@ -47,6 +47,7 @@ export interface TextKeyDocument {
     test: TextValues;
     prod: TextValues;
   };
+  placementPath: string[];
 }
 
 // Brukes når vi henter en liste med tekstnøkler og også trenger document id
@@ -77,7 +78,8 @@ export async function saveDefaultText(
   name: string,
   applicationId: string,
   applicationName: string,
-  defaultText: TextValues
+  defaultText: TextValues,
+  placementPath: string[]
 ): Promise<string | null> {
   try {
     //Sjekker om tekstnøkkel finnes allerede
@@ -97,6 +99,7 @@ export async function saveDefaultText(
         test: { bokmål: "", nynorsk: "", engelsk: "" },
         prod: { bokmål: "", nynorsk: "", engelsk: "" },
       },
+      placementPath,
     };
 
     await addDoc(collection(db, "textKeys"), data);
@@ -140,6 +143,100 @@ export async function getAllTextKeys(): Promise<TextKeyListItem[]> {
     console.error("Feil ved henting av tekstnøkler:", e);
     return [];
   }
+}
+
+// Henter tekstnøkler for valgt applikasjon
+export async function getTextKeysByApplication(applicationId: string): Promise<TextKeyListItem[]> {
+  try {
+    const textKeysRef = collection(db, "textKeys");
+    const q = query(textKeysRef, where("applicationId", "==", applicationId));
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((docSnapshot) => ({
+      id: docSnapshot.id,
+      ...(docSnapshot.data() as TextKeyDocument),
+    }));
+  } catch (e) {
+    console.error("Feil ved henting av tekstnøkler for applikasjon:", e);
+    return [];
+  }
+}
+
+// Henter applikasjon
+export async function getApplication(documentId: string): Promise<ApplicationListItem | null> {
+  try {
+    const snapshot = await getDoc(doc(db, "applications", documentId));
+
+    if (!snapshot.exists()) {
+      return null;
+    }
+
+    const data = snapshot.data() as Application;
+
+    return {
+      id: snapshot.id,
+      name: data.name,
+      sections: data.sections ?? [],
+    };
+  } catch (e) {
+    console.error("Feil ved henting av applikasjon:", e);
+    return null;
+  }
+}
+
+// Legger til og lagrer underkategorier for hver kategori
+export async function addSubSectionToApplication(
+  applicationId: string, 
+  sectionName: string, 
+  subSectionName: string
+  ): Promise<string | null> {
+    try {
+      const applicationsRef = doc(db, "applications", applicationId);
+      const snapshot = await getDoc(applicationsRef);
+
+      if (!snapshot.exists()) {
+        return "Fant ikke applikasjonen.";
+      }
+
+      const data = snapshot.data() as Application;
+
+      const updatedSections = (data.sections ?? []).map((section) => {
+        if (section.name !== sectionName) {
+          return section;
+        }
+
+        const existingSubSections = section.subSections ?? [];
+
+        const alreadyExists = existingSubSections.some(
+          (subSection) =>
+            subSection.name.trim().toLowerCase() === 
+            subSectionName.trim().toLowerCase()
+        );
+
+        if (alreadyExists) {
+          return section;
+        }
+
+        return {
+          ...section,
+          subSections: [
+            ...existingSubSections,
+            { name: subSectionName.trim() },
+          ],
+        };
+      });
+
+      await updateDoc(applicationsRef, {
+        sections: updatedSections,
+      });
+
+      return null;
+    } catch (e) {
+      if (e instanceof FirebaseError) {
+        return e.message;
+      }
+      return "Ukjent feil ved lagring av underkategori.";    
+    }
 }
 
 // Oppdaterer tekstnøkler når de blir redigert i de ulike miljøene
