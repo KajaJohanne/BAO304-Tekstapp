@@ -29,6 +29,7 @@ const HomePage = () => {
       </button>
       
       <h1>Applikasjoner</h1>
+      <p>Heia</p>
       
       <div className="info-and-btn-container">
 

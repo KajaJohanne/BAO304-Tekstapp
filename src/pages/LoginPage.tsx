@@ -20,16 +20,20 @@ const LoginPage = () => {
   };
 
   const handleSaveUser = async () => {
+    console.log("Heia");
     if (!name.trim() || !email.trim()) {
       window.alert("Du må fylle inn navn og e-post.");
       return;
     }
+
 
     const response = await saveUser({
       name,
       email,
       allowedEnvironments,
     });
+    console.log(response);
+    console.log(import.meta.env.PROJECT_ID)
 
     if (response) {
       window.alert(`Feil: ${response}`);
@@ -46,7 +50,10 @@ const LoginPage = () => {
       window.alert("Bruker lagret i Firebase");
       navigate("/home");
     }
+    
   };
+
+  console.log(name, allowedEnvironments, email); 
 
   return (
     <div style={{ padding: "24px", maxWidth: "500px" }}>
@@ -105,7 +112,7 @@ const LoginPage = () => {
         </label>
       </div>
 
-      <button onClick={handleSaveUser}>Lagre bruker</button>
+      <button onClick={() => handleSaveUser()}>Lagre bruker</button>
     </div>
   );
 };
