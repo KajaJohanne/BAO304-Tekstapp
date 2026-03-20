@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   saveDefaultText,
   getAllApplications,
@@ -12,6 +12,7 @@ import TextKeyNameModal from "../../../components/TextKeyNameModal/TextKeyNameMo
 import TextKeyPlacementSelector from "../../../components/TextKeyPlacementSelector/TextKeyPlacementSelector";
 import CreateTextKeyLanguagePage from "../../../components/CreateTextKeyLanguage/CreateTextKeyLanguage";
 import "./CreateTextKeyPage.css";
+import type { CreateTextKeyPageState } from "../../../types/createTextKeyPage";
 
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
@@ -19,6 +20,7 @@ import type { FormErrors } from "../../../types/formErrors";
 
 const CreateTextKeyPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [name, setName] = useState("");
   const [selectedPlacement, setSelectedPlacement] = useState("");
@@ -30,6 +32,10 @@ const CreateTextKeyPage = () => {
     engelsk: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
+  const pageState = useMemo(() => {
+    if (!location.state) return null;
+    return location.state as CreateTextKeyPageState;
+  }, [location.state]);
   
   // Validering
   const isFormValid =
@@ -48,14 +54,28 @@ const CreateTextKeyPage = () => {
       const data = await getAllApplications();
       setApplications(data);
 
-      // Setter første applikasjon som valgt hvis det finnes noen
-      if (data.length > 0) {
-        setSelectedApplicationId(data[0].id);
+      if (pageState) {
+        const application = data.find(
+          (app) => app.id === pageState.applicationId
+        );
+      if (application) {
+        setSelectedApplicationId(pageState.applicationId);
+
+        //Henter plasseringen fra subSection siden
+        const placement = pageState.subSectionName
+          ? `${application.name}.${pageState.sectionName}.${pageState.subSectionName}`
+          : `${application.name}.${pageState.sectionName}`;
+
+        setSelectedPlacement(placement);
       }
-    };
+      // Setter første applikasjon som valgt hvis det finnes noen
+    } else if (data.length > 0) {
+      setSelectedApplicationId(data[0].id);
+    }      
+  };
 
     fetchApplications();
-  }, []);
+  }, [pageState]);
 
   // Oppdaterer riktig felt når brukeren skriver
   const handleChange = (field: keyof TextValues, value: string) => {
@@ -206,6 +226,7 @@ const CreateTextKeyPage = () => {
             <TextKeyPlacementSelector 
               applications={applications}
               selectedPlacement={selectedPlacement}
+              selectedApplicationId={selectedApplicationId}
               onSavePlacement={(placement) => {
                 setSelectedPlacement(placement);
                 setErrors((prev) => ({
