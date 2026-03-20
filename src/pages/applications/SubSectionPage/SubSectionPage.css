@@ -9,7 +9,6 @@
     max-width: 1100px;
     margin: 0 auto;
   }
-  
   .subsection-back-button {
     display: inline-flex;
     align-items: center;
@@ -22,28 +21,7 @@
     padding: 0;
     margin-bottom: 28px;
   }
-  
   .subsection-back-button:hover {
-    color: #444f55;
-  }
-  
-  .subsection-title {
-    font-size: 64px;
-    font-weight: 400;
-    margin: 0 0 16px;
-    color: #444f55;
-  }
-  
-  .subsection-description {
-    font-size: 20px;
-    margin: 0 0 56px;
-    color: #444f55;
-  }
-  
-  .subsection-current-title {
-    font-size: 56px;
-    font-weight: 400;
-    margin: 0 0 56px;
     color: #444f55;
   }
   

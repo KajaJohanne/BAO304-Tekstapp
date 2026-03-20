@@ -98,14 +98,14 @@ const SubSectionPage = () => {
                     <span>{pageState.sectionName}</span>
                 </button>
 
-                <h1 className="subsection-title">Tekstnøkler</h1>
+                <h1>Tekstnøkler</h1>
 
-                <p className="subsection-description">
+                <p>
                     Her er alle tekstnøkler tilhørende {pageState.sectionName || pageState.sectionName}
                     {pageState.subSectionName ? `, ${pageState.subSectionName}`: ""}
                 </p>
 
-                <h2 className="subsection-current-title">
+                <h2>
                     {pageState.subSectionName || pageState.sectionName}
                 </h2>
 

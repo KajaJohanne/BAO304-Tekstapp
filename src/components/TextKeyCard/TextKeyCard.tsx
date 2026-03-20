@@ -1,6 +1,5 @@
 import "./TextKeyCard.css";
-import type { TextKeyListItem } from "../../../api";
-import { Card, Heading, Paragraph, Checkbox } from "@digdir/designsystemet-react";
+import { Card, Heading, Checkbox } from "@digdir/designsystemet-react";
 import type { TextKeyCardProps } from "../../types/textKeyCard";
 
 export default function  TextKeyCard({
@@ -11,20 +10,11 @@ export default function  TextKeyCard({
 }: TextKeyCardProps) {
     return (
         <div className="text-key-card-row">
-            <Card
-                className="text-key-card"
-                data-color="neutral"
-            >
+            <Card className="text-key-card" data-color="neutral">
                 <div className="text-key-card-content">
-                    <div className="text-key-card-text">
-                        <Heading level={3} className="text-key-card-title">
-                            {textKey.name}
-                        </Heading>
-
-                        <Paragraph className="text-key-card-description">
-                            Bokmål: {textKey.default.bokmål}
-                        </Paragraph>
-                    </div>
+                    <Heading level={3} data-size="sm" className="text-key-card-title">
+                        {textKey.name}
+                    </Heading>
 
                     <button
                         type="button"
@@ -41,10 +31,10 @@ export default function  TextKeyCard({
                 <Checkbox
                     checked={checked}
                     onChange={(e) => onCheckChange?.(e.target.checked)}
-                    label={`Marker ${textKey.name}`}
+                    label=" "
                     value={textKey.id}
                 />
             </div>
         </div>
-    )
+    );
 }
