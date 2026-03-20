@@ -90,7 +90,7 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
 
             <button className="placement-button" onClick={openModal} type="button">
                 <span>{buttonText}</span>
-                <span className="arrow">›</span>
+                <span className="placement-arrow">›</span>
             </button>
         </div>
 
@@ -121,7 +121,7 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
                                 type="button"
                             >
                                 <span>{application.name}</span>
-                                <span className="arrow">›</span>
+                                <span className="placement-arrow">›</span>
                             </button>
                             ))}
                         </div>
@@ -137,7 +137,7 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
                                 type="button"
                             >
                                 <span>{section.name}</span>
-                                <span className="arrow">›</span>
+                                <span className="placement-arrow">›</span>
                             </button>
                             ))}
                         </div>
@@ -153,7 +153,7 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
                                 type="button"
                             >
                                 <span>{subSection.name}</span>
-                                <span className="arrow">›</span>
+                                <span className="placement-arrow">›</span>
                             </button>
                             ))}
                         </div>
