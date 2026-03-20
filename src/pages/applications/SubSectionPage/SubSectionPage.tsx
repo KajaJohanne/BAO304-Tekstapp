@@ -32,6 +32,7 @@ const SubSectionPage = () => {
         }
     }, [location.state]);
     
+    //Henter nøkler tilhørende applikasjonen som er valgt
     useEffect(() => {
         const fetchTextKeys = async () => {
           try {
@@ -67,10 +68,12 @@ const SubSectionPage = () => {
         fetchTextKeys();
       }, [pageState]);
     
+    //Laste visning
     if (isLoading) {
         return <p className="subsection-loading">Laster...</p>;
     }
     
+    //Tekst som vises hvis noe går galt
     if (!pageState) {
         return (
             <p className="subsection-error">
@@ -89,6 +92,7 @@ const SubSectionPage = () => {
     return (
         <div className="subsection-page">
             <div className="subsection-container">
+                {/* Tilbake knapp */}
                 <button
                     className="subsection-back-button"
                     onClick={() => navigate(-1)}
@@ -100,28 +104,46 @@ const SubSectionPage = () => {
 
                 <h1>Tekstnøkler</h1>
 
+                {/* Henter navnet til applikasjonen og kategorien som er valgt */}
                 <p>
                     Her er alle tekstnøkler tilhørende {pageState.sectionName || pageState.sectionName}
                     {pageState.subSectionName ? `, ${pageState.subSectionName}`: ""}
                 </p>
 
+                {/* Navn på kategorien som er valgt */}
                 <h2>
                     {pageState.subSectionName || pageState.sectionName}
                 </h2>
 
-                <button className="subsection-add-button" type="button">
+                {/* Legg til tekstnøkkel knapp */}
+                <button 
+                    className="subsection-add-button" 
+                    type="button" 
+                    onClick={() => 
+                        navigate("/create-textkey", {
+                            state: {
+                                applicationId: pageState.applicationId,
+                                sectionName: pageState.sectionName,
+                                subSectionName: pageState.subSectionName,
+                            },
+                        })
+                    }
+                >
                     Legg til tekstnøkkel
                 </button>
             </div>
 
+            {/* Marker tekstnøkler seksjon */}
             <div className="subsection-list-header">
                 <div />
                 <div className="subsection-marker-title">Marker</div>
             </div>
 
+            {/* Dukker opp hvi det ikke finnes noen tekstnøkler tilhørende kategorien */}
             {filteredTextKeys.length === 0 ? (
                 <p className="subsection-empty">Ingen tekstnøkler funnet.</p>
             ) : (
+                //Listen over tekstnøkler
                 <div className="subsection-list">
                     {filteredTextKeys.map((textKey) => (
                         <TextKeyCard

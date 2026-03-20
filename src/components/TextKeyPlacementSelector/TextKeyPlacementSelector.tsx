@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./TextKeyPlacementSelector.css";
 import type { ApplicationListItem } from "../../../api";
 import type { TextKeyPlacementSelectorProps } from "../../types/textKeyPlacementTree";
 
 
-export default function TextKeyPlacementSelector({ applications, onSavePlacement, onSelectApplication,}: TextKeyPlacementSelectorProps) {
+export default function TextKeyPlacementSelector({ applications, selectedPlacement, selectedApplicationId, onSavePlacement, onSelectApplication,}: TextKeyPlacementSelectorProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState<ApplicationListItem | null>(null);
     const [selectedLevelOne, setSelectedLevelOne] = useState<string | null>(null);
@@ -12,6 +12,38 @@ export default function TextKeyPlacementSelector({ applications, onSavePlacement
 
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
+
+    useEffect (() => {
+        if (!applications.length) return;
+
+        const application = applications.find(
+            (app) => app.id === selectedApplicationId
+        );
+
+        if (!application) return;
+
+        setSelectedApplication(application);
+
+        if (!selectedPlacement) return;
+
+        const parts = selectedPlacement.split(".").map((part) => part.trim());
+
+        const appName = application.name;
+
+        if (parts[0] === appName) {
+            setSelectedLevelOne(parts[1] ?? null);
+            setSelectedLevelTwo(parts[2] ?? null);
+        } else {
+            setSelectedLevelOne(parts[0] ?? null);
+            setSelectedLevelTwo(parts[1] ?? null);
+        }
+    }, [applications, selectedApplicationId, selectedPlacement]);
+
+    const handleApplicationSelect = (application: ApplicationListItem) => {
+        setSelectedApplication(application);
+        setSelectedLevelOne(null);
+        setSelectedLevelTwo(null);
+    };
 
     //Valg av nivåer, rekkefølge
     const handleLevelOne = (item: string) => {
