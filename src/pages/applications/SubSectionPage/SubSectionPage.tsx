@@ -137,6 +137,20 @@ const SubSectionPage = () => {
                     ))}
                 </div>
             )}
+                <div className="subsection-list">
+                    {filteredTextKeys.map((textKey) => (
+                        <TextKeyCard
+                            key={textKey.id}
+                            textKey={textKey}
+                            onEdit={(selectedTextKey) => {
+                                console.log("Rediger tekstnøkkel:", selectedTextKey);
+                            }}
+                            onCheckChange={(isChecked) => {
+                                console.log(textKey.name, isChecked);
+                            }}
+                        />
+                    ))}
+                </div>
         </div>
     );
 };
