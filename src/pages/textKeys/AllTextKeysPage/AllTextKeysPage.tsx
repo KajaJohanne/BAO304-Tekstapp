@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllTextKeys, type TextKeyListItem } from "../../../../api";
+import "./AllTextKeysPage.css";
 
 const AllTextKeysPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const AllTextKeysPage = () => {
   }, []);
 
   return (
-    <div style={{ padding: "24px" }}>
+    <div className="all-text-key-page_content">
       <button
         onClick={() => navigate("/home")}
         style={{ marginBottom: "20px" }}

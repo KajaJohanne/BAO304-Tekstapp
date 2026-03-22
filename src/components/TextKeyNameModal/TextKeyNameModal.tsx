@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./TextKeyNameModal.css";
-import type { TextKeyNameModalProps } from "../../types/textKeyName.ts";
+import type { TextKeyNameModalProps } from "../../types/textKeyName";
 
 export default function TextKeyNameModal({value, onSave, error}: TextKeyNameModalProps) {
     const [isOpen, setIsOpen] = useState(false);
