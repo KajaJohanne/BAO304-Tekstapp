@@ -6,6 +6,8 @@ import {
 } from "../../../../api";
 import { useLocation, useNavigate} from "react-router-dom";
 import type { subSectionState } from "../../../types/subSection";
+import "./SubSectionPage.css";
+import TextKeyCard from "../../../components/TextKeyCard/TextKeyCard";
 
 const SubSectionPage = () => {
     const location = useLocation();
@@ -13,6 +15,7 @@ const SubSectionPage = () => {
 
     const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchValue, setSearchValue] = useState("");
 
     const pageState = useMemo(() => {
         if (location.state) {
@@ -29,6 +32,7 @@ const SubSectionPage = () => {
         }
     }, [location.state]);
     
+    //Henter nøkler tilhørende applikasjonen som er valgt
     useEffect(() => {
         const fetchTextKeys = async () => {
           try {
@@ -50,7 +54,7 @@ const SubSectionPage = () => {
                     ? keySubSection === subSectionName
                     : true;
                 
-                    return matchesSection && matchesSubSection;
+                return matchesSection && matchesSubSection;
             });
     
             setTextKeys(filtered);
@@ -64,37 +68,97 @@ const SubSectionPage = () => {
         fetchTextKeys();
       }, [pageState]);
     
-    if (isLoading) return <p>Laster...</p>;
-    
-    if (!pageState) {
-        return <p>Ingen data tilgjengelig. Gå tilbake og velg på nytt.</p>;
+    //Laste visning
+    if (isLoading) {
+        return <p className="subsection-loading">Laster...</p>;
     }
+    
+    //Tekst som vises hvis noe går galt
+    if (!pageState) {
+        return (
+            <p className="subsection-error">
+                Ingen data tilgjengelig. Gå tilbake og velg på nytt.
+            </p>
+        );
+    }
+
+    const filteredTextKeys = textKeys.filter((textKey) =>
+        textKey.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
 
     console.log("side state:", pageState);
     console.log("tekstnøkler:", textKeys);
 
     return (
-        <div style={{ padding: "24px" }}>
-            <button onClick={() => navigate(-1)}>‹ Tilbake</button>
-            <h1>Tekstnøkler</h1>
+        <div className="subsection-page">
+            <div className="subsection-container">
+                {/* Tilbake knapp */}
+                <button
+                    className="subsection-back-button"
+                    onClick={() => navigate(-1)}
+                    type="button"
+                >
+                    <span>‹</span>
+                    <span>{pageState.sectionName}</span>
+                </button>
 
-            <p>
-                Her er alle tekstnøkler tilhørende {pageState.sectionName}
-                {pageState.subSectionName ? `, ${pageState.subSectionName}`: ""}
-            </p>
+                <h1>Tekstnøkler</h1>
 
-            <h2>{pageState.subSectionName || pageState.sectionName}</h2>
+                {/* Henter navnet til applikasjonen og kategorien som er valgt */}
+                <p>
+                    Her er alle tekstnøkler tilhørende {pageState.sectionName || pageState.sectionName}
+                    {pageState.subSectionName ? `, ${pageState.subSectionName}`: ""}
+                </p>
 
-            {textKeys.length === 0 ? (
-                <p>Ingen tekstnøkler funnet.</p>
+                {/* Navn på kategorien som er valgt */}
+                <h2>
+                    {pageState.subSectionName || pageState.sectionName}
+                </h2>
+
+                {/* Legg til tekstnøkkel knapp */}
+                <button 
+                    className="subsection-add-button" 
+                    type="button" 
+                    onClick={() => 
+                        navigate("/create-textkey", {
+                            state: {
+                                applicationId: pageState.applicationId,
+                                sectionName: pageState.sectionName,
+                                subSectionName: pageState.subSectionName,
+                            },
+                        })
+                    }
+                >
+                    Legg til tekstnøkkel
+                </button>
+            </div>
+
+            {/* Marker tekstnøkler seksjon */}
+            <div className="subsection-list-header">
+                <div />
+                <div className="subsection-marker-title">Marker</div>
+            </div>
+
+            {/* Dukker opp hvi det ikke finnes noen tekstnøkler tilhørende kategorien */}
+            {filteredTextKeys.length === 0 ? (
+                <p className="subsection-empty">Ingen tekstnøkler funnet.</p>
             ) : (
-                textKeys.map((textKey) => (
-                    <div key={textKey.id} className="text-key">
-                        <h3>{textKey.name}</h3>
-                        <p>Bokmål: {textKey.default.bokmål}</p>
-                    </div>
-            ))
-        )}
+                //Listen over tekstnøkler
+                <div className="subsection-list">
+                    {filteredTextKeys.map((textKey) => (
+                        <TextKeyCard
+                            key={textKey.id}
+                            textKey={textKey}
+                            onEdit={(selectedTextKey) => {
+                                console.log("Rediger tekstnøkkel:", selectedTextKey);
+                            }}
+                            onCheckChange={(isChecked) => {
+                                console.log(textKey.name, isChecked);
+                            }}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
