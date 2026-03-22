@@ -4,13 +4,14 @@ import { getAllTextKeys, type TextKeyListItem } from "../../../../api";
 import "./AllTextKeysPage.css";
 import "../../../components/CreateTypeSelector/CreateTypeSelector";
 import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
-import { Button } from "@digdir/designsystemet-react";
-import { BiPlus } from "react-icons/bi";
+import { Button, Search } from "@digdir/designsystemet-react";
+import { BiPlus, BiSearch } from "react-icons/bi";
 import TextKeyList from "../../../components/TextKeyList/TextKeyList";
 
 const AllTextKeysPage = () => {
   const navigate = useNavigate();
   const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchTextKeys = async () => {
@@ -35,12 +36,36 @@ const AllTextKeysPage = () => {
           Legg til ny tekstnøkkel
       </Button>
 
+      {/* Søkefelt fra designsystemet */}
+      <Search className="search-bar">
+        <Search.Input 
+          aria-aria-label="Søk etter tekstnøkkel"
+          placeholder="Søk etter"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+        {searchTerm && (
+          <Search.Clear 
+            onClick={() => setSearchTerm("")}
+            className="search-clear"
+          />
+        )}
+        <Search.Button className="search-button">
+          <BiSearch />
+        </Search.Button>
+      </Search>
+
       {/* Liste over alle tekstnøkler */}
       <div className="text-key-list-wrapper">
         {textKeys.length === 0 ? (
           <p>Ingen tekstnøkler funnet.</p>
         ) : (
-          textKeys.map((textKey) => (
+          textKeys
+            .filter((textKeys) =>
+              textKeys.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map((textKey) => (
             <TextKeyList
               key={textKey.id}
               textKey={textKey}
