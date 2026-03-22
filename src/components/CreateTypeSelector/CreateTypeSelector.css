@@ -1,9 +1,10 @@
 /*CSS for valg av tekstnøkkel*/
 .create-type-selector {
     display: flex;
-    gap: 24px;
+    justify-content: center;
+    gap: 35px;
     margin-top: 24px;
-    margin-bottom: 32px;
+    margin-bottom: 40px;
 }
 
 .create-type-selector_button {

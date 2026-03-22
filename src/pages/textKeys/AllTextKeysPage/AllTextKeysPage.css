@@ -4,3 +4,15 @@
     padding: 24px;
     box-sizing: border-box;
 }
+.add-button {
+    background-color: #444F55;
+    color: white;
+    padding: 13px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.text-key-list-wrapper {
+    margin-top: 24px;
+}

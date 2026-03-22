@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllTextKeys, type TextKeyListItem } from "../../../../api";
 import "./AllTextKeysPage.css";
+import "../../../components/CreateTypeSelector/CreateTypeSelector";
+import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
+import { Button } from "@digdir/designsystemet-react";
+import { BiPlus } from "react-icons/bi";
+import TextKeyList from "../../../components/TextKeyList/TextKeyList";
 
 const AllTextKeysPage = () => {
   const navigate = useNavigate();
@@ -18,39 +23,29 @@ const AllTextKeysPage = () => {
 
   return (
     <div className="all-text-key-page_content">
-      <button
-        onClick={() => navigate("/home")}
-        style={{ marginBottom: "20px" }}
-      >
-        ← Tilbake til applikasjoner
-      </button>
-      <h1>Alle tekstnøkler</h1>
+      {/* Velge mellom applikasjon og tekstnøkkel */}
+      <CreateTypeSelector/>
 
-      <button onClick={() => navigate("/create-textkey")}>
-        Opprett ny tekstnøkkel
-      </button>
+      <h1>Tekstnøkler</h1>
+      <p>Her finner du alle tekstnøkler. Du kan filtrere og søke etter ønsket tekstnøkkel, eller legge til en ny. </p>
 
-      <div style={{ marginTop: "24px" }}>
+      {/* Legg til ny tekstnøkkel knapp */}
+      <Button onClick={() => navigate("/create-textkey")} className="add-button">
+          <BiPlus aria-hidden />
+          Legg til ny tekstnøkkel
+      </Button>
+
+      {/* Liste over alle tekstnøkler */}
+      <div className="text-key-list-wrapper">
         {textKeys.length === 0 ? (
           <p>Ingen tekstnøkler funnet.</p>
         ) : (
           textKeys.map((textKey) => (
-            <div
+            <TextKeyList
               key={textKey.id}
+              textKey={textKey}
               onClick={() => navigate(`/textkeyDetails/${textKey.id}`)}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "16px",
-                marginBottom: "12px",
-                cursor: "pointer",
-              }}
-            >
-              <h3>{textKey.name}</h3>
-              <p>Bokmål: {textKey.default.bokmål}</p>
-              <p>Nynorsk: {textKey.default.nynorsk}</p>
-              <p>Engelsk: {textKey.default.engelsk}</p>
-            </div>
+            />
           ))
         )}
       </div>
