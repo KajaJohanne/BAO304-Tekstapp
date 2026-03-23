@@ -1,13 +1,17 @@
 // andre lag med underkategori? Applikasjon/Section/her
 import { useEffect, useMemo, useState  } from "react";
+import { useLocation, useNavigate} from "react-router-dom";
+import { Button } from "@digdir/designsystemet-react";
+import { BiPlus } from "react-icons/bi";
+
 import {
     getTextKeysByApplication,
     type TextKeyListItem,
 } from "../../../../api";
-import { useLocation, useNavigate} from "react-router-dom";
 import type { subSectionState } from "../../../types/subSection";
 import "./SubSectionPage.css";
 import TextKeyCard from "../../../components/TextKeyCard/TextKeyCard";
+import SearchBar from "../../../components/Search/SearchBar";
 
 const SubSectionPage = () => {
     const location = useLocation();
@@ -15,7 +19,8 @@ const SubSectionPage = () => {
 
     const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [searchValue] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
 
     const pageState = useMemo(() => {
         if (location.state) {
@@ -83,7 +88,7 @@ const SubSectionPage = () => {
     }
 
     const filteredTextKeys = textKeys.filter((textKey) =>
-        textKey.name.toLowerCase().includes(searchValue.toLowerCase())
+        textKey.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     console.log("side state:", pageState);
@@ -91,47 +96,52 @@ const SubSectionPage = () => {
 
     return (
         <div className="subsection-page">
-            <div className="subsection-container">
-                {/* Tilbake knapp */}
-                <button
-                    className="subsection-back-button"
-                    onClick={() => navigate(-1)}
-                    type="button"
-                >
-                    <span>‹</span>
-                    <span>{pageState.sectionName}</span>
-                </button>
+            {/* Tilbake knapp */}
+            <button
+                className="back-button"
+                onClick={() => navigate(-1)}
+            >
+                <span className="back-arrow">‹</span>
+                <span className="back-text">{pageState.sectionName}</span>
+            </button>
 
-                <h1>Tekstnøkler</h1>
+            <h1>Tekstnøkler</h1>
 
-                {/* Henter navnet til applikasjonen og kategorien som er valgt */}
-                <p>
-                    Her er alle tekstnøkler tilhørende {pageState.sectionName || pageState.sectionName}
-                    {pageState.subSectionName ? `, ${pageState.subSectionName}`: ""}
-                </p>
+            {/* Henter navnet til applikasjonen og kategorien som er valgt */}
+            <p>
+                Her er alle tekstnøkler tilhørende {pageState.sectionName || pageState.sectionName}
+                {pageState.subSectionName ? `, ${pageState.subSectionName}`: ""}
+            </p>
 
-                {/* Navn på kategorien som er valgt */}
-                <h2>
-                    {pageState.subSectionName || pageState.sectionName}
-                </h2>
+            {/* Navn på kategorien som er valgt */}
+            <h2>
+                {pageState.subSectionName || pageState.sectionName}
+            </h2>
 
-                {/* Legg til tekstnøkkel knapp */}
-                <button 
-                    className="subsection-add-button" 
-                    type="button" 
-                    onClick={() => 
-                        navigate("/create-textkey", {
-                            state: {
-                                applicationId: pageState.applicationId,
-                                sectionName: pageState.sectionName,
-                                subSectionName: pageState.subSectionName,
-                            },
-                        })
-                    }
-                >
-                    Legg til tekstnøkkel
-                </button>
-            </div>
+            {/* Legg til tekstnøkkel knapp */}
+            <Button 
+                onClick={() => 
+                    navigate("/create-textkey", {
+                        state: {
+                            applicationId: pageState.applicationId,
+                            sectionName: pageState.sectionName,
+                            subSectionName: pageState.subSectionName,
+                        },
+                    })
+                }
+                className="subsection-add-button"
+            >
+                <BiPlus aria-hidden />
+                Legg til ny tekstnøkkel
+            </Button>
+
+            {/* Søkefelt fra komponent */}
+            <SearchBar 
+                value={searchTerm}
+                onChange={setSearchTerm}
+                placeholder="Søk etter tekstnøkkel..."
+                ariaLabel="Søk etter tekstnøkkel"
+            />
 
             {/* Marker tekstnøkler seksjon */}
             <div className="subsection-list-header">
@@ -149,10 +159,16 @@ const SubSectionPage = () => {
                         <TextKeyCard
                             key={textKey.id}
                             textKey={textKey}
+                            checked={checkedKeys.includes(textKey.id)}
                             onEdit={(selectedTextKey) => {
                                 console.log("Rediger tekstnøkkel:", selectedTextKey);
                             }}
                             onCheckChange={(isChecked) => {
+                                setCheckedKeys((prev) => 
+                                    isChecked
+                                    ? [...prev, textKey.id]
+                                    : prev.filter((id) => id !== textKey.id)
+                                );
                                 console.log(textKey.name, isChecked);
                             }}
                         />

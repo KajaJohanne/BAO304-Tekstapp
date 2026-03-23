@@ -5,7 +5,7 @@ import type { Props } from "../../types/textKeyList";
 export default function TextKeyList({ textKey, onClick }: Props) {
     return (
         <Card 
-            className="text-key-card"
+            className="text-key-card-list"
             data-color="neutral"
             onClick={onClick}
         >
