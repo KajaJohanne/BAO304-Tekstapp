@@ -9,6 +9,7 @@ export default function  TextKeyCard({
     onEdit,
 }: TextKeyCardProps) {
     return (
+        //List over tekstnøkler
         <div className="text-key-card-row">
             <Card className="text-key-card" data-color="neutral">
                 <div className="text-key-card-content">
@@ -27,6 +28,7 @@ export default function  TextKeyCard({
                 </div>
             </Card>
 
+            {/* Markeringsbokser */}
             <div className="text-key-card-checkbox-wrapper">
                 <Checkbox
                     checked={checked}
