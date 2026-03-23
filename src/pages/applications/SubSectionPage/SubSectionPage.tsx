@@ -20,6 +20,7 @@ const SubSectionPage = () => {
     const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+    const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
 
     const pageState = useMemo(() => {
         if (location.state) {
@@ -97,12 +98,11 @@ const SubSectionPage = () => {
         <div className="subsection-page">
             {/* Tilbake knapp */}
             <button
-                className="subsection-back-button"
+                className="back-button"
                 onClick={() => navigate(-1)}
-                type="button"
             >
-                <span>‹</span>
-                <span>{pageState.sectionName}</span>
+                <span className="back-arrow">‹</span>
+                <span className="back-text">{pageState.sectionName}</span>
             </button>
 
             <h1>Tekstnøkler</h1>
@@ -159,10 +159,16 @@ const SubSectionPage = () => {
                         <TextKeyCard
                             key={textKey.id}
                             textKey={textKey}
+                            checked={checkedKeys.includes(textKey.id)}
                             onEdit={(selectedTextKey) => {
                                 console.log("Rediger tekstnøkkel:", selectedTextKey);
                             }}
                             onCheckChange={(isChecked) => {
+                                setCheckedKeys((prev) => 
+                                    isChecked
+                                    ? [...prev, textKey.id]
+                                    : prev.filter((id) => id !== textKey.id)
+                                );
                                 console.log(textKey.name, isChecked);
                             }}
                         />
