@@ -63,7 +63,7 @@ export interface ApplicationListItem extends Application {
   id: string;
 }
 
-// registrere ny bruker
+// Registrere ny bruker
 export async function registerUser(
   name: string,
   email: string,
@@ -104,7 +104,7 @@ export async function registerUser(
   }
 }
 
-// logger inn på eksisteren bruker
+// Logger inn på eksisteren bruker
 export async function loginUser(
   email: string,
   password: string,

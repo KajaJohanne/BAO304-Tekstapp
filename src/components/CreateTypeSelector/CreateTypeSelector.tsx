@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./CreateTypeSelector.css";
 
-type CreateType = "Applikasjon" | "Tekstnøkkel";
-
 export default function CreateTypeSelector() {
-    const [selected, setSelected] = useState<CreateType>("Tekstnøkkel");
+    //const [selected, setSelected] = useState<CreateType>("Tekstnøkkel");
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const selected = location.pathname === "/home" ? "Applikasjon" : "Tekstnøkkel";
 
     return (
         /* Velg mellom applikasjon og tekstnøkkel */
         <div className="create-type-selector">
 
             <button
-                onClick={() => setSelected("Applikasjon")}
+                onClick={() => navigate("/home")}
                 className={`create-type-selector_button ${
                     selected === "Applikasjon" ? "create-type-selector_button-selected" : ""
                 }`}
@@ -19,7 +21,7 @@ export default function CreateTypeSelector() {
                 Applikasjon
             </button>
             <button
-                onClick={() => setSelected("Tekstnøkkel")}
+                onClick={() => navigate("/textkeys")}
                 className={`create-type-selector_button ${
                     selected === "Tekstnøkkel" ? "create-type-selector_button-selected" : ""
                 }`}

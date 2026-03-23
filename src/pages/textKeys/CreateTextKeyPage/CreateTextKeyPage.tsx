@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css";
+import "./CreateTextKeyPage.css";
+import "../../../components/BackButton.css";
+
 import {
   saveDefaultText,
   getAllApplications,
@@ -12,11 +17,7 @@ import TextTypeSelector from "../../../components/TextTypeSelector/TextTypeSelec
 import TextKeyNameModal from "../../../components/TextKeyNameModal/TextKeyNameModal";
 import TextKeyPlacementSelector from "../../../components/TextKeyPlacementSelector/TextKeyPlacementSelector";
 import CreateTextKeyLanguagePage from "../../../components/CreateTextKeyLanguage/CreateTextKeyLanguage";
-import "./CreateTextKeyPage.css";
 import type { CreateTextKeyPageState } from "../../../types/createTextKeyPage";
-
-import { toast, ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css";
 import type { FormErrors } from "../../../types/formErrors";
 
 const CreateTextKeyPage = () => {

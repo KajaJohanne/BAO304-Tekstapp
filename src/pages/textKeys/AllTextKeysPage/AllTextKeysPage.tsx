@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@digdir/designsystemet-react";
+import { BiPlus } from "react-icons/bi";
+
 import { getAllTextKeys, type TextKeyListItem } from "../../../../api";
 import "./AllTextKeysPage.css";
 import "../../../components/CreateTypeSelector/CreateTypeSelector";
 import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
-import { Button, Search } from "@digdir/designsystemet-react";
-import { BiPlus, BiSearch } from "react-icons/bi";
 import TextKeyList from "../../../components/TextKeyList/TextKeyList";
+import SearchBar from "../../../components/Search/SearchBar";
 
 const AllTextKeysPage = () => {
   const navigate = useNavigate();
   const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  //Søkefelt
+  const filteredTextKeys = textKeys.filter((textKey) => 
+    textKey.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  //Henter tekstnøkler
   useEffect(() => {
     const fetchTextKeys = async () => {
       const data = await getAllTextKeys();
@@ -36,36 +44,24 @@ const AllTextKeysPage = () => {
           Legg til ny tekstnøkkel
       </Button>
 
-      {/* Søkefelt fra designsystemet */}
-      <Search className="search-bar">
-        <Search.Input 
-          aria-aria-label="Søk etter tekstnøkkel"
-          placeholder="Søk etter"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-        {searchTerm && (
-          <Search.Clear 
-            onClick={() => setSearchTerm("")}
-            className="search-clear"
-          />
-        )}
-        <Search.Button className="search-button">
-          <BiSearch />
-        </Search.Button>
-      </Search>
+      {/* Søkefelt fra komponent */}
+      <SearchBar 
+        value={searchTerm}
+        onChange={setSearchTerm}
+        placeholder="Søk etter tekstnøkkel"
+        ariaLabel="Søk etter tekstnøkkel"
+      />
 
-      {/* Liste over alle tekstnøkler */}
+      {/* Liste over alle tekstnøkler, tom state ved ingen treff */}
       <div className="text-key-list-wrapper">
         {textKeys.length === 0 ? (
-          <p>Ingen tekstnøkler funnet.</p>
+          <p>Ingen tekstnøkler finnes enda</p>
+        ) : filteredTextKeys.length === 0 ? (
+          <div className="empty-state">
+            <p>Ingen treff</p>
+          </div>
         ) : (
-          textKeys
-            .filter((textKeys) =>
-              textKeys.name.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((textKey) => (
+            filteredTextKeys.map((textKey) => (
             <TextKeyList
               key={textKey.id}
               textKey={textKey}
