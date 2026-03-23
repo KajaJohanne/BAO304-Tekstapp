@@ -56,7 +56,14 @@ const CreateApplicationPage = () => {
   return (
     <div className="create-application">
 
-      <button onClick={() => navigate("/home")}>← Tilbake</button>
+      {/* Tilbake knapp, tilbake til tekstnøkler */}
+      <button
+        onClick={() => navigate("/home")}
+        className="back-button"
+      >
+        <span className="back-arrow">‹</span>
+        <span className="back-text">Tilbake til applikasjoner</span>
+      </button>
 
       <h1>Opprett applikasjon</h1>
 
