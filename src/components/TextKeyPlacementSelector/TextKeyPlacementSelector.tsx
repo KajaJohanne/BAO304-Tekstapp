@@ -13,6 +13,7 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);
 
+    //Henter plassering om man kommer fra applikasjon/subSection siden
     useEffect (() => {
         if (!applications.length) return;
 
@@ -69,7 +70,7 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
     };
 
     const levelOne = selectedApplication?.sections ?? [];
-    const selectedSectionObject = selectedApplication?.sections.find(
+    const selectedSectionObject = selectedApplication?.sections?.find(
         (section) => section.name === selectedLevelOne
     );
     const levelTwo = selectedSectionObject?.subSections ?? [];
@@ -111,7 +112,11 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
                             <button
                                 key={application.id}
                                 className={`option ${selectedApplication?.id === application.id ? "selected" : ""}`}
-                                onClick={() => setSelectedApplication(application)}
+                                onClick={() => {
+                                    setSelectedApplication(application);
+                                    setSelectedLevelOne(null);
+                                    setSelectedLevelTwo(null);
+                                }}
                                 type="button"
                             >
                                 <span>{application.name}</span>
