@@ -18,7 +18,6 @@ const LoginPage = () => {
   );
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const toggleEnvironment = (environment: Environment) => {
     setAllowedEnvironments((prev) =>
@@ -31,7 +30,6 @@ const LoginPage = () => {
 
   const resetMessage = () => {
     setErrorMessage("");
-    setSuccessMessage("");
   };
 
   const resetForm = () => {
@@ -89,12 +87,9 @@ const LoginPage = () => {
       }),
     );
 
-    setSuccessMessage(`${trimmedName} - velkommen til Tekstapp`);
-
     setTimeout(() => {
-      setSuccessMessage("");
       navigate("/home");
-    }, 3000);
+    }, 400);
   };
 
   const handleLogin = async () => {
@@ -121,12 +116,9 @@ const LoginPage = () => {
 
     localStorage.setItem("currentUser", JSON.stringify(response.user));
 
-    setSuccessMessage(`${response.user.name} - velkommen tilbake!`);
-
     setTimeout(() => {
-      setSuccessMessage("");
       navigate("/home");
-    }, 3000);
+    }, 400);
   };
 
   useEffect(() => {
@@ -135,12 +127,6 @@ const LoginPage = () => {
 
   return (
     <div className="login-page">
-      {successMessage && (
-        <div className="popup-overlay">
-          <div className="popup-box">{successMessage}</div>
-        </div>
-      )}
-
       <img
         src="images/statens-vegvesen-logo-header.svg"
         alt="Statens vegvesen"
@@ -237,7 +223,7 @@ const LoginPage = () => {
         )}
         {errorMessage && (
           <div>
-            <ValidationMessage data-color="danger" className="error-message">
+            <ValidationMessage data-color="warning" className="error-message">
               {errorMessage}
             </ValidationMessage>
           </div>
