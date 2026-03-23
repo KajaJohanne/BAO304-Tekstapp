@@ -6,6 +6,7 @@ import {
   textKeyExists,
   type TextValues,
   type ApplicationListItem,
+  type TextType,
 } from "../../../../api";
 import TextTypeSelector from "../../../components/TextTypeSelector/TextTypeSelector";
 import TextKeyNameModal from "../../../components/TextKeyNameModal/TextKeyNameModal";
@@ -31,6 +32,9 @@ const CreateTextKeyPage = () => {
     nynorsk: "",
     engelsk: "",
   });
+  const [selectedTextType, setSelectedTextType] = useState<TextType | null>(null);    
+
+
   const [errors, setErrors] = useState<FormErrors>({});
   const pageState = useMemo(() => {
     if (!location.state) return null;
@@ -44,6 +48,7 @@ const CreateTextKeyPage = () => {
   /^[A-Za-zÆØÅæøå]+$/.test(name.trim()) &&
   !!selectedApplicationId &&
   !!selectedPlacement.trim() &&
+  !!selectedTextType &&
   !!formData.bokmål.trim() &&
   !!formData.nynorsk.trim() &&
   !!formData.engelsk.trim();
@@ -123,6 +128,10 @@ const CreateTextKeyPage = () => {
       newErrors.placement = "Du må velge hvor tekstnøkkelen skal ligge.";
     }
 
+    //Valg av teksttype
+    if (!selectedTextType) {
+      newErrors.textType = "Du må velge en teksttype.";
+    }
     //Validering av bokmål input felt
     if (!formData.bokmål.trim()) {
       newErrors.bokmål = "Du må fylle inn bokmål feltet.";
@@ -158,6 +167,11 @@ const CreateTextKeyPage = () => {
       return;
     }
 
+    if (!selectedTextType) {
+      toast.error("Du må velge en teksttype.");
+      return;
+    }
+
     const placementPath = selectedPlacement
       .split(".")
       .map((part) => part.trim())
@@ -185,6 +199,7 @@ const CreateTextKeyPage = () => {
       selectedApplication.name,
       formData,
       placementPath,
+      selectedTextType
     );
 
     if (response) {
@@ -212,7 +227,20 @@ const CreateTextKeyPage = () => {
       <h1 className="create-text-key-page_title">Legg til ny tekstnøkkel</h1>
         <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler </p>
             {/* komponent */}
-            <TextTypeSelector />
+            <TextTypeSelector
+              value={selectedTextType}
+              onChange={(type) => {
+                setSelectedTextType(type);
+                setErrors((prev) => ({
+                  ...prev,
+                  textType: "",
+                }));
+              }}
+            />
+            {errors.textType && (
+              <p className="field-error">{errors.textType}</p>
+            )}
+
             {/* komponent */}
             <TextKeyNameModal
               value={name}
@@ -222,6 +250,7 @@ const CreateTextKeyPage = () => {
             {errors.name && (
               <p className="field-error">{errors.name}</p>
             )}
+
             {/* komponent */}
             <TextKeyPlacementSelector 
               applications={applications}

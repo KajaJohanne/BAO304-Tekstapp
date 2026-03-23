@@ -1,4 +1,4 @@
-import { TextKeyListItem } from "../../api"
+import { type TextKeyListItem } from "../../api"
 
 export type TextKeyCardProps = {
     textKey: TextKeyListItem;

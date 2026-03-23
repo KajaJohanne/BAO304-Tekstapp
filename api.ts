@@ -16,6 +16,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfi
 
 export type Environment = "utv" | "test" | "prod";
 export type Language = "bokmål" | "nynorsk" | "engelsk";
+export type TextType = "Tittel" | "Brødtekst" | "Feilmelding" | "Knappetekst" | "Hjelpetekst";
 
 export interface TextValues {
   bokmål: string;
@@ -43,6 +44,7 @@ export interface TextKeyDocument {
   name: string;
   applicationId: string;
   applicationName: string;
+  textType: TextType;
   default: TextValues;
   environments: {
     utv: TextValues;
@@ -174,7 +176,8 @@ export async function saveDefaultText(
   applicationId: string,
   applicationName: string,
   defaultText: TextValues,
-  placementPath: string[]
+  placementPath: string[],
+  textType: TextType
 ): Promise<string | null> {
   try {
     //Sjekker om tekstnøkkel finnes allerede
@@ -188,6 +191,7 @@ export async function saveDefaultText(
       name,
       applicationId,
       applicationName,
+      textType,
       default: defaultText,
       environments: {
         utv: { bokmål: "", nynorsk: "", engelsk: "" },
