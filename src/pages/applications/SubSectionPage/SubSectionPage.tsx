@@ -15,7 +15,7 @@ const SubSectionPage = () => {
 
     const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue] = useState("");
 
     const pageState = useMemo(() => {
         if (location.state) {

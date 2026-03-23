@@ -39,12 +39,6 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
         }
     }, [applications, selectedApplicationId, selectedPlacement]);
 
-    const handleApplicationSelect = (application: ApplicationListItem) => {
-        setSelectedApplication(application);
-        setSelectedLevelOne(null);
-        setSelectedLevelTwo(null);
-    };
-
     //Valg av nivåer, rekkefølge
     const handleLevelOne = (item: string) => {
         setSelectedLevelOne(item);
