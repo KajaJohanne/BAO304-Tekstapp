@@ -15,6 +15,12 @@ const AllTextKeysPage = () => {
   const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  //Søkefelt
+  const filteredTextKeys = textKeys.filter((textKey) => 
+    textKey.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  //Henter tekstnøkler
   useEffect(() => {
     const fetchTextKeys = async () => {
       const data = await getAllTextKeys();
@@ -38,7 +44,7 @@ const AllTextKeysPage = () => {
           Legg til ny tekstnøkkel
       </Button>
 
-      {/* Søkefelt fra designsystemet */}
+      {/* Søkefelt fra komponent */}
       <SearchBar 
         value={searchTerm}
         onChange={setSearchTerm}
@@ -46,16 +52,16 @@ const AllTextKeysPage = () => {
         ariaLabel="Søk etter tekstnøkkel"
       />
 
-      {/* Liste over alle tekstnøkler */}
+      {/* Liste over alle tekstnøkler, tom state ved ingen treff */}
       <div className="text-key-list-wrapper">
         {textKeys.length === 0 ? (
-          <p>Ingen tekstnøkler funnet.</p>
+          <p>Ingen tekstnøkler finnes enda</p>
+        ) : filteredTextKeys.length === 0 ? (
+          <div className="empty-state">
+            <p>Ingen treff</p>
+          </div>
         ) : (
-          textKeys
-            .filter((textKeys) =>
-              textKeys.name.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((textKey) => (
+            filteredTextKeys.map((textKey) => (
             <TextKeyList
               key={textKey.id}
               textKey={textKey}
