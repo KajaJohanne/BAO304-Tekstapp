@@ -70,7 +70,7 @@ export default function LayoutAndHeader() {
           <div className="header-content">
             <Link to="/home" className="logo-link">
               <img
-                src="public/images/statens-vegvesen-logo-header.svg"
+                src="/images/statens-vegvesen-logo-header.svg"
                 alt="Statens vegvesen"
                 className="logoVegvesen"
               />
@@ -86,7 +86,7 @@ export default function LayoutAndHeader() {
                   }
                 }}
               >
-                <img src="public/images/user-icon.svg" className="profile-icon" />
+                <img src="/images/user-icon.svg" className="profile-icon" />
                 {currentUser?.name}
               </button>
 
