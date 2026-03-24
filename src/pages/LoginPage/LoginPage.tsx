@@ -128,7 +128,7 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <img
-        src="images/statens-vegvesen-logo-header.svg"
+        src="public/images/statens-vegvesen-logo-header.svg"
         alt="Statens vegvesen"
         className="logoVegvesen"
       />
