@@ -1,5 +1,4 @@
 import type { ApplicationListItem } from "../../../api";
-import type { Application } from "../../types";
 import { Card } from "@digdir/designsystemet-react"; 
 import { useNavigate } from "react-router-dom";
 import "./ApplicationCard.css";

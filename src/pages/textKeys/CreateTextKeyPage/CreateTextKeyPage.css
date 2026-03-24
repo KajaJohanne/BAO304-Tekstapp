@@ -2,26 +2,6 @@
 body {
     background-color: #f5f5f5;
 }
-.back-button {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-    
-    border: none;
-    padding: 0;
-    cursor: pointer;
-}
-.back-arrow {
-    color: #444F56;
-    font-size: 20px;
-    margin-bottom: 3px;
-}
-.back-text {
-    border-bottom: 2px solid #444F56;
-    line-height: 1.1;
-    font-size: 15px;
-}
 
 .create-text-key-page_content {
     max-width: 920px;

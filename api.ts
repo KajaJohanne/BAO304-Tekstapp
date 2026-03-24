@@ -11,10 +11,12 @@ import {
   where,
   limit,
 } from "firebase/firestore";
-import { db } from "./firebaseConfig";
+import { db, auth } from "./firebaseConfig";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 export type Environment = "utv" | "test" | "prod";
 export type Language = "bokmål" | "nynorsk" | "engelsk";
+export type TextType = "Tittel" | "Brødtekst" | "Feilmelding" | "Knappetekst" | "Hjelpetekst";
 
 export interface TextValues {
   bokmål: string;
@@ -23,6 +25,7 @@ export interface TextValues {
 }
 
 export interface User {
+  uid: string;
   name: string;
   email: string;
   allowedEnvironments: Environment[];
@@ -41,6 +44,7 @@ export interface TextKeyDocument {
   name: string;
   applicationId: string;
   applicationName: string;
+  textType: TextType;
   default: TextValues;
   environments: {
     utv: TextValues;
@@ -57,6 +61,99 @@ export interface TextKeyListItem extends TextKeyDocument {
 
 export interface ApplicationListItem extends Application {
   id: string;
+}
+
+// Registrere ny bruker
+export async function registerUser(
+  name: string,
+  email: string,
+  password: string,
+  allowedEnvironments: Environment[],
+): Promise<string | null> {
+  try {
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+
+    await updateProfile(credential.user, {
+      displayName: name,
+    });
+
+    const userData: User = {
+      uid: credential.user.uid,
+      name,
+      email,
+      allowedEnvironments,
+    };
+
+    await setDoc(doc(db, "users", credential.user.uid), userData);
+
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      switch (e.code) {
+        case "auth/email-already-in-use":
+          return "Denne e-posten er allerede i bruk.";
+        case "auth/invalid-email":
+          return "E-posten er ikke gyldig.";
+        case "auth/weak-password":
+          return "Passordet må være minst 6 tegn.";
+        default:
+          return e.message;
+      }
+    }
+    return "Ukjent feil ved opprettelse av bruker."
+  }
+}
+
+// Logger inn på eksisteren bruker
+export async function loginUser(
+  email: string,
+  password: string,
+): Promise<{ user: User} | { error: string}> {
+  try {
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+
+    const userData = await getDoc(doc(db, "users", credential.user.uid));
+
+    const firestoreUser = userData.exists()
+      ? (userData.data() as User)
+      : {
+        uid: credential.user.uid,
+        name: credential.user.displayName || "Bruker",
+        email: credential.user.email || email,
+        allowedEnvironments: [],
+      };
+
+      return { user: firestoreUser };
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      switch (e.code) {
+        case "auth/invalid-email":
+          return { error: "E-posten er ikke gyldig." };
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          return { error: "Feil e-post eller passord." };
+        default:
+          return { error: e.message };
+      }
+    }
+    return { error: "Ukjent feil ved innlogging." }
+  }
+}
+
+export async function getUser(uid: string): Promise<User | null> {
+  try {
+    const userDoc = await getDoc(doc(db, "users", uid));
+
+    if (!userDoc.exists()) {
+      return null;
+    }
+
+    return userDoc.data() as User;
+  } catch (e) {
+    console.error("Feil ved henting av bruker:", e);
+    return null;
+  }
 }
 
 // Sjekker om det allerede finnes en tekstnøkkel med samme navn
@@ -79,7 +176,8 @@ export async function saveDefaultText(
   applicationId: string,
   applicationName: string,
   defaultText: TextValues,
-  placementPath: string[]
+  placementPath: string[],
+  textType: TextType
 ): Promise<string | null> {
   try {
     //Sjekker om tekstnøkkel finnes allerede
@@ -93,6 +191,7 @@ export async function saveDefaultText(
       name,
       applicationId,
       applicationName,
+      textType,
       default: defaultText,
       environments: {
         utv: { bokmål: "", nynorsk: "", engelsk: "" },
@@ -271,23 +370,6 @@ export async function saveUser(user: User): Promise<string | null> {
     return "Ukjent feil ved lagring av bruker.";
   }
 }
-
-// Henter én bruker fra Firebase
-export async function getUser(email: string): Promise<User | null> {
-  try {
-    const snapshot = await getDoc(doc(db, "users", email));
-
-    if (!snapshot.exists()) {
-      return null;
-    }
-
-    return snapshot.data() as User;
-  } catch (e) {
-    console.error("Feil ved henting av bruker:", e);
-    return null;
-  }
-}
-
 
 // Oppretter ny applikasjon i Firebase
 export async function saveApplication(
