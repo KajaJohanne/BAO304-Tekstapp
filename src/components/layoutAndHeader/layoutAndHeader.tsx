@@ -86,7 +86,7 @@ export default function LayoutAndHeader() {
                   }
                 }}
               >
-                <img src="/images/user-icon.svg" className="profile-icon" />
+                <img src="public/images/user-icon.svg" className="profile-icon" />
                 {currentUser?.name}
               </button>
 
