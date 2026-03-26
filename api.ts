@@ -401,6 +401,22 @@ export async function getAllApplications(): Promise<ApplicationListItem[]> {
   }
 }
 
+// Oppdaterer tekstnøkkel navn og lager det
+export async function updateTextKeyName(
+  documentId: string,
+  newName: string
+): Promise<string | null> {
+  try {
+    await updateDoc(doc(db, "textKeys", documentId), {
+      name: newName,
+    });
+
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved oppdatering av navn";
 // Sjekker om det finnes en applikasjon med samme navn fra før
 export async function applicationExists(name: string): Promise<boolean> {
   try {
