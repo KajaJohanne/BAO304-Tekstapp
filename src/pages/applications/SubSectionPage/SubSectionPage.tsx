@@ -6,6 +6,7 @@ import { BiPlus } from "react-icons/bi";
 
 import {
     getTextKeysByApplication,
+    deleteTextKey,
     type TextKeyListItem,
 } from "../../../../api";
 import type { subSectionState } from "../../../types/subSection";
@@ -94,6 +95,38 @@ const SubSectionPage = () => {
     console.log("side state:", pageState);
     console.log("tekstnøkler:", textKeys);
 
+    //Slette tekstnøkkel
+    const handleDeleteSelected = async () => {
+        if (checkedKeys.length === 0) return;
+
+        const confirmed = window.confirm(
+            `Er du sikker på at du vil slette?\nAntall tekstnøkler valgt: ${checkedKeys.length}`
+        );
+        
+        if (!confirmed) return;
+
+        try {
+            const results = await Promise.all(
+                checkedKeys.map((id) => deleteTextKey(id))
+            );
+
+            const firstError = results.find((result) => result !== null);
+            if (firstError) {
+                console.error(firstError);
+                alert(firstError);
+                return;
+            }
+
+            setTextKeys((prev) => 
+                prev.filter((textKey) => !checkedKeys.includes(textKey.id))
+            );
+            setCheckedKeys([]);
+        } catch (error) {
+            console.error("Feil ved sletting av tekstnøkler:", error);
+            alert("Noe gikk galt ved sletting.");
+        }
+    };
+
     return (
         <div className="subsection-page">
             {/* Tilbake knapp */}
@@ -148,8 +181,8 @@ const SubSectionPage = () => {
                 <div />
                 <div className="subsection-marker-title">Marker</div>
             </div>
-
-            {/* Dukker opp hvi det ikke finnes noen tekstnøkler tilhørende kategorien */}
+            
+            {/* Dukker opp hvis det ikke finnes noen tekstnøkler tilhørende kategorien */}
             {filteredTextKeys.length === 0 ? (
                 <p className="subsection-empty">Ingen tekstnøkler funnet.</p>
             ) : (
@@ -175,6 +208,16 @@ const SubSectionPage = () => {
                     ))}
                 </div>
             )}
+
+            {/* Slett knapp */}
+            <Button 
+                onClick={handleDeleteSelected}
+                disabled={checkedKeys.length === 0}
+                className="subsection-delete-button"
+            >
+                Slett tekstnøkkel
+            </Button>
+            
         </div>
     );
 };

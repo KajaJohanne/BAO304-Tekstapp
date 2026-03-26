@@ -1,48 +1,50 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./TextKeyDetailPage.css";
+import "react-toastify/dist/ReactToastify.css";
+
+import { Button } from "@digdir/designsystemet-react";
+import { PencilIcon } from "@navikt/aksel-icons";
+import { toast, ToastContainer } from "react-toastify";
 
 import {
   getTextKey,
   updateEnviormentText,
+  updateTextKeyName,
   type Environment,
   type TextKeyDocument,
   type TextValues,
   type User,
 } from "../../../../api";
 
-const TextKeyDetailPage = () => {
-  // Henter id fra URL
-  const { id } = useParams();
+import CreateTextKeyLanguagePage from "../../../components/CreateTextKeyLanguage/CreateTextKeyLanguage";
 
-  // Navigasjon mellom sider
+const TextKeyDetailPage = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  // Valgt tekstnøkkel
   const [textKey, setTextKey] = useState<TextKeyDocument | null>(null);
-
-  // Miljøer brukeren har tilgang til
   const [allowedEnvironments, setAllowedEnvironments] =
     useState<Environment[]>([]);
-
-  // Hvilket miljø som er valgt
   const [currentEnvironment, setCurrentEnvironment] =
     useState<Environment | null>(null);
 
-  // Tekstfeltene som kan redigeres
   const [formData, setFormData] = useState<TextValues>({
     bokmål: "",
     nynorsk: "",
     engelsk: "",
   });
 
-  // Henter bruker fra localStorage
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState("");
+  const [nameError, setNameError] = useState("");
+
+  // Hent bruker
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
 
     if (storedUser) {
       const parsedUser: User = JSON.parse(storedUser);
-
       setAllowedEnvironments(parsedUser.allowedEnvironments);
 
       if (parsedUser.allowedEnvironments.length > 0) {
@@ -51,22 +53,19 @@ const TextKeyDetailPage = () => {
     }
   }, []);
 
-  // Henter tekstnøkkel fra databasen
+  // Hent tekstnøkkel
   useEffect(() => {
     const fetchTextKey = async () => {
       if (!id) return;
 
       const data = await getTextKey(id);
-
-      if (data) {
-        setTextKey(data);
-      }
+      if (data) setTextKey(data);
     };
 
     fetchTextKey();
   }, [id]);
 
-  // Oppdaterer tekstfeltene når miljø endres
+  // Sett formData
   useEffect(() => {
     if (!textKey || !currentEnvironment) return;
 
@@ -79,7 +78,6 @@ const TextKeyDetailPage = () => {
     });
   }, [textKey, currentEnvironment]);
 
-  // Oppdaterer state når bruker skriver
   const handleChange = (field: keyof TextValues, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -87,66 +85,154 @@ const TextKeyDetailPage = () => {
     }));
   };
 
-  // Lagrer endringer
+  // Validering
+  const validateName = (value: string) => {
+    const trimmed = value.trim();
+
+    if (!trimmed) return "Du må fylle inn navn på tekstnøkkelen.";
+    if (trimmed.includes(" ")) return "Nøkkelen kan ikke inneholde mellomrom.";
+    if (!/^[A-Za-zÆØÅæøå]+$/.test(trimmed))
+      return "Nøkkelen kan kun inneholde bokstaver.";
+
+    return "";
+  };
+
+  // Lagre tekst
   const handleSave = async () => {
-  if (!id || !currentEnvironment) return;
+    if (!id || !currentEnvironment) return;
 
-  const response = await updateEnviormentText(
-    id,
-    currentEnvironment,
-    formData
-  );
+    const response = await updateEnviormentText(
+      id,
+      currentEnvironment,
+      formData
+    );
 
-  if (response) {
-    window.alert(`Feil: ${response}`);
-  } else {
-    window.alert("Miljøtekst lagret");
-
-    const updatedTextKey = await getTextKey(id);
-
-    if (updatedTextKey) {
-      setTextKey(updatedTextKey);
-
-      const environmentData =
-        updatedTextKey.environments[currentEnvironment];
-
-      setFormData({
-        bokmål: environmentData.bokmål || updatedTextKey.default.bokmål,
-        nynorsk: environmentData.nynorsk || updatedTextKey.default.nynorsk,
-        engelsk: environmentData.engelsk || updatedTextKey.default.engelsk,
-      });
+    if (response) {
+      toast.error(`Feil: ${response}`);
+      return;
     }
-  }
-};
- 
-  // Laster tekstnøkkel
+
+    toast.success("Endringer lagret");
+
+    setTextKey((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        environments: {
+          ...prev.environments,
+          [currentEnvironment]: {
+            ...prev.environments[currentEnvironment],
+            ...formData,
+          },
+        },
+      };
+    });
+  };
+
   if (!textKey) {
     return <div className="container">Laster tekstnøkkel...</div>;
   }
 
-  // Tom-state: sjekker om alle tekstfeltene er tomme
   const noText =
     !formData.bokmål && !formData.nynorsk && !formData.engelsk;
 
   return (
     <div className="container">
-
-      {/* Tilbakeknapp */}
-      <p
-        className="backLink"
-        onClick={() => navigate("/textkeys")}>
+      <p className="backLink" onClick={() => navigate("/textkeys")}>
         ← Tekstnøkler
       </p>
 
-      {/* Tittel */}
       <h1 className="title">Rediger tekstnøkkel</h1>
+      <p className="subtitle">Her kan du redigere tekstnøkkelen</p>
 
-      <p className="subtitle">
-        Her kan du redigere tekstnøkkelen
-      </p>
+      {/* Navn og redigering */}
+     <div className="headerRow">
+    <div className="nameSection">
+    {isEditingName ? (
+      <>
+        <input
+          className="editInput"
+          value={editedName}
+          onChange={(e) => {
+            setEditedName(e.target.value);
+            setNameError("");
+          }}
+          onKeyDown={async (e) => {
+            if (e.key === "Enter") {
+              const error = validateName(editedName);
 
-      {/* Navn på tekstnøkkel */}
+              if (error) {
+                setNameError(error);
+                return;
+              }
+
+              const response = await updateTextKeyName(id!, editedName);
+
+              if (response) {
+                toast.error(`Feil: ${response}`);
+                return;
+              }
+
+              setTextKey((prev) => {
+                if (!prev) return prev;
+                return { ...prev, name: editedName };
+              });
+
+              setIsEditingName(false);
+              toast.success("Navn lagret");
+            }
+
+            if (e.key === "Escape") {
+              setIsEditingName(false);
+              setNameError("");
+            }
+          }}
+          autoFocus
+        />
+
+        <p className="field-error">{nameError || ""}</p>
+      </>
+    ) : (
       <h2 className="textKeyName">{textKey.name}</h2>
+    )}
+  </div>
+
+  <Button
+  className="iconButton"
+  aria-label={isEditingName ? "Lagre" : "Rediger"}
+  onClick={async () => {
+    if (isEditingName) {
+      const error = validateName(editedName);
+
+      if (error) {
+        setNameError(error);
+        return;
+      }
+
+      const response = await updateTextKeyName(id!, editedName);
+
+      if (response) {
+        toast.error(`Feil: ${response}`);
+        return;
+      }
+
+      setTextKey((prev) => {
+        if (!prev) return prev;
+        return { ...prev, name: editedName };
+      });
+
+      setIsEditingName(false);
+      toast.success("Navn lagret");
+    } else {
+      setIsEditingName(true);
+      setEditedName(textKey.name);
+    }
+  }}
+>
+  {isEditingName ? "Lagre" : <PencilIcon aria-hidden />}
+</Button>
+</div>
 
       {/* Miljøvalg */}
       <div className="environmentSection">
@@ -167,65 +253,28 @@ const TextKeyDetailPage = () => {
         </div>
       </div>
 
+      <ToastContainer position="top-center" autoClose={3000} />
       {currentEnvironment && (
         <>
           <p className="currentEnvironment">
-            Du redigerer nå miljø:{" "}
+            Du redigerer nå i:{" "}
             <strong>{currentEnvironment.toUpperCase()}</strong>
           </p>
 
-          {/* Tom state melding */}
           {noText && (
             <p className="emptyState">
-              Ingen tekst finnes for dette miljøet enda. Legg til tekst under.
+              Ingen tekst finnes for denne tekstnøkkelen enda.
             </p>
           )}
 
-          {/* Bokmål */}
-          <div className="inputGroup">
-            <label>Bokmål</label>
-            <input
-              type="text"
-              className="textInput"
-              value={formData.bokmål}
-              onChange={(e) =>
-                handleChange("bokmål", e.target.value)
-              }
-            />
-          </div>
+          <CreateTextKeyLanguagePage
+            values={formData}
+            onChange={handleChange}
+            errors={{}}
+          />
 
-          {/* Nynorsk */}
-          <div className="inputGroup">
-            <label>Nynorsk</label>
-            <input
-              type="text"
-              className="textInput"
-              value={formData.nynorsk}
-              onChange={(e) =>
-                handleChange("nynorsk", e.target.value)
-              }
-            />
-          </div>
-
-          {/* Engelsk */}
-          <div className="inputGroup">
-            <label>Engelsk</label>
-            <input
-              type="text"
-              className="textInput"
-              value={formData.engelsk}
-              onChange={(e) =>
-                handleChange("engelsk", e.target.value)
-              }
-            />
-          </div>
-
-          {/* Knapper */}
           <div className="buttonRow">
-            <button
-              className="saveButton"
-              onClick={handleSave}
-            >
+            <button className="saveButton" onClick={handleSave}>
               Lagre
             </button>
 
