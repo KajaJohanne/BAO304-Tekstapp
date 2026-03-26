@@ -139,9 +139,13 @@ const TextKeyDetailPage = () => {
 
   return (
     <div className="container">
-      <p className="backLink" onClick={() => navigate("/textkeys")}>
-        ← Tekstnøkler
-      </p>
+      <button
+    className="back-button"
+    onClick={() => navigate(-1)}
+      >
+    <span className="back-arrow">‹</span>
+    <span className="back-text">Tekstnøkler</span>
+  </button>
 
       <h1 className="title">Rediger tekstnøkkel</h1>
       <p className="subtitle">Her kan du redigere tekstnøkkelen</p>

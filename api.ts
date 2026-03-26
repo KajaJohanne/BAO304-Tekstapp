@@ -10,6 +10,7 @@ import {
   query,
   where,
   limit,
+  deleteDoc,
 } from "firebase/firestore";
 import { db, auth } from "./firebaseConfig";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
@@ -432,4 +433,17 @@ export async function applicationExists(name: string): Promise<boolean> {
     console.error("Feil ved sjekk av duplikat applikasjon", e);
     return false; 
   }
-} 
+}
+
+// Sletter teksnøkkel
+export const deleteTextKey = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, "textKeys", id));
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved sletting av tekstnøkkel.";
+  }
+};
