@@ -97,9 +97,36 @@ const TextKeyDetailPage = () => {
     return "";
   };
 
+  const [fieldErrors, setFieldErrors] = useState<Partial<TextValues>>({});
+
+  const validateFields = () => {
+    const errors: Partial<TextValues> = {};
+
+    if (!formData.bokmål.trim()) {
+      errors.bokmål = "Bokmål feltet kan ikke være tomt.";
+    }
+
+    if (!formData.nynorsk.trim()) {
+      errors.nynorsk = "Nynorsk feltet kan ikke være tomt.";
+    }
+
+    if (!formData.engelsk.trim()) {
+      errors.engelsk = "Engelsk feltet kan ikke være tomt.";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   // Lagre tekst
   const handleSave = async () => {
     if (!id || !currentEnvironment) return;
+
+    const isValid = validateFields();
+    if (!isValid) {
+      toast.error("Fyll inn alle feltene før du lagrer.");
+      return;
+    }
 
     const response = await updateEnviormentText(
       id,
@@ -274,7 +301,7 @@ const TextKeyDetailPage = () => {
           <CreateTextKeyLanguagePage
             values={formData}
             onChange={handleChange}
-            errors={{}}
+            errors={fieldErrors}
           />
 
           <div className="buttonRow">
