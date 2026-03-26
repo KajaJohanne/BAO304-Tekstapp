@@ -9,7 +9,7 @@ const CreateTextKeyLanguagePage = ({ values, onChange, errors, }: CreateTextKeyL
             <div className="create-text-key-language_field">
             <label htmlFor="bokmal-text">Bokmål</label>
                 <Textarea 
-                    id="bokmal-text"
+                    id="bokmal-text" rows={4}
                     value={values.bokmål}
                     onChange={(e) => onChange("bokmål", e.target.value)}
                 />
@@ -21,8 +21,8 @@ const CreateTextKeyLanguagePage = ({ values, onChange, errors, }: CreateTextKeyL
             <div className="create-text-key-language_field">
             <label htmlFor="nynorsk-text">Nynorsk</label>
                 <Textarea 
-                    id="nynorsk-text"
-                    value={values.nynorsk}
+                    id="nynorsk-text" rows={4}
+                    value={values.nynorsk} 
                     onChange={(e) => onChange("nynorsk", e.target.value)}
                 />
                 {/* Feilmelding nynorsk felt */}
@@ -33,7 +33,7 @@ const CreateTextKeyLanguagePage = ({ values, onChange, errors, }: CreateTextKeyL
             <div className="create-text-key-language_field">
                 <label htmlFor="english-text">Engelsk</label>
                 <Textarea 
-                    id="english-text"
+                    id="english-text" rows={4}
                     value={values.engelsk}
                     onChange={(e) => onChange("engelsk", e.target.value)}
                 />
