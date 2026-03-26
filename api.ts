@@ -417,6 +417,10 @@ export async function updateTextKeyName(
       return e.message;
     }
     return "Ukjent feil ved oppdatering av navn";
+  }
+}
+
+
 // Sjekker om det finnes en applikasjon med samme navn fra før
 export async function applicationExists(name: string): Promise<boolean> {
   try {
@@ -428,4 +432,4 @@ export async function applicationExists(name: string): Promise<boolean> {
     console.error("Feil ved sjekk av duplikat applikasjon", e);
     return false; 
   }
-}
+} 
