@@ -199,15 +199,39 @@ const TextKeyDetailPage = () => {
   </div>
 
   <Button
-    className="iconButton"
-    aria-label="Rediger"
-    onClick={() => {
+  className="iconButton"
+  aria-label={isEditingName ? "Lagre" : "Rediger"}
+  onClick={async () => {
+    if (isEditingName) {
+      const error = validateName(editedName);
+
+      if (error) {
+        setNameError(error);
+        return;
+      }
+
+      const response = await updateTextKeyName(id!, editedName);
+
+      if (response) {
+        toast.error(`Feil: ${response}`);
+        return;
+      }
+
+      setTextKey((prev) => {
+        if (!prev) return prev;
+        return { ...prev, name: editedName };
+      });
+
+      setIsEditingName(false);
+      toast.success("Navn lagret");
+    } else {
       setIsEditingName(true);
       setEditedName(textKey.name);
-    }}
-  >
-    <PencilIcon aria-hidden />
-  </Button>
+    }
+  }}
+>
+  {isEditingName ? "Lagre" : <PencilIcon aria-hidden />}
+</Button>
 </div>
 
       {/* Miljøvalg */}
@@ -230,17 +254,16 @@ const TextKeyDetailPage = () => {
       </div>
 
       <ToastContainer position="top-center" autoClose={3000} />
-
       {currentEnvironment && (
         <>
           <p className="currentEnvironment">
-            Du redigerer nå miljø:{" "}
+            Du redigerer nå i:{" "}
             <strong>{currentEnvironment.toUpperCase()}</strong>
           </p>
 
           {noText && (
             <p className="emptyState">
-              Ingen tekst finnes for dette miljøet enda.
+              Ingen tekst finnes for denne tekstnøkkelen enda.
             </p>
           )}
 
