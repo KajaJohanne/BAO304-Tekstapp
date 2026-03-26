@@ -100,7 +100,7 @@ const SubSectionPage = () => {
         if (checkedKeys.length === 0) return;
 
         const confirmed = window.confirm(
-            `Er du sikker på at du vil slette ${checkedKeys.length} tekstnøkkel(er)?`
+            `Er du sikker på at du vil slette?\nAntall tekstnøkler valgt: ${checkedKeys.length}`
         );
         
         if (!confirmed) return;
