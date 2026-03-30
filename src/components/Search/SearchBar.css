@@ -44,6 +44,7 @@
 }
 .search-button:hover {
   background: transparent;
+  border: none;
 }
 .search-button svg {
   width: 28px;

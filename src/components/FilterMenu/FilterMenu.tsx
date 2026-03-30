@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./FilterMenu.css";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
 
 export type SortOption = "lastChanged" | "createdAt" | "alphabetical";
 export type TextTypeOption =
@@ -12,9 +13,9 @@ export type TextTypeOption =
 export type UsageStatusOption = "inUse" | "notInUse";
 
 export type FilterValues = {
-  sort: SortOption[];
-  textTypes: TextTypeOption[];
-  usageStatus: UsageStatusOption[];
+  sort: SortOption | null;
+  textTypes: TextTypeOption | null;
+  usageStatus: UsageStatusOption | null;
 };
 
 type FilterMenuProps = {
@@ -45,30 +46,22 @@ const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
     }));
   };
 
-  // legger til eller fjerner filtervalg
-  const toggleValue = <T extends string>(
-    category: keyof FilterValues,
-    option: T,
+  const setSingleValue = <K extends keyof FilterValues>(
+    category: K,
+    option: FilterValues[K],
   ) => {
-    setLocalFilters((prev) => {
-      const currentValues = prev[category] as T[];
-      const exists = currentValues.includes(option);
-
-      return {
-        ...prev,
-        [category]: exists
-          ? currentValues.filter((item) => item !== option)
-          : [...currentValues, option],
-      };
-    });
+    setLocalFilters((prev) => ({
+      ...prev,
+      [category]: prev[category] === option ? null : option,
+    }));
   };
 
   // nulstill alle filtre
   const resetFilters = () => {
     const resetValue: FilterValues = {
-      sort: [],
-      textTypes: [],
-      usageStatus: [],
+      sort: null,
+      textTypes: null,
+      usageStatus: null,
     };
     setLocalFilters(resetValue);
     onApply(resetValue);
@@ -89,76 +82,88 @@ const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
       {isOpen && (
         <aside className="filter-panel">
           <div className="filter-menu">
-            <Section
-              title="Sortering"
-              isOpen={expanded.sorting}
-              onToggle={() => toggleSection("sorting")}
-            >
-              <Checkbox
-                label="Sist endret"
-                checked={localFilters.sort.includes("lastChanged")}
-                onChange={() => toggleValue("sort", "lastChanged")}
-              />
-              <Checkbox
-                label="Opprettet dato"
-                checked={localFilters.sort.includes("createdAt")}
-                onChange={() => toggleValue("sort", "createdAt")}
-              />
-              <Checkbox
-                label="Alfabetisk"
-                checked={localFilters.sort.includes("alphabetical")}
-                onChange={() => toggleValue("sort", "alphabetical")}
-              />
-            </Section>
+            <div className="filter-menu__content">
+              <Section
+                title="Sortering"
+                isOpen={expanded.sorting}
+                onToggle={() => toggleSection("sorting")}
+              >
+                <Checkbox
+                  name="sort"
+                  label="Sist endret"
+                  checked={localFilters.sort === "lastChanged"}
+                  onChange={() => setSingleValue("sort", "lastChanged")}
+                />
+                <Checkbox
+                  name="sort"
+                  label="Opprettet dato"
+                  checked={localFilters.sort === "createdAt"}
+                  onChange={() => setSingleValue("sort", "createdAt")}
+                />
+                <Checkbox
+                  name="sort"
+                  label="Alfabetisk"
+                  checked={localFilters.sort === "alphabetical"}
+                  onChange={() => setSingleValue("sort", "alphabetical")}
+                />
+              </Section>
 
-            <Section
-              title="Type tekst"
-              isOpen={expanded.textType}
-              onToggle={() => toggleSection("textType")}
-            >
-              <Checkbox
-                label="Tittel"
-                checked={localFilters.textTypes.includes("Tittel")}
-                onChange={() => toggleValue("textTypes", "Tittel")}
-              />
-              <Checkbox
-                label="Brødtekst"
-                checked={localFilters.textTypes.includes("Brødtekst")}
-                onChange={() => toggleValue("textTypes", "Brødtekst")}
-              />
-              <Checkbox
-                label="Feilmelding"
-                checked={localFilters.textTypes.includes("Feilmelding")}
-                onChange={() => toggleValue("textTypes", "Feilmelding")}
-              />
-              <Checkbox
-                label="Knappetekst"
-                checked={localFilters.textTypes.includes("Knappetekst")}
-                onChange={() => toggleValue("textTypes", "Knappetekst")}
-              />
-              <Checkbox
-                label="Hjelpetekst"
-                checked={localFilters.textTypes.includes("Hjelpetekst")}
-                onChange={() => toggleValue("textTypes", "Hjelpetekst")}
-              />
-            </Section>
+              <Section
+                title="Type tekst"
+                isOpen={expanded.textType}
+                onToggle={() => toggleSection("textType")}
+              >
+                <Checkbox
+                  name="textType"
+                  label="Tittel"
+                  checked={localFilters.textTypes === "Tittel"}
+                  onChange={() => setSingleValue("textTypes", "Tittel")}
+                />
+                <Checkbox
+                  name="textType"
+                  label="Brødtekst"
+                  checked={localFilters.textTypes === "Brødtekst"}
+                  onChange={() => setSingleValue("textTypes", "Brødtekst")}
+                />
+                <Checkbox
+                  name="textType"
+                  label="Feilmelding"
+                  checked={localFilters.textTypes === "Feilmelding"}
+                  onChange={() => setSingleValue("textTypes", "Feilmelding")}
+                />
+                <Checkbox
+                  name="textType"
+                  label="Knappetekst"
+                  checked={localFilters.textTypes === "Knappetekst"}
+                  onChange={() => setSingleValue("textTypes", "Knappetekst")}
+                />
+                <Checkbox
+                  name="textType"
+                  label="Hjelpetekst"
+                  checked={localFilters.textTypes === "Hjelpetekst"}
+                  onChange={() => setSingleValue("textTypes", "Hjelpetekst")}
+                />
+              </Section>
 
-            <Section
-              title="Bruksstatus"
-              isOpen={expanded.usageStatus}
-              onToggle={() => toggleSection("usageStatus")}
-            >
-              <Checkbox
-                label="I bruk"
-                checked={localFilters.usageStatus.includes("inUse")}
-                onChange={() => toggleValue("usageStatus", "inUse")}
-              />
-              <Checkbox
-                label="Ikke i bruk"
-                checked={localFilters.usageStatus.includes("notInUse")}
-                onChange={() => toggleValue("usageStatus", "notInUse")}
-              />
-            </Section>
+              <Section
+                title="Bruksstatus"
+                isOpen={expanded.usageStatus}
+                onToggle={() => toggleSection("usageStatus")}
+              >
+                <Checkbox
+                  name="usageStatus"
+                  label="I bruk"
+                  checked={localFilters.usageStatus === "inUse"}
+                  onChange={() => setSingleValue("usageStatus", "inUse")}
+                />
+                <Checkbox
+                  name="usageStatus"
+                  label="Ikke i bruk"
+                  checked={localFilters.usageStatus === "notInUse"}
+                  onChange={() => setSingleValue("usageStatus", "notInUse")}
+                />
+              </Section>
+            </div>
 
             <div className="filter-menu__actions">
               <button
@@ -200,8 +205,8 @@ const Section = ({ title, isOpen, onToggle, children }: SectionProps) => {
         onClick={onToggle}
       >
         <span>{title}</span>
-        <span className={`filter-menu__chevron ${isOpen ? "open" : ""}`}>
-          ^
+        <span className="filter-menu__chevron">
+          {isOpen ? <HiChevronUp /> : <HiChevronDown />}
         </span>
       </button>
 
@@ -211,15 +216,21 @@ const Section = ({ title, isOpen, onToggle, children }: SectionProps) => {
 };
 
 type CheckboxProps = {
+  name: string;
   label: string;
   checked: boolean;
   onChange: () => void;
 };
 
-const Checkbox = ({ label, checked, onChange }: CheckboxProps) => {
+const Checkbox = ({ name, label, checked, onChange }: CheckboxProps) => {
   return (
     <label className="filter-menu__checkbox">
-      <input type="checkbox" checked={checked} onChange={onChange} />
+      <input
+        type="checkbox"
+        name={name}
+        checked={checked}
+        onChange={onChange}
+      />
       <span>{label}</span>
     </label>
   );

@@ -23,9 +23,9 @@ const AllTextKeysPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [filters, setFilters] = useState<FilterValues>({
-    sort: [],
-    textTypes: [],
-    usageStatus: [],
+    sort: null,
+    textTypes: null,
+    usageStatus: null,
   });
 
   /*
@@ -73,22 +73,20 @@ const AllTextKeysPage = () => {
   const filteredTextKeys = useMemo(() => {
     let result = [...textKeys];
 
-    if (filters.textTypes.length > 0) {
-      result = result.filter((textKey) =>
-        filters.textTypes.includes(textKey.textType),
+    if (filters.textTypes) {
+      result = result.filter(
+        (textKeys) => textKeys.textType === filters.textTypes,
       );
     }
 
     // filtrer på bruksstatus
-    if (filters.usageStatus.length > 0) {
+    if (filters.usageStatus) {
       result = result.filter((textKey) => {
         const inUse = Boolean(textKey.isInUse);
 
-        return filters.usageStatus.some((status) => {
-          if (status === "inUse") return inUse;
-          if (status === "notInUse") return !inUse;
-          return false;
-        });
+        if (filters.usageStatus === "inUse") return inUse;
+        if (filters.usageStatus === "notInUse") return !inUse;
+        return false;
       });
     }
 
@@ -116,9 +114,9 @@ const AllTextKeysPage = () => {
     }
 
     // sorterer resultatet
-    if (filters.sort.includes("alphabetical")) {
+    if (filters.sort === "alphabetical") {
       result.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (filters.sort.includes("lastChanged")) {
+    } else if (filters.sort === "lastChanged") {
       result.sort((a, b) => {
         const dateA = a.createdAt ? new Date(a.lastChanged).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.lastChanged).getTime() : 0;
