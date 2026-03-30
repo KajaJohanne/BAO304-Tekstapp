@@ -246,6 +246,7 @@ const CreateTextKeyPage = () => {
               onSave={handleNameSave}
               error={errors.name}
             />
+            {name && (<p className="name-preview">Valgt navn: {name} </p>)}
             {errors.name && (<ValidationMessage>{errors.name}</ValidationMessage>)}
 
             {/* komponent */}

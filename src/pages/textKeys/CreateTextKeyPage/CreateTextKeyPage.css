@@ -26,6 +26,11 @@ body {
     margin-bottom: 42px;
 }
 
+.name-preview {
+    margin-top: 8px;
+    color: #444F56;
+}
+
 .text-key-preview {
     margin-top: 24px;
 }
