@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./TextKeyDetailPage.css";
 import "react-toastify/dist/ReactToastify.css";
-
+import TextTypeSelector from "../../../components/TextTypeSelector/TextTypeSelector";
+import type { TextType } from "../../../../api";
 import { Button } from "@digdir/designsystemet-react";
 import { PencilIcon } from "@navikt/aksel-icons";
 import { toast, ToastContainer } from "react-toastify";
@@ -28,6 +29,7 @@ const TextKeyDetailPage = () => {
     useState<Environment[]>([]);
   const [currentEnvironment, setCurrentEnvironment] =
     useState<Environment | null>(null);
+  const [textType, setTextType] = useState<TextType | null>(null);
 
   const [formData, setFormData] = useState<TextValues>({
     bokmål: "",
@@ -100,7 +102,14 @@ const TextKeyDetailPage = () => {
   const [fieldErrors, setFieldErrors] = useState<Partial<TextValues>>({});
 
   const validateFields = () => {
+
+    if (!textType) {
+      toast.error("Du må velge teksttype");
+      return false;
+       }
+
     const errors: Partial<TextValues> = {};
+    
 
     if (!formData.bokmål.trim()) {
       errors.bokmål = "Bokmål feltet kan ikke være tomt.";
@@ -291,12 +300,16 @@ const TextKeyDetailPage = () => {
             Du redigerer nå i:{" "}
             <strong>{currentEnvironment.toUpperCase()}</strong>
           </p>
-
+           <TextTypeSelector
+             value={textType}
+              onChange={setTextType}
+           />
           {noText && (
             <p className="emptyState">
               Ingen tekst finnes for denne tekstnøkkelen enda.
             </p>
           )}
+          
 
           <CreateTextKeyLanguagePage
             values={formData}
