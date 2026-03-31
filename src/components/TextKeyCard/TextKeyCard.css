@@ -2,20 +2,22 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) 120px;
     align-items: center;
-    gap: 24px;
-    width: 100%;
+    gap: 30px;
 }
 .text-key-card {
     cursor: pointer; 
-    margin-bottom: 15px;
     transition: box-shadow 0.2s ease; 
     border-bottom: 2px solid #ff9600;
+    padding: 8px;
+    width: 803px;
+
     --dsc-card-border-color: #444f55;
     --dsc-card-border-width: 0px;
     --dsc-card-block-border-width: 0px;  
+
     background-color: white;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
-    padding: 0; 
+    margin-bottom: 0;
 }
 .text-key-card * {
     text-decoration: none;
@@ -52,8 +54,7 @@
     color: #6b7280;
     font-size: 22px;
     cursor: pointer;
-    padding: 0;
-    margin: 0;
+   
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,6 +68,7 @@
     justify-content: center;
     align-items: center;
     margin-bottom: 18px;
+    margin-left: 70px;
 }
 .text-key-card-checkbox-wrapper input[type="checkbox"] {
     width: 17px;
