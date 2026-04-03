@@ -93,7 +93,7 @@ const TextKeyDetailPage = () => {
 
     if (!trimmed) return "Du må fylle inn navn på tekstnøkkelen.";
     if (trimmed.includes(" ")) return "Nøkkelen kan ikke inneholde mellomrom.";
-    if (!/^[A-Za-zÆØÅæøå]+$/.test(trimmed))
+    if (!/^[A-Za-zÆØÅæøå\-.]+$/.test(trimmed))
       return "Nøkkelen kan kun inneholde bokstaver.";
 
     return "";
