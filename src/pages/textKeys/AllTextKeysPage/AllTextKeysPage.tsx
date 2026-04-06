@@ -157,7 +157,9 @@ const AllTextKeysPage = () => {
             ariaLabel="Søk etter tekstnøkkel"
           />
         </div>
-        <FilterMenu value={filters} onApply={setFilters} />
+        <div className="filter-button-wrapper">
+          <FilterMenu value={filters} onApply={setFilters} />
+        </div>
       </div>
 
       {/* Liste over alle tekstnøkler, tom state ved ingen treff */}
