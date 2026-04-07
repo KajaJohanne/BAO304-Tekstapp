@@ -5,6 +5,7 @@ import "./HomePage.css";
 import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard";
 import { Button } from "@digdir/designsystemet-react";
 import { BiPlus } from "react-icons/bi";
+import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -21,12 +22,8 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <button
-        onClick={() => navigate("/create-textkey")}
-        style={{ marginBottom: "20px" }}
-      >
-        ← Tilbake til tekstnøkler
-      </button>
+      {/* Velge mellom applikasjon og tekstnøkkel */}
+      <CreateTypeSelector />
 
       <h1>Applikasjoner</h1>
 
@@ -36,7 +33,6 @@ const HomePage = () => {
           applikasjon, eller legge til en ny.{" "}
         </p>
 
-        {/* TODO stilsett knappen bedre */}
         <Button
           onClick={() => navigate("/create-application")}
           className="add-button"

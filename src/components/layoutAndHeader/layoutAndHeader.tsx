@@ -70,7 +70,7 @@ export default function LayoutAndHeader() {
           <div className="header-content">
             <Link to="/home" className="logo-link">
               <img
-                src="images/statens-vegvesen-logo-header.svg"
+                src="/images/statens-vegvesen-logo-header.svg"
                 alt="Statens vegvesen"
                 className="logoVegvesen"
               />

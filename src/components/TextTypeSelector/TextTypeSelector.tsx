@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./TextTypeSelector.css";
-
-type TextType = "Tittel" | "Brødtekst" | "Feilmelding" | "Knappetekst" | "Hjelpetekst";
+import type { TextType } from "../../../api";
 
 const STORAGE_KEY = "selectedTextType";
 const TEXT_TYPES: TextType[] = [
@@ -12,30 +11,32 @@ const TEXT_TYPES: TextType[] = [
     "Hjelpetekst",
 ];
 
-export default function TextTypeSelector() {
-    const [selected, setSelected] = useState<TextType | null>(null);
+interface TextTypeSelectorProps {
+    value: TextType | null;
+    onChange: (type: TextType) => void;
+}
 
+export default function TextTypeSelector({
+    value, 
+    onChange,
+}: TextTypeSelectorProps) {
     //Henter lagret verdi fra localStorage når komponenten lastes
     useEffect(() => {
         const saved = localStorage.getItem(STORAGE_KEY);
 
-        if (saved && TEXT_TYPES.includes(saved as TextType)) {
-            setSelected(saved as TextType);
+        if (saved && TEXT_TYPES.includes(saved as TextType) && !value) {
+            onChange(saved as TextType);
         }
-    }, []);
+    }, [onChange, value]);
 
     //Lagrer valgt teksttype i localStorage
     useEffect(() => {
-        if (selected) {
-            localStorage.setItem(STORAGE_KEY, selected);
+        if (value) {
+            localStorage.setItem(STORAGE_KEY, value);
         } else {
             localStorage.removeItem(STORAGE_KEY);
         }
-    }, [selected]);
-
-    const handleSelect = (type: TextType) => {
-        setSelected(type);
-    };
+    }, [value]);
 
     return (
         /* Valg av type tekst */
@@ -44,13 +45,13 @@ export default function TextTypeSelector() {
 
             <div className="text-type-selector_button-group">
                 {TEXT_TYPES.map((type) => {
-                    const isSelected = selected === type;
+                    const isSelected = value === type;
 
                     return (
                         <button
                             key={type}
                             type="button"
-                            onClick={() => handleSelect(type)}
+                            onClick={() => onChange(type)}
                             className={`text-type-selector_button ${
                                 isSelected ? "text-type-selector_button-selected" : ""
                             }`}

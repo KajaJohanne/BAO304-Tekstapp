@@ -1,24 +1,29 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { ValidationMessage } from "@digdir/designsystemet-react";
+import "react-toastify/dist/ReactToastify.css";
+import "./CreateTextKeyPage.css";
+import "../../../components/BackButton.css";
+
 import {
   saveDefaultText,
   getAllApplications,
   textKeyExists,
   type TextValues,
   type ApplicationListItem,
+  type TextType,
 } from "../../../../api";
 import TextTypeSelector from "../../../components/TextTypeSelector/TextTypeSelector";
 import TextKeyNameModal from "../../../components/TextKeyNameModal/TextKeyNameModal";
 import TextKeyPlacementSelector from "../../../components/TextKeyPlacementSelector/TextKeyPlacementSelector";
 import CreateTextKeyLanguagePage from "../../../components/CreateTextKeyLanguage/CreateTextKeyLanguage";
-import "./CreateTextKeyPage.css";
-
-import { toast, ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css";
+import type { CreateTextKeyPageState } from "../../../types/createTextKeyPage";
 import type { FormErrors } from "../../../types/formErrors";
 
 const CreateTextKeyPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [name, setName] = useState("");
   const [selectedPlacement, setSelectedPlacement] = useState("");
@@ -29,7 +34,13 @@ const CreateTextKeyPage = () => {
     nynorsk: "",
     engelsk: "",
   });
+  const [selectedTextType, setSelectedTextType] = useState<TextType | null>(null);    
+
   const [errors, setErrors] = useState<FormErrors>({});
+  const pageState = useMemo(() => {
+    if (!location.state) return null;
+    return location.state as CreateTextKeyPageState;
+  }, [location.state]);
   
   // Validering
   const isFormValid =
@@ -38,6 +49,7 @@ const CreateTextKeyPage = () => {
   /^[A-Za-zÆØÅæøå]+$/.test(name.trim()) &&
   !!selectedApplicationId &&
   !!selectedPlacement.trim() &&
+  !!selectedTextType &&
   !!formData.bokmål.trim() &&
   !!formData.nynorsk.trim() &&
   !!formData.engelsk.trim();
@@ -48,14 +60,28 @@ const CreateTextKeyPage = () => {
       const data = await getAllApplications();
       setApplications(data);
 
-      // Setter første applikasjon som valgt hvis det finnes noen
-      if (data.length > 0) {
-        setSelectedApplicationId(data[0].id);
+      if (pageState) {
+        const application = data.find(
+          (app) => app.id === pageState.applicationId
+        );
+      if (application) {
+        setSelectedApplicationId(pageState.applicationId);
+
+        //Henter plasseringen fra subSection siden
+        const placement = pageState.subSectionName
+          ? `${application.name}.${pageState.sectionName}.${pageState.subSectionName}`
+          : `${application.name}.${pageState.sectionName}`;
+
+        setSelectedPlacement(placement);
       }
-    };
+      // Setter første applikasjon som valgt hvis det finnes noen
+    } else if (data.length > 0) {
+      setSelectedApplicationId(data[0].id);
+    }      
+  };
 
     fetchApplications();
-  }, []);
+  }, [pageState]);
 
   // Oppdaterer riktig felt når brukeren skriver
   const handleChange = (field: keyof TextValues, value: string) => {
@@ -103,6 +129,10 @@ const CreateTextKeyPage = () => {
       newErrors.placement = "Du må velge hvor tekstnøkkelen skal ligge.";
     }
 
+    //Valg av teksttype
+    if (!selectedTextType) {
+      newErrors.textType = "Du må velge en teksttype.";
+    }
     //Validering av bokmål input felt
     if (!formData.bokmål.trim()) {
       newErrors.bokmål = "Du må fylle inn bokmål feltet.";
@@ -138,6 +168,11 @@ const CreateTextKeyPage = () => {
       return;
     }
 
+    if (!selectedTextType) {
+      toast.error("Du må velge en teksttype.");
+      return;
+    }
+
     const placementPath = selectedPlacement
       .split(".")
       .map((part) => part.trim())
@@ -165,6 +200,7 @@ const CreateTextKeyPage = () => {
       selectedApplication.name,
       formData,
       placementPath,
+      selectedTextType
     );
 
     if (response) {
@@ -192,20 +228,31 @@ const CreateTextKeyPage = () => {
       <h1 className="create-text-key-page_title">Legg til ny tekstnøkkel</h1>
         <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler </p>
             {/* komponent */}
-            <TextTypeSelector />
+            <TextTypeSelector
+              value={selectedTextType}
+              onChange={(type) => {
+                setSelectedTextType(type);
+                setErrors((prev) => ({
+                  ...prev,
+                  textType: "",
+                }));
+              }}
+            />
+            {errors.textType && (<ValidationMessage>{errors.textType}</ValidationMessage>)}
+
             {/* komponent */}
             <TextKeyNameModal
               value={name}
               onSave={handleNameSave}
               error={errors.name}
             />
-            {errors.name && (
-              <p className="field-error">{errors.name}</p>
-            )}
+            {errors.name && (<ValidationMessage>{errors.name}</ValidationMessage>)}
+
             {/* komponent */}
             <TextKeyPlacementSelector 
               applications={applications}
               selectedPlacement={selectedPlacement}
+              selectedApplicationId={selectedApplicationId}
               onSavePlacement={(placement) => {
                 setSelectedPlacement(placement);
                 setErrors((prev) => ({
@@ -224,13 +271,9 @@ const CreateTextKeyPage = () => {
               textKeyName={name}
             />
             
-            {errors.application && (
-              <p className="field-error">{errors.application}</p>
-            )}
+            {errors.application && (<ValidationMessage>{errors.application}</ValidationMessage>)}
 
-            {errors.placement && (
-              <p className="field-error">{errors.placement}</p>
-            )}
+            {errors.placement && (<ValidationMessage>{errors.placement}</ValidationMessage>)}
 
             {/* Forhåndsvisning av nøkkel navnet */}
             {(selectedPlacement || name) && (
@@ -244,9 +287,7 @@ const CreateTextKeyPage = () => {
               </div>
             )}
 
-            {errors.duplicate && (
-              <p className="field-error">{errors.duplicate}</p>
-            )}
+            {errors.duplicate && (<ValidationMessage>{errors.duplicate}</ValidationMessage>)}
 
             {/* Input felt for bokmål, nynorsk og engelsk */}
             <CreateTextKeyLanguagePage

@@ -64,3 +64,77 @@
 .add-section-container {
   margin-bottom: 32px;
 }
+
+.add-section-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+
+.add-section-form input {
+  width: 300px;
+  padding: 8px 12px;
+  border: 1px solid #444f55;
+  font-size: 16px;
+}
+
+.add-section-form input:focus {
+  outline: none;
+  border-color: #ff9600;
+}
+
+.subsection-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.subsection-row .subsection-item {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.subsection-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.subsection-list-header {
+  font-weight: 500;
+}
+
+.subsection-marker-title {
+  min-width: 18px;
+  text-align: center;
+}
+
+.add-section-btn {
+  background-color: #444f55;
+  color: white;
+  padding: 13px;
+  margin-bottom: 70px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.delete-btn {
+  background-color: #444f55;
+  color: white;
+  padding: 13px;
+  margin-bottom: 70px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

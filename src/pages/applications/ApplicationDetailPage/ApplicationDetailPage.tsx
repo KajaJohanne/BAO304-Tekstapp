@@ -6,6 +6,7 @@ import {
   addSubSectionToApplication,
   deleteApplication,
   addSectionToApplication,
+  deleteSubSections,
 } from "../../../../api";
 import "./ApplicationDetailPage.css";
 import {
@@ -32,6 +33,11 @@ const ApplicationDetailPage = () => {
   // Inputfelt for ny kategori (section)
   const [isAddingSection, setIsAddingSection] = useState(false);
   const [newSectionName, setNewSectionName] = useState("");
+
+  // valgte subsections per section
+  const [checkedSubSections, setCheckedSubSections] = useState<
+    Record<string, string[]>
+  >({}); // Record = objekt hvor nøklene er string og verdiene er lister av strings
 
   const fetchApplication = async () => {
     try {
@@ -101,6 +107,9 @@ const ApplicationDetailPage = () => {
 
   const sections = application.sections ?? [];
 
+  // Anstall valgte subsections
+  const totalChecked = Object.values(checkedSubSections).flat().length; 
+
   const handleDelete = async () => {
     if (!application) return;
 
@@ -133,6 +142,72 @@ const ApplicationDetailPage = () => {
     }
   };
 
+  // Kalles når brukeren ccheckboxer en subsections
+  const handleCheckboxToggle = (
+    sectionName: string,
+    subSectionName: string,
+  ) => {
+    setCheckedSubSections((prev) => {
+      // Hent listen over avhukede subsections for denne sectionen, evt tom liste
+      const currentlyChecked = prev[sectionName] ?? [];
+
+      // Sjekk om denne er huken av allerede
+      const isAlreadySchecked = currentlyChecked.includes(subSectionName);
+
+      return {
+        // Behold alle andre sections
+        ...prev,
+        //oppdater bare denne sectionen sin liste
+        [sectionName]: isAlreadySchecked
+          ? // Hvis den er huken av så fjernes den
+            currentlyChecked.filter((name) => name !== subSectionName)
+          : // Hvis den ikke er huket av så legges den i lista
+            [...currentlyChecked, subSectionName],
+      };
+    });
+  };
+
+  // Kalles når brukeren sletter markerte underkategorier
+  const handleDeleteCheckedSubSections = async () => {
+    if (!application) return;
+
+    // Hent alle sections som har markerte subsections
+    // Object.entries gjør om objektet til en liste
+    const sectionsWithChecked = Object.entries(checkedSubSections).filter(
+      ([, subSections]) => subSections.length > 0,
+    );
+
+    // Om ingenting er huket av, gjør ingen
+    if (sectionsWithChecked.length === 0) return;
+
+    // bekreftelse
+    const confirmed = window.confirm(
+      `Er du sikker på at du vil slette de markerte underkategoriene? Dette kan ikke angres.`,
+    );
+
+    if (!confirmed) return;
+
+    // Kall deleteSubSections for hver som er valgt
+    // Promise.all = alle kallene skjer samtidig
+    const results = await Promise.all(
+      sectionsWithChecked.map(([sectionName, subSectionNames]) =>
+        deleteSubSections(application.id, sectionName, subSectionNames),
+      ),
+    );
+
+    // Sjekk om noen av kallene returnerte en feil
+    const firstError = results.find((result) => result !== null);
+    if (firstError) {
+      toast.error(`Noe gikk galt: ${firstError}`);
+      return;
+    }
+
+    // Nullstill og hent applikasjonen på nytt
+    toast.success(`Underkategoriene ble slettet`);
+    setCheckedSubSections({});
+    await fetchApplication();
+  };
+
   return (
     <div className="application-detail">
       <button onClick={() => navigate(-1)}>‹ Tilbake</button>
@@ -149,6 +224,7 @@ const ApplicationDetailPage = () => {
       <div className="add-section-container">
         <Button
           variant="secondary"
+          className="add-section-btn"
           onClick={() => setIsAddingSection(!isAddingSection)}
         >
           + Legg til kategori
@@ -212,34 +288,70 @@ const ApplicationDetailPage = () => {
             {(section.subSections ?? []).length === 0 ? (
               <p>Ingen underkategorier ennå.</p>
             ) : (
-              <ul className="subsection-list">
-                {section.subSections.map((subSection) => (
-                  <li
-                    key={subSection.name}
-                    className="subsection-item"
-                    onClick={() =>
-                      handleSubSectionClick(section.name, subSection.name)
-                    }
-                  >
-                    <span>{subSection.name}</span>
-                    <span>›</span>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <div className="subsection-list-header">
+                  <div />
+                  <div className="subsection-marker-title">Marker</div>
+                </div>
+
+                <ul className="subsection-list">
+                  {section.subSections.map((subSection) => (
+                    <div key={subSection.name} className="subsection-row">
+                      <li className="subsection-item">
+                        {/* Klikk på teksten navigerer til subsection siden */}
+                        <span
+                          style={{ flex: 1, cursor: "pointer" }}
+                          onClick={() =>
+                            handleSubSectionClick(section.name, subSection.name)
+                          }
+                        >
+                          {subSection.name}
+                        </span>
+                        <span>›</span>
+                      </li>
+
+                      {/* Checkbox for avhuking */}
+                      <input
+                        type="checkbox"
+                        className="subsection-checkbox"
+                        checked={(
+                          checkedSubSections[section.name] ?? []
+                        ).includes(subSection.name)}
+                        onChange={() =>
+                          handleCheckboxToggle(section.name, subSection.name)
+                        }
+                      />
+                    </div>
+                  ))}
+                </ul>
+              </>
             )}
           </div>
         ))
       )}
 
-      {/* Slett-knapp og bekreftelse*/}
-      <div style={{ marginTop: "48px" }}>
+      {/* Knapper */}
+      <div style={{ marginTop: "48px", display: "flex", gap: "16px" }}>
+        {/* Slett markerte underkategorier */}
         <Button
+          variant="secondary"
+          className="delete-btn"
+          disabled={totalChecked === 0}
+          onClick={handleDeleteCheckedSubSections}
+        >
+          Slett underkategorier
+        </Button>
+
+        {/* Slett hele applikasjonen */}
+        {/* Knappen er designsystemet komponent, skal det endres? vanskelig med styling */}
+        <Button
+          className="delete-btn"
           variant="secondary"
           data-color="danger"
           onClick={() => {
             if (
               window.confirm(
-                `Er du sikker på at du ønsker å slette ${application.name}? Dette kan ikke angres.`,
+                `Er du sikker på at du ønsker å slette ${application.name}? Alle tilknyttede tekstnøkler blir også slettet. Dette kan ikke angres.`,
               )
             )
               handleDelete();

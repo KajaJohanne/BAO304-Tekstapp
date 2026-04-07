@@ -12,10 +12,12 @@ import {
   limit,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "./firebaseConfig";
+import { db, auth } from "./firebaseConfig";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 export type Environment = "utv" | "test" | "prod";
 export type Language = "bokmål" | "nynorsk" | "engelsk";
+export type TextType = "Tittel" | "Brødtekst" | "Feilmelding" | "Knappetekst" | "Hjelpetekst";
 
 export interface TextValues {
   bokmål: string;
@@ -24,6 +26,7 @@ export interface TextValues {
 }
 
 export interface User {
+  uid: string;
   name: string;
   email: string;
   allowedEnvironments: Environment[];
@@ -42,6 +45,7 @@ export interface TextKeyDocument {
   name: string;
   applicationId: string;
   applicationName: string;
+  textType: TextType;
   default: TextValues;
   environments: {
     utv: TextValues;
@@ -49,6 +53,29 @@ export interface TextKeyDocument {
     prod: TextValues;
   };
   placementPath: string[];
+  isInUse: boolean;
+  createdAt: string;
+  lastChanged: string;
+}
+
+// for å se om tekstnøkkelen er i bruk eller ikke
+export async function updateTextKeyUsageStatus(
+  documentId: string,
+  isInUse: boolean,
+): Promise <string | null> {
+  try {
+    await updateDoc(doc(db, "textKeys", documentId), {
+      isInUse,
+      lastChanged: new Date().toISOString(),
+    });
+
+    return null;
+  } catch(e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved oppdatering av bruksstatus.";
+  }
 }
 
 // Brukes når vi henter en liste med tekstnøkler og også trenger document id
@@ -58,6 +85,99 @@ export interface TextKeyListItem extends TextKeyDocument {
 
 export interface ApplicationListItem extends Application {
   id: string;
+}
+
+// Registrere ny bruker
+export async function registerUser(
+  name: string,
+  email: string,
+  password: string,
+  allowedEnvironments: Environment[],
+): Promise<string | null> {
+  try {
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+
+    await updateProfile(credential.user, {
+      displayName: name,
+    });
+
+    const userData: User = {
+      uid: credential.user.uid,
+      name,
+      email,
+      allowedEnvironments,
+    };
+
+    await setDoc(doc(db, "users", credential.user.uid), userData);
+
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      switch (e.code) {
+        case "auth/email-already-in-use":
+          return "Denne e-posten er allerede i bruk.";
+        case "auth/invalid-email":
+          return "E-posten er ikke gyldig.";
+        case "auth/weak-password":
+          return "Passordet må være minst 6 tegn.";
+        default:
+          return e.message;
+      }
+    }
+    return "Ukjent feil ved opprettelse av bruker."
+  }
+}
+
+// Logger inn på eksisteren bruker
+export async function loginUser(
+  email: string,
+  password: string,
+): Promise<{ user: User} | { error: string}> {
+  try {
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+
+    const userData = await getDoc(doc(db, "users", credential.user.uid));
+
+    const firestoreUser = userData.exists()
+      ? (userData.data() as User)
+      : {
+        uid: credential.user.uid,
+        name: credential.user.displayName || "Bruker",
+        email: credential.user.email || email,
+        allowedEnvironments: [],
+      };
+
+      return { user: firestoreUser };
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      switch (e.code) {
+        case "auth/invalid-email":
+          return { error: "E-posten er ikke gyldig." };
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          return { error: "Feil e-post eller passord." };
+        default:
+          return { error: e.message };
+      }
+    }
+    return { error: "Ukjent feil ved innlogging." }
+  }
+}
+
+export async function getUser(uid: string): Promise<User | null> {
+  try {
+    const userDoc = await getDoc(doc(db, "users", uid));
+
+    if (!userDoc.exists()) {
+      return null;
+    }
+
+    return userDoc.data() as User;
+  } catch (e) {
+    console.error("Feil ved henting av bruker:", e);
+    return null;
+  }
 }
 
 // Sjekker om det allerede finnes en tekstnøkkel med samme navn
@@ -81,6 +201,7 @@ export async function saveDefaultText(
   applicationName: string,
   defaultText: TextValues,
   placementPath: string[],
+  textType: TextType
 ): Promise<string | null> {
   try {
     //Sjekker om tekstnøkkel finnes allerede
@@ -90,10 +211,14 @@ export async function saveDefaultText(
       return "Denne tekstnøkkelen finnes allerede.";
     }
 
+    // lager tidsstempel som en string
+    const now = new Date().toISOString(); 
+
     const data: TextKeyDocument = {
       name,
       applicationId,
       applicationName,
+      textType,
       default: defaultText,
       environments: {
         utv: { bokmål: "", nynorsk: "", engelsk: "" },
@@ -101,6 +226,9 @@ export async function saveDefaultText(
         prod: { bokmål: "", nynorsk: "", engelsk: "" },
       },
       placementPath,
+      isInUse: false,
+      createdAt: now,
+      lastChanged: now,
     };
 
     await addDoc(collection(db, "textKeys"), data);
@@ -250,6 +378,7 @@ export async function updateEnviormentText(
   try {
     await updateDoc(doc(db, "textKeys", documentId), {
       [`environments.${environment}`]: values,
+      lastChanged: new Date().toISOString(),
     });
 
     return null;
@@ -271,22 +400,6 @@ export async function saveUser(user: User): Promise<string | null> {
       return e.message;
     }
     return "Ukjent feil ved lagring av bruker.";
-  }
-}
-
-// Henter én bruker fra Firebase
-export async function getUser(email: string): Promise<User | null> {
-  try {
-    const snapshot = await getDoc(doc(db, "users", email));
-
-    if (!snapshot.exists()) {
-      return null;
-    }
-
-    return snapshot.data() as User;
-  } catch (e) {
-    console.error("Feil ved henting av bruker:", e);
-    return null;
   }
 }
 
@@ -320,6 +433,25 @@ export async function getAllApplications(): Promise<ApplicationListItem[]> {
   }
 }
 
+// Oppdaterer tekstnøkkel navn og lager det
+export async function updateTextKeyName(
+  documentId: string,
+  newName: string
+): Promise<string | null> {
+  try {
+    await updateDoc(doc(db, "textKeys", documentId), {
+      name: newName,
+    });
+
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved oppdatering av navn";
+  }
+}
+
 // Sjekker om det finnes en applikasjon med samme navn fra før
 export async function applicationExists(name: string): Promise<boolean> {
   try {
@@ -333,13 +465,28 @@ export async function applicationExists(name: string): Promise<boolean> {
   }
 }
 
+
+// Sletter teksnøkkel
+export const deleteTextKey = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, "textKeys", id));
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message; 
+    }
+    return "Ukjent feil ved sletting av tekstnøkkel."
+  }
+};  
+
 // Sletter applikasjon fra firebase
 export async function deleteApplication(
   applicationId: string,
 ): Promise<string | null> {
   try {
     await deleteDoc(doc(db, "applications", applicationId));
-    return null;
+    return null; 
+
   } catch (e) {
     if (e instanceof FirebaseError) {
       return e.message;
@@ -386,5 +533,51 @@ export async function addSectionToApplication(
       return e.message;
     }
     return "Ukjent feil ved lagring av kategori.";
+  }
+}
+
+// Sletter valgte underkategorier fra en kategori 
+// Henter applikasjonen fra Firestore, filtrerer vekk valgte subsections og lagrer den oppdaterte listen 
+export async function deleteSubSections(
+  applicationId: string, 
+  sectionName: string, 
+  subSectinNamesToDelete: string[]
+): Promise<string | null> {
+  try {
+    const applicationsRef = doc(db, "applications", applicationId);
+    const snapshot = await getDoc(applicationsRef); 
+
+    if (!snapshot.exists()) {
+      return "Fant ikke applikasjonen."; 
+    }
+
+    const data = snapshot.data() as Application; 
+
+    const updatedSections = (data.sections ?? []).map((section) => {
+      //Hvis dette ikke er riktig section, returner den uendret 
+      if (section.name !== sectionName) {
+        return section;
+      }
+
+      // behold bare subsections som ikke er i listen over de som skal slettes
+      return {
+        ...section, 
+        subSections: (section.subSections ?? []).filter(
+          (sub) => !subSectinNamesToDelete.includes(sub.name)
+        ),
+      };
+    });
+
+    await updateDoc(applicationsRef, {
+      sections: updatedSections,
+    });
+
+    return null; 
+
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved sletting av underkategorier."; 
   }
 }

@@ -1,0 +1,105 @@
+.subsection-page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.subsection-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  color: #8a8f94;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 28px;
+}
+.subsection-back-button:hover {
+  color: #444f55;
+}
+
+.subsection-add-button {
+  background-color: #444F55;
+  color: white;
+  padding: 13px;
+  margin-bottom: 70px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subsection-list-header {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.subsection-marker-title {
+  font-size: 16px;
+  color: #444f55;
+  justify-self: center;
+  margin-left: 68px;
+}
+
+.subsection-empty {
+  font-size: 18px;
+  color: #444f55;
+}
+
+.subsection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.subsection-loading,
+.subsection-error {
+  padding: 24px 40px;
+  font-size: 18px;
+  color: #444f55;
+}
+
+.subsection-delete-button {
+  background-color: #444F55;
+  color: white;
+  padding: 13px;
+  margin-top: 40px;
+  margin-bottom: 70px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.subsection-delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .subsection-title {
+    font-size: 44px;
+  }
+
+  .subsection-current-title {
+    font-size: 36px;
+  }
+
+  .subsection-search-wrapper {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .subsection-row,
+  .subsection-list-header {
+    grid-template-columns: 1fr 80px;
+  }
+
+  .subsection-card-title {
+    font-size: 18px;
+  }
+}
