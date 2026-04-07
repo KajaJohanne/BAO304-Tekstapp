@@ -1,0 +1,127 @@
+/* CSS for sectionPage */
+.section-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.section-intro {
+    font-size: 20px;
+    color: #444f55;
+    margin-bottom: 48px;
+  }
+.section-current-title {
+    font-size: 64px;
+    font-weight: 400;
+    color: #444f55;
+    margin-bottom: 48px;
+}
+.section-list-header {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.section-list-header-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 700px;
+    font-size: 18px;
+    color: #444f55;
+}
+
+.section-plus-button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 34px;
+    color: #444f55;
+    display: flex;
+    align-items: center;
+}
+
+.section-marker-title {
+    font-size: 18px;
+    color: #444f55;
+    justify-self: center;
+}
+
+.section-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.section-row {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    align-items: center;
+}
+
+.section-card {
+    width: 100%;
+    max-width: 700px;
+    min-height: 88px;
+    border: none;
+    background: #ffffff;
+    border-bottom: 4px solid #ff9800;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    cursor: pointer;
+}
+.section-card-title {
+    font-size: 22px;
+    color: #444f55;
+}
+.section-card-arrow {
+    font-size: 38px;
+    color: #444f55;
+    line-height: 1;
+}
+
+.section-checkbox-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.section-add-button {
+    margin-top: 40px;
+    background-color: #444f55;
+    color: white;
+    padding: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-empty,
+.section-loading,
+.section-error {
+    font-size: 18px;
+    color: #444f55;
+    margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+    .section-current-title {
+        font-size: 42px;
+    }
+
+    .section-row,
+    .section-list-header {
+        grid-template-columns: 1fr 80px;
+    }
+
+    .section-card {
+        min-height: 72px;
+        padding: 0 18px;
+    }
+
+    .section-card-title {
+        font-size: 18px;
+    }
+}
