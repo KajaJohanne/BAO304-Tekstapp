@@ -5,9 +5,15 @@ import {
   type ApplicationListItem,
   addSubSectionToApplication,
   deleteApplication,
+  addSectionToApplication,
 } from "../../../../api";
 import "./ApplicationDetailPage.css";
-import { Dialog } from "@digdir/designsystemet-react";
+import {
+  Button,
+  Dialog,
+  Heading,
+  Paragraph,
+} from "@digdir/designsystemet-react";
 import { toast } from "react-toastify";
 
 const ApplicationDetailPage = () => {
@@ -23,7 +29,9 @@ const ApplicationDetailPage = () => {
   const [newSubSectionName, setNewSubSectionName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  // Inputfelt for ny kategori (section)
+  const [isAddingSection, setIsAddingSection] = useState(false);
+  const [newSectionName, setNewSectionName] = useState("");
 
   const fetchApplication = async () => {
     try {
@@ -106,6 +114,25 @@ const ApplicationDetailPage = () => {
     }
   };
 
+  const handleAddSection = async () => {
+    const trimmedName = newSectionName.trim();
+
+    if (!trimmedName) {
+      alert("Du må skrive inn navn på kategorien.");
+    }
+
+    const error = await addSectionToApplication(application.id, trimmedName);
+
+    if (error) {
+      toast.error(error);
+    } else {
+      toast.success(`Kategorien "${trimmedName}" ble lagt til`);
+      setNewSectionName("");
+      setIsAddingSection(false);
+      await fetchApplication();
+    }
+  };
+
   return (
     <div className="application-detail">
       <button onClick={() => navigate(-1)}>‹ Tilbake</button>
@@ -117,6 +144,30 @@ const ApplicationDetailPage = () => {
       </p>
 
       <h2>{application.name}</h2>
+
+      {/* Legg til ny kategori */}
+      <div className="add-section-container">
+        <Button
+          variant="secondary"
+          onClick={() => setIsAddingSection(!isAddingSection)}
+        >
+          + Legg til kategori
+        </Button>
+
+        {isAddingSection && (
+          <div className="add-section-form">
+            <input
+              type="text"
+              value={newSectionName}
+              onChange={(e) => setNewSectionName(e.target.value)}
+              placeholder="Navn på kategori"
+            />
+            <button type="button" onClick={handleAddSection}>
+              Lagre
+            </button>
+          </div>
+        )}
+      </div>
 
       {sections.length === 0 ? (
         <p>Ingen kategorier lagt til ennå</p>
@@ -180,42 +231,23 @@ const ApplicationDetailPage = () => {
         ))
       )}
 
-      {/* Slett-knapp */}
+      {/* Slett-knapp og bekreftelse*/}
       <div style={{ marginTop: "48px" }}>
-        <button type="button" onClick={() => setIsDeleteDialogOpen(true)}>
-          Slett applikasjonen
-        </button>
+        <Button
+          variant="secondary"
+          data-color="danger"
+          onClick={() => {
+            if (
+              window.confirm(
+                `Er du sikker på at du ønsker å slette ${application.name}? Dette kan ikke angres.`,
+              )
+            )
+              handleDelete();
+          }}
+        >
+          Slett applikasjon
+        </Button>
       </div>
-
-      {/* Bekreftelsesdialog */}
-      <Dialog
-        open={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-      >
-        <Dialog.Block>
-          <h2>Slett applikasjonen</h2>
-        </Dialog.Block>
-
-        <Dialog.Block>
-          <p>
-            Er du sikker på at du vil slette <strong>{application.name}</strong>
-            ? Dette kan ikke angres.
-          </p>
-        </Dialog.Block>
-
-        <Dialog.Block>
-          <div
-            style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}
-          >
-            <button type="button" onClick={() => setIsDeleteDialogOpen(false)}>
-              Avbryt
-            </button>
-            <button type="button" onClick={handleDelete}>
-              Ja, slett
-            </button>
-          </div>
-        </Dialog.Block>
-      </Dialog>
     </div>
   );
 };

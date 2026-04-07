@@ -347,3 +347,44 @@ export async function deleteApplication(
     return "Ukjent feil ved sletting av applikasjon.";
   }
 }
+
+// Legger til en ny kategori (section) på en applikasjon
+export async function addSectionToApplication(
+  applicationId: string,
+  sectionName: string,
+): Promise<string | null> {
+  try {
+    const applicationsRef = doc(db, "applications", applicationId);
+    const snapshot = await getDoc(applicationsRef);
+
+    if (!snapshot.exists()) {
+      return "Fant ikke applikasjonen.";
+    }
+
+    const data = snapshot.data() as Application;
+    const existingSections = data.sections ?? [];
+
+    //Sjekk om kategorien finnes
+    const alreadyExists = existingSections.some(
+      (section) =>
+        section.name.trim().toLowerCase() === sectionName.trim().toLowerCase(),
+    );
+
+    if (alreadyExists) {
+      return "Det finnes allere en kategori med dette navnet.";
+    }
+
+    await updateDoc(applicationsRef, {
+      sections: [
+        ...existingSections,
+        { name: sectionName.trim(), subSections: [] },
+      ],
+    });
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved lagring av kategori.";
+  }
+}
