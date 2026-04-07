@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify"
+import { toast, ToastContainer } from "react-toastify";
+import { ValidationMessage } from "@digdir/designsystemet-react";
 import "react-toastify/dist/ReactToastify.css";
 import "./CreateTextKeyPage.css";
 import "../../../components/BackButton.css";
@@ -34,7 +35,6 @@ const CreateTextKeyPage = () => {
     engelsk: "",
   });
   const [selectedTextType, setSelectedTextType] = useState<TextType | null>(null);    
-
 
   const [errors, setErrors] = useState<FormErrors>({});
   const pageState = useMemo(() => {
@@ -238,9 +238,7 @@ const CreateTextKeyPage = () => {
                 }));
               }}
             />
-            {errors.textType && (
-              <p className="field-error">{errors.textType}</p>
-            )}
+            {errors.textType && (<ValidationMessage>{errors.textType}</ValidationMessage>)}
 
             {/* komponent */}
             <TextKeyNameModal
@@ -248,9 +246,7 @@ const CreateTextKeyPage = () => {
               onSave={handleNameSave}
               error={errors.name}
             />
-            {errors.name && (
-              <p className="field-error">{errors.name}</p>
-            )}
+            {errors.name && (<ValidationMessage>{errors.name}</ValidationMessage>)}
 
             {/* komponent */}
             <TextKeyPlacementSelector 
@@ -275,13 +271,9 @@ const CreateTextKeyPage = () => {
               textKeyName={name}
             />
             
-            {errors.application && (
-              <p className="field-error">{errors.application}</p>
-            )}
+            {errors.application && (<ValidationMessage>{errors.application}</ValidationMessage>)}
 
-            {errors.placement && (
-              <p className="field-error">{errors.placement}</p>
-            )}
+            {errors.placement && (<ValidationMessage>{errors.placement}</ValidationMessage>)}
 
             {/* Forhåndsvisning av nøkkel navnet */}
             {(selectedPlacement || name) && (
@@ -295,9 +287,7 @@ const CreateTextKeyPage = () => {
               </div>
             )}
 
-            {errors.duplicate && (
-              <p className="field-error">{errors.duplicate}</p>
-            )}
+            {errors.duplicate && (<ValidationMessage>{errors.duplicate}</ValidationMessage>)}
 
             {/* Input felt for bokmål, nynorsk og engelsk */}
             <CreateTextKeyLanguagePage
