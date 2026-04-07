@@ -29,7 +29,6 @@ const ApplicationCard = ({ application }: ApplicationCardProps) => {
                 >
                     ✎
                 </button>
-            </div>
         </Card.Block>
     </a>
 </Card>
