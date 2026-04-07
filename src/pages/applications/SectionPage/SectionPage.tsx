@@ -34,6 +34,7 @@ const SectionPage = () => {
     }, [location.state]);
 
     useEffect(() => {
+        //Henter kategori og underkateogrier
         const fetchSection = async () => {
             try {
                 if (!pageState) return;
@@ -60,10 +61,12 @@ const SectionPage = () => {
         fetchSection();
     }, [pageState]);
 
+    //Laster tekst
     if (isLoading) {
         return <p className="section-loading">Laster...</p>;
     }
 
+    //Hvis det ikke finnes noe data
     if (!pageState || !application) {
         return (
             <p className="section-error">Ingen data tilgjengelig. Gå tilbake og velg på nytt.</p>
@@ -90,7 +93,7 @@ const SectionPage = () => {
             {/* Header rad */}
             <div className="section-list-header">
                 <div className="section-list-header-left">
-                    <span>Underkategprier</span>
+                    <span>Underkategorier</span>
                     <button className="section-plus-button" aria-label="Legg til underkategori">
                         <BiPlus />
                     </button>
@@ -98,10 +101,10 @@ const SectionPage = () => {
                 <div className="section-marker-title">Marker</div>
             </div>
 
-            {/* Liste */}
+            {/* Liste med underkategorier */}
             <div className="section-list">
                 {subSections.length === 0 ? (
-                    <p className="section-emoty">Ingen underkategprier funnet.</p>
+                    <p className="section-empty">Ingen underkategprier funnet.</p>
                 ) : (
                     subSections.map((subSection) => {
                         const isChecked = checkedSubSections.includes(subSection.name);
@@ -111,6 +114,7 @@ const SectionPage = () => {
                                 <button 
                                     className="section-card"
                                     onClick={() =>
+                                        //Navigerer til underkategorier
                                         navigate("/subSection", {
                                             state: {
                                                 applicationId: pageState.applicationId,
@@ -125,6 +129,7 @@ const SectionPage = () => {
                                     <span className="section-card-arrow">›</span>
                                 </button>
                                 
+                                {/* Checkboxer */}
                                 <div className="section-checkbox-wrapper">
                                     <Checkbox
                                         checked={isChecked}
