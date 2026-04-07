@@ -9,12 +9,7 @@ import {
   deleteSubSections,
 } from "../../../../api";
 import "./ApplicationDetailPage.css";
-import {
-  Button,
-  Dialog,
-  Heading,
-  Paragraph,
-} from "@digdir/designsystemet-react";
+import { Button } from "@digdir/designsystemet-react";
 import { toast } from "react-toastify";
 
 const ApplicationDetailPage = () => {
@@ -108,7 +103,7 @@ const ApplicationDetailPage = () => {
   const sections = application.sections ?? [];
 
   // Anstall valgte subsections
-  const totalChecked = Object.values(checkedSubSections).flat().length; 
+  const totalChecked = Object.values(checkedSubSections).flat().length;
 
   const handleDelete = async () => {
     if (!application) return;
