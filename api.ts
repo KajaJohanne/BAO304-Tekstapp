@@ -53,6 +53,29 @@ export interface TextKeyDocument {
     prod: TextValues;
   };
   placementPath: string[];
+  isInUse: boolean;
+  createdAt: string;
+  lastChanged: string;
+}
+
+// for å se om tekstnøkkelen er i bruk eller ikke
+export async function updateTextKeyUsageStatus(
+  documentId: string,
+  isInUse: boolean,
+): Promise <string | null> {
+  try {
+    await updateDoc(doc(db, "textKeys", documentId), {
+      isInUse,
+      lastChanged: new Date().toISOString(),
+    });
+
+    return null;
+  } catch(e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved oppdatering av bruksstatus.";
+  }
 }
 
 // Brukes når vi henter en liste med tekstnøkler og også trenger document id
@@ -188,6 +211,9 @@ export async function saveDefaultText(
       return "Denne tekstnøkkelen finnes allerede.";
     }
 
+    // lager tidsstempel som en string
+    const now = new Date().toISOString(); 
+
     const data: TextKeyDocument = {
       name,
       applicationId,
@@ -200,6 +226,9 @@ export async function saveDefaultText(
         prod: { bokmål: "", nynorsk: "", engelsk: "" },
       },
       placementPath,
+      isInUse: false,
+      createdAt: now,
+      lastChanged: now,
     };
 
     await addDoc(collection(db, "textKeys"), data);
@@ -348,6 +377,7 @@ export async function updateEnviormentText(
   try {
     await updateDoc(doc(db, "textKeys", documentId), {
       [`environments.${environment}`]: values,
+      lastChanged: new Date().toISOString(),
     });
 
     return null;
