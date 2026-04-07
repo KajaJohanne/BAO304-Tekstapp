@@ -6,11 +6,12 @@ import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard
 import { Button } from "@digdir/designsystemet-react"
 import { BiPlus } from "react-icons/bi";
 import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
+import { ToastContainer } from "react-toastify";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [applications, setApplications] = useState<ApplicationListItem[]>([]);
-
+  
   useEffect(() => {
     const fetchApplications = async () => {
       const data = await getAllApplications();
@@ -26,11 +27,13 @@ const HomePage = () => {
       <CreateTypeSelector/>
       
       <h1>Applikasjoner</h1>
-      <p>Heia</p>
       
       <div className="info-and-btn-container">
 
-        <p>Her finner du alle applikasjoner. Du kan filtrere og søke etter ønsket applikasjon, eller legge til en ny. </p>
+        <p>
+      Her finner du alle applikasjoner. Klikk på en applikasjon for å se detaljer,
+      eller bruk redigeringsikonet for å endre navn.
+    </p>
         
         {/* TODO stilsett knappen bedre */}
         <Button onClick={() => navigate("/create-application")} className="add-button">
@@ -50,6 +53,7 @@ const HomePage = () => {
           />
         ))
       )}
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 };

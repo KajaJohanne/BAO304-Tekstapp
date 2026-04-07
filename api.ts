@@ -476,3 +476,23 @@ export const deleteTextKey = async (id: string) => {
     return "Ukjent feil ved sletting av tekstnøkkel.";
   }
 };
+
+// Oppdaterer applikasjonsnavn
+export async function updateApplicationName(
+  documentId: string,
+  newName: string
+): Promise<string | null> {
+  try {
+    await updateDoc(doc(db, "applications", documentId), {
+      name: newName,
+    });
+
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved oppdatering av applikasjon.";
+  }
+}
+

@@ -47,3 +47,17 @@
     display: flex;
     align-items: center;
 }
+
+.application-input-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.application-card-edit-button {
+    padding: 6px;
+    border-radius: 6px;
+}
+
+.application-card-edit-button:hover {
+    background-color: #f3f3f3;
+}
