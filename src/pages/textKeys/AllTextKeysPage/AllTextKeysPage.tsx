@@ -147,7 +147,7 @@ const AllTextKeysPage = () => {
         Legg til ny tekstnøkkel
       </Button>
 
-      {/* Søkefelt fra komponent */}
+      {/* Søkefelt of filtermeny fra komponent */}
       <div className="search-filter-row">
         <div className="search-bar-wrapper">
           <SearchBar
