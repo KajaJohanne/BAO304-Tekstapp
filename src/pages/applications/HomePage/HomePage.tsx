@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllApplications, type ApplicationListItem } from "../../../../api";
-import "./HomePage.css"; 
+import "./HomePage.css";
 import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard";
-import { Button } from "@digdir/designsystemet-react"
+import { Button } from "@digdir/designsystemet-react";
 import { BiPlus } from "react-icons/bi";
 import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
 
@@ -23,31 +23,30 @@ const HomePage = () => {
   return (
     <div className="home-page">
       {/* Velge mellom applikasjon og tekstnøkkel */}
-      <CreateTypeSelector/>
-      
-      <h1>Applikasjoner</h1>
-      <p>Heia</p>
-      
-      <div className="info-and-btn-container">
+      <CreateTypeSelector />
 
-        <p>Her finner du alle applikasjoner. Du kan filtrere og søke etter ønsket applikasjon, eller legge til en ny. </p>
-        
-        {/* TODO stilsett knappen bedre */}
-        <Button onClick={() => navigate("/create-application")} className="add-button">
+      <h1>Applikasjoner</h1>
+
+      <div className="info-and-btn-container">
+        <p>
+          Her finner du alle applikasjoner. Du kan filtrere og søke etter ønsket
+          applikasjon, eller legge til en ny.{" "}
+        </p>
+
+        <Button
+          onClick={() => navigate("/create-application")}
+          className="add-button"
+        >
           <BiPlus aria-hidden />
           Legg til ny applikasjon
         </Button>
       </div>
 
-
       {applications.length === 0 ? (
         <p>Ingen applikasjoner funnet.</p>
       ) : (
         applications.map((application) => (
-          <ApplicationCard
-            key={application.id}
-            application={application}
-          />
+          <ApplicationCard key={application.id} application={application} />
         ))
       )}
     </div>
