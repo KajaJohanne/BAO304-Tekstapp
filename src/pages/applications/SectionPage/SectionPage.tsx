@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Checkbox } from "@digdir/designsystemet-react";
 import { BiPlus } from "react-icons/bi";
 
-import { getApplication, type ApplicationListItem } from "../../../../api";
+import { getApplication, type ApplicationListItem, deleteSubSections } from "../../../../api";
 import type { SectionState } from "../../../types/section";
 import type { SubSectionItem } from "../../../types/subSection";
 import "./SectionPage.css";
@@ -73,6 +73,42 @@ const SectionPage = () => {
         );
     }
 
+    //Slette tekstnøkkel
+    const handleDeleteSelected = async () => {
+        if (!application || !pageState) return;
+
+        if (checkedSubSections.length === 0) return;
+
+        const confirmed = window.confirm(
+            `Er du sikker på at du vil slette?\nAntall underkategorier valgt: ${checkedSubSections.length}`
+        );
+        
+        if (!confirmed) return;
+
+        try {
+            const error = await deleteSubSections(
+                application.id,
+                pageState.sectionName,
+                checkedSubSections
+            );
+
+            if (error) {
+                console.error(error);
+                alert(error);
+                return;
+            }
+
+            //Oppdaterer UI
+            setSubSections((prev) => 
+                prev.filter((sub) => !checkedSubSections.includes(sub.name))
+            );
+            setCheckedSubSections([]);
+        } catch (error) {
+            console.error("Feil ved sletting av underkategorier:", error);
+            alert("Noe gikk galt ved sletting.");
+        }
+    };
+
     return(
         <div className="section-page">
             {/* Tilbake knapp */}
@@ -133,9 +169,11 @@ const SectionPage = () => {
                                 <div className="section-checkbox-wrapper">
                                     <Checkbox
                                         checked={isChecked}
-                                        onChange={(checked) => {
+                                        onChange={(e) => {
+                                            const isChecked = e.target.checked;
+
                                             setCheckedSubSections((prev) =>
-                                                checked
+                                                isChecked
                                                 ? [...prev, subSection.name]
                                                 : prev.filter((name) => name !== subSection.name)
                                             );
@@ -149,9 +187,13 @@ const SectionPage = () => {
                 )}
             </div>
 
-            <Button className="section-add-button">
-                <BiPlus aria-hidden />
-                Legg til underkategori
+            {/* Slett knapp */}
+            <Button 
+                onClick={handleDeleteSelected}
+                disabled={checkedSubSections.length === 0}
+                className="section-delete-button"
+            >
+                Slett underkategori
             </Button>
         </div>
     );
