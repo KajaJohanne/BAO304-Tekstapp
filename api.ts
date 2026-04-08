@@ -34,10 +34,10 @@ export interface User {
 
 export interface Application {
   name: string;
-  sections: { 
+  sections: {
     name: string;
     subSections: { name: string }[];
-  }[]; 
+  }[];
 }
 
 // Hvordan dataen skal lagres i Firebase
@@ -243,7 +243,7 @@ export async function saveDefaultText(
 
 // Henter én tekstnøkkel fra Firebase og brukes når den skal vises i UI
 export async function getTextKey(
-  documentId: string
+  documentId: string,
 ): Promise<TextKeyDocument | null> {
   try {
     const snapshot = await getDoc(doc(db, "textKeys", documentId));
@@ -275,7 +275,9 @@ export async function getAllTextKeys(): Promise<TextKeyListItem[]> {
 }
 
 // Henter tekstnøkler for valgt applikasjon
-export async function getTextKeysByApplication(applicationId: string): Promise<TextKeyListItem[]> {
+export async function getTextKeysByApplication(
+  applicationId: string,
+): Promise<TextKeyListItem[]> {
   try {
     const textKeysRef = collection(db, "textKeys");
     const q = query(textKeysRef, where("applicationId", "==", applicationId));
@@ -292,7 +294,9 @@ export async function getTextKeysByApplication(applicationId: string): Promise<T
 }
 
 // Henter applikasjon
-export async function getApplication(documentId: string): Promise<ApplicationListItem | null> {
+export async function getApplication(
+  documentId: string,
+): Promise<ApplicationListItem | null> {
   try {
     const snapshot = await getDoc(doc(db, "applications", documentId));
 
@@ -315,64 +319,61 @@ export async function getApplication(documentId: string): Promise<ApplicationLis
 
 // Legger til og lagrer underkategorier for hver kategori
 export async function addSubSectionToApplication(
-  applicationId: string, 
-  sectionName: string, 
-  subSectionName: string
-  ): Promise<string | null> {
-    try {
-      const applicationsRef = doc(db, "applications", applicationId);
-      const snapshot = await getDoc(applicationsRef);
+  applicationId: string,
+  sectionName: string,
+  subSectionName: string,
+): Promise<string | null> {
+  try {
+    const applicationsRef = doc(db, "applications", applicationId);
+    const snapshot = await getDoc(applicationsRef);
 
-      if (!snapshot.exists()) {
-        return "Fant ikke applikasjonen.";
-      }
-
-      const data = snapshot.data() as Application;
-
-      const updatedSections = (data.sections ?? []).map((section) => {
-        if (section.name !== sectionName) {
-          return section;
-        }
-
-        const existingSubSections = section.subSections ?? [];
-
-        const alreadyExists = existingSubSections.some(
-          (subSection) =>
-            subSection.name.trim().toLowerCase() === 
-            subSectionName.trim().toLowerCase()
-        );
-
-        if (alreadyExists) {
-          return section;
-        }
-
-        return {
-          ...section,
-          subSections: [
-            ...existingSubSections,
-            { name: subSectionName.trim() },
-          ],
-        };
-      });
-
-      await updateDoc(applicationsRef, {
-        sections: updatedSections,
-      });
-
-      return null;
-    } catch (e) {
-      if (e instanceof FirebaseError) {
-        return e.message;
-      }
-      return "Ukjent feil ved lagring av underkategori.";    
+    if (!snapshot.exists()) {
+      return "Fant ikke applikasjonen.";
     }
+
+    const data = snapshot.data() as Application;
+
+    const updatedSections = (data.sections ?? []).map((section) => {
+      if (section.name !== sectionName) {
+        return section;
+      }
+
+      const existingSubSections = section.subSections ?? [];
+
+      const alreadyExists = existingSubSections.some(
+        (subSection) =>
+          subSection.name.trim().toLowerCase() ===
+          subSectionName.trim().toLowerCase(),
+      );
+
+      if (alreadyExists) {
+        return section;
+      }
+
+      return {
+        ...section,
+        subSections: [...existingSubSections, { name: subSectionName.trim() }],
+      };
+    });
+
+    await updateDoc(applicationsRef, {
+      sections: updatedSections,
+    });
+
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved lagring av underkategori.";
+  }
 }
 
 // Oppdaterer tekstnøkler når de blir redigert i de ulike miljøene
 export async function updateEnviormentText(
   documentId: string,
   environment: Environment,
-  values: TextValues
+  values: TextValues,
 ): Promise<string | null> {
   try {
     await updateDoc(doc(db, "textKeys", documentId), {
@@ -404,7 +405,7 @@ export async function saveUser(user: User): Promise<string | null> {
 
 // Oppretter ny applikasjon i Firebase
 export async function saveApplication(
-  application: Application
+  application: Application,
 ): Promise<string | null> {
   try {
     await addDoc(collection(db, "applications"), application);
@@ -454,15 +455,16 @@ export async function updateTextKeyName(
 // Sjekker om det finnes en applikasjon med samme navn fra før
 export async function applicationExists(name: string): Promise<boolean> {
   try {
-    const applicationsRef = collection(db, "applications"); 
+    const applicationsRef = collection(db, "applications");
     const q = query(applicationsRef, where("name", "==", name), limit(1));
-    const snapshot = await getDocs(q); 
-    return !snapshot.empty; 
+    const snapshot = await getDocs(q);
+    return !snapshot.empty;
   } catch (e) {
     console.error("Feil ved sjekk av duplikat applikasjon", e);
-    return false; 
+    return false;
   }
 }
+
 
 // Sletter teksnøkkel
 export const deleteTextKey = async (id: string) => {
@@ -471,8 +473,111 @@ export const deleteTextKey = async (id: string) => {
     return null;
   } catch (e) {
     if (e instanceof FirebaseError) {
+      return e.message; 
+    }
+    return "Ukjent feil ved sletting av tekstnøkkel."
+  }
+};  
+
+// Sletter applikasjon fra firebase
+export async function deleteApplication(
+  applicationId: string,
+): Promise<string | null> {
+  try {
+    await deleteDoc(doc(db, "applications", applicationId));
+    return null; 
+
+  } catch (e) {
+    if (e instanceof FirebaseError) {
       return e.message;
     }
-    return "Ukjent feil ved sletting av tekstnøkkel.";
+    return "Ukjent feil ved sletting av applikasjon.";
   }
-};
+}
+
+// Legger til en ny kategori (section) på en applikasjon
+export async function addSectionToApplication(
+  applicationId: string,
+  sectionName: string,
+): Promise<string | null> {
+  try {
+    const applicationsRef = doc(db, "applications", applicationId);
+    const snapshot = await getDoc(applicationsRef);
+
+    if (!snapshot.exists()) {
+      return "Fant ikke applikasjonen.";
+    }
+
+    const data = snapshot.data() as Application;
+    const existingSections = data.sections ?? [];
+
+    //Sjekk om kategorien finnes
+    const alreadyExists = existingSections.some(
+      (section) =>
+        section.name.trim().toLowerCase() === sectionName.trim().toLowerCase(),
+    );
+
+    if (alreadyExists) {
+      return "Det finnes allere en kategori med dette navnet.";
+    }
+
+    await updateDoc(applicationsRef, {
+      sections: [
+        ...existingSections,
+        { name: sectionName.trim(), subSections: [] },
+      ],
+    });
+    return null;
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved lagring av kategori.";
+  }
+}
+
+// Sletter valgte underkategorier fra en kategori 
+// Henter applikasjonen fra Firestore, filtrerer vekk valgte subsections og lagrer den oppdaterte listen 
+export async function deleteSubSections(
+  applicationId: string, 
+  sectionName: string, 
+  subSectinNamesToDelete: string[]
+): Promise<string | null> {
+  try {
+    const applicationsRef = doc(db, "applications", applicationId);
+    const snapshot = await getDoc(applicationsRef); 
+
+    if (!snapshot.exists()) {
+      return "Fant ikke applikasjonen."; 
+    }
+
+    const data = snapshot.data() as Application; 
+
+    const updatedSections = (data.sections ?? []).map((section) => {
+      //Hvis dette ikke er riktig section, returner den uendret 
+      if (section.name !== sectionName) {
+        return section;
+      }
+
+      // behold bare subsections som ikke er i listen over de som skal slettes
+      return {
+        ...section, 
+        subSections: (section.subSections ?? []).filter(
+          (sub) => !subSectinNamesToDelete.includes(sub.name)
+        ),
+      };
+    });
+
+    await updateDoc(applicationsRef, {
+      sections: updatedSections,
+    });
+
+    return null; 
+
+  } catch (e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved sletting av underkategorier."; 
+  }
+}
