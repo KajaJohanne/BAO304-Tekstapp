@@ -1,10 +1,10 @@
 // Første "lag" med underkategori under applikasjon?
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Checkbox } from "@digdir/designsystemet-react";
+import { Button, Checkbox, Textfield } from "@digdir/designsystemet-react";
 import { BiPlus } from "react-icons/bi";
 
-import { getApplication, type ApplicationListItem, deleteSubSections } from "../../../../api";
+import { getApplication, type ApplicationListItem, deleteSubSections, addSubSectionToApplication } from "../../../../api";
 import type { SectionState } from "../../../types/section";
 import type { SubSectionItem } from "../../../types/subSection";
 import "./SectionPage.css";
@@ -17,6 +17,9 @@ const SectionPage = () => {
     const [subSections, setSubSections] = useState<SubSectionItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [checkedSubSections, setCheckedSubSections] = useState<string[]>([]);
+    const [isAddingSubSection, setIsAddingSubSection] = useState(false);
+    const [newSubSectionName, setNewSubSectionName] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
 
     const pageState = useMemo(() => {
         if (location.state) {
@@ -73,7 +76,7 @@ const SectionPage = () => {
         );
     }
 
-    //Slette tekstnøkkel
+    //Slette underkategori
     const handleDeleteSelected = async () => {
         if (!application || !pageState) return;
 
@@ -109,6 +112,41 @@ const SectionPage = () => {
         }
     };
 
+    const handleAddSubSection = async () => {
+        if (!application || !pageState) return;
+
+        const trimmedName = newSubSectionName.trim();
+
+        if (!trimmedName) {
+            alert("Du må skrive inn navn på underkategorien.");
+            return;
+        }
+
+        setIsSaving(true);
+
+        try {
+            const error = await addSubSectionToApplication(
+                application.id,
+                pageState.sectionName,
+                trimmedName
+            );
+
+            if (error) {
+                alert(error);
+                return;
+            }
+
+            setSubSections((prev) => [...prev, { name: trimmedName }]);
+            setNewSubSectionName("");
+            setIsAddingSubSection(false);
+        } catch (error) {
+            console.error("Feil ved lagring av underkategori:", error);
+            alert("Noe gikk galt ved lagring.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     return(
         <div className="section-page">
             {/* Tilbake knapp */}
@@ -126,17 +164,57 @@ const SectionPage = () => {
 
             <h2 className="section-current-title">{pageState.sectionName}</h2>
 
-            {/* Header rad */}
-            <div className="section-list-header">
-                <div className="section-list-header-left">
-                    <span>Underkategorier</span>
-                    <button className="section-plus-button" aria-label="Legg til underkategori">
-                        <BiPlus />
-                    </button>
+            <div className="section-header-wrapper">
+                {/* Header rad */}
+                <div className="section-list-header">
+                    <div className="section-list-header-left">
+                        <span>Underkategorier</span>
+                        <button 
+                            className="section-plus-button" 
+                            aria-label="Legg til underkategori"
+                            onClick={() => setIsAddingSubSection((prev) => !prev)}
+                        >
+                            <BiPlus />
+                        </button>
+                    </div>
+                    <div className="section-marker-title">Marker</div>
                 </div>
-                <div className="section-marker-title">Marker</div>
-            </div>
 
+                {/* Legg til ny underkategori felt */}
+                {isAddingSubSection && (
+                    <div className="section-form-row">
+                        <div className="section-add-form">
+                            <Textfield
+                                label="Navn på underkategori"
+                                value={newSubSectionName}
+                                onChange={(e) => setNewSubSectionName(e.target.value)}
+                                placeholder="Skriv inn navn"
+                            />
+
+                            <div className="section-add-form-actions">
+                                <Button
+                                    onClick={handleAddSubSection}
+                                    disabled={isSaving || !newSubSectionName.trim()}
+                                >
+                                    Lagre
+                                </Button>
+
+                                <Button 
+                                    variant="secondary"
+                                    onClick={() => {
+                                        setIsAddingSubSection(false);
+                                        setNewSubSectionName("");
+                                    }}
+                                >
+                                    Avbryt
+                                </Button>
+                            </div>
+                        </div>
+                    <div />
+                    </div>
+                )}
+            </div>
+            
             {/* Liste med underkategorier */}
             <div className="section-list">
                 {subSections.length === 0 ? (

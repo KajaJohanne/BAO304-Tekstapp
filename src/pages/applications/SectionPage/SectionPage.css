@@ -17,6 +17,11 @@
     color: #444f55;
     margin-bottom: 48px;
 }
+
+.section-header-wrapper {
+    position: relative;
+    margin-bottom: 24px;
+}
 .section-list-header {
     display: grid;
     grid-template-columns: 1fr 75px;
@@ -41,7 +46,35 @@
     display: flex;
     align-items: center;
 }
+.section-form-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 90px;
+    align-items: start;
+    gap: 30px;
+    margin-bottom: 16px;
+}
+.section-add-form {
+    width: 100%;
+    max-width: 790px;
+    background: white;
+    padding: 16px 24px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+.section-add-form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
 
+.section-marker-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 90px;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 16px;
+}
 .section-marker-title {
     font-size: 18px;
     color: #444f55;
