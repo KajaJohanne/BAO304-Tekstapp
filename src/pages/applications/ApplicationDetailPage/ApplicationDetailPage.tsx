@@ -154,7 +154,7 @@ const ApplicationDetailPage = () => {
         ...prev,
         //oppdater bare denne sectionen sin liste
         [sectionName]: isAlreadySchecked
-          ? // Hvis den er huken av så fjernes den
+          ? // Hvis den er huket av så fjernes den
             currentlyChecked.filter((name) => name !== subSectionName)
           : // Hvis den ikke er huket av så legges den i lista
             [...currentlyChecked, subSectionName],
@@ -207,13 +207,11 @@ const ApplicationDetailPage = () => {
     <div className="application-detail">
       <button onClick={() => navigate(-1)}>‹ Tilbake</button>
 
-      <h1>Oversikt applikasjon</h1>
+      <h1>{application.name}</h1>
       <p>
         Her er oversikt over kategorier innenfor applikasjonen{" "}
         {application.name}
       </p>
-
-      <h2>{application.name}</h2>
 
       {/* Legg til ny kategori */}
       <div className="add-section-container">
