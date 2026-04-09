@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllApplications, type ApplicationListItem } from "../../../../api";
-import "./HomePage.css"; 
+import "./HomePage.css";
 import ApplicationCard from "../../../components/ApplicationCard/ApplicationCard";
-import { Button } from "@digdir/designsystemet-react"
+import { Button } from "@digdir/designsystemet-react";
 import { BiPlus } from "react-icons/bi";
 import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
 import { ToastContainer } from "react-toastify";
@@ -24,8 +24,8 @@ const HomePage = () => {
   return (
     <div className="home-page">
       {/* Velge mellom applikasjon og tekstnøkkel */}
-      <CreateTypeSelector/>
-      
+      <CreateTypeSelector />
+
       <h1>Applikasjoner</h1>
       
       <div className="info-and-btn-container">
@@ -42,15 +42,11 @@ const HomePage = () => {
         </Button>
       </div>
 
-
       {applications.length === 0 ? (
         <p>Ingen applikasjoner funnet.</p>
       ) : (
         applications.map((application) => (
-          <ApplicationCard
-            key={application.id}
-            application={application}
-          />
+          <ApplicationCard key={application.id} application={application} />
         ))
       )}
       <ToastContainer position="top-center" autoClose={3000} />

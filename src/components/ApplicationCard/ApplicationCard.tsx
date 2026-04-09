@@ -1,5 +1,5 @@
 import type { ApplicationListItem } from "../../../api";
-import { Card } from "@digdir/designsystemet-react"; 
+import { Card } from "@digdir/designsystemet-react";
 import { useNavigate } from "react-router-dom";
 import "./ApplicationCard.css";
 import { useState } from "react";
@@ -7,7 +7,7 @@ import { updateApplicationName, applicationExists} from "../../../api";
 import { toast } from "react-toastify";
 
 interface ApplicationCardProps {
-    application: ApplicationListItem; 
+  application: ApplicationListItem;
 }
 
 const ApplicationCard = ({ application }: ApplicationCardProps) => {
