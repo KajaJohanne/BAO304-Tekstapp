@@ -2,11 +2,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Checkbox } from "@digdir/designsystemet-react";
-import { BiPlus } from "react-icons/bi";
 
 import { type ApplicationListItem, type TextKeyListItem, getTextKeysByApplication, deleteTextKey } from "../../../../api";
 import type { SectionState } from "../../../types/section";
-import type { SubSectionItem } from "../../../types/subSection";
 import "./SectionPage.css";
 
 const SectionPage = () => {
@@ -17,13 +15,8 @@ const SectionPage = () => {
     const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
     const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
 
-    const [subSections, setSubSections] = useState<SubSectionItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [checkedSubSections, setCheckedSubSections] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [isAddingSubSection, setIsAddingSubSection] = useState(false);
-    const [newSubSectionName, setNewSubSectionName] = useState("");
-    const [isSaving, setIsSaving] = useState(false);
 
     const pageState = useMemo(() => {
         if (location.state) {
@@ -51,12 +44,13 @@ const SectionPage = () => {
                 const allKeys = await getTextKeysByApplication(pageState.applicationId);
 
                 const filtered = allKeys.filter((key) => {
-                    if (!key.placementPath || key.placementPath.length < 2) return false;
+                    if (!key.placementPath) return false;
 
-                    const keySection = key.placementPath[1];
+                    const isCorrentSection = key.placementPath[1] === pageState.sectionName;
+                    const isDirectlyOnSectionLevel = key.placementPath.length === 2;
 
                     //Kun tekstnøkler som tilhører valgt kategori
-                    return keySection === pageState.sectionName;
+                    return isCorrentSection && isDirectlyOnSectionLevel;
                 });
 
                 setTextKeys(filtered);
@@ -89,7 +83,7 @@ const SectionPage = () => {
     const handleDeleteSelected = async () => {
         if (!application || !pageState) return;
 
-        if (checkedSubSections.length === 0) return;
+        if (checkedKeys.length === 0) return;
 
         const confirmed = window.confirm(
             `Er du sikker på at du vil slette?\nAntall tekstnøkler valgt: ${checkedKeys.length}`
