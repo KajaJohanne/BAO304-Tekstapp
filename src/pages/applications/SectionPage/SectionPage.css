@@ -6,6 +6,7 @@
     box-sizing: border-box;
 }
 
+/* Tittel og intro tekst */
 .section-intro {
     font-size: 16px;
     color: #444f55;
@@ -22,12 +23,6 @@
     position: relative;
     margin-bottom: 24px;
 }
-.section-list-header {
-    display: grid;
-    grid-template-columns: 1fr 75px;
-    align-items: center;
-    margin-bottom: 16px;
-}
 .section-list-header-left {
     display: flex;
     align-items: center;
@@ -35,8 +30,10 @@
     max-width: 810px;
     font-size: 18px;
     color: #444f55;
+    margin: none;
 }
 
+/* Legg til tekstnøkkel knapp */
 .section-add-button {
     background-color: #444f55;
     color: white;
@@ -54,21 +51,7 @@
     font-weight: 300;
 }
 
-.section-form-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 90px;
-    align-items: start;
-    gap: 30px;
-    margin-bottom: 16px;
-}
-
-.section-marker-title {
-    font-size: 18px;
-    color: #444f55;
-    justify-self: center;
-    margin-left: 8px;
-}
-
+/* Tekstnøkkel liste */
 .section-list {
     display: flex;
     flex-direction: column;
@@ -81,13 +64,14 @@
     gap: 30px;
 }
 
+/* Tekstnøkkel kort */
 .section-card {
     cursor: pointer; 
     transition: box-shadow 0.2s ease; 
     border: none;
     border-bottom: 1.5px solid #ff9600;
     padding: 8px;
-    width: 790px;
+    width: 600px;
 
     align-items: center;
     text-align: left;
@@ -123,6 +107,8 @@
     flex: 1;
     min-width: 0;
 }
+
+/* Rediger ikon */
 .section-card-edit {
     border: none;
     background: transparent;
@@ -138,12 +124,19 @@
     opacity: 0.8;
 }
 
+/* Checkbox */
+.section-marker-title {
+    font-size: 18px;
+    color: #444f55;
+    justify-self: center;
+    margin-left: 434px;
+}
 .section-checkbox-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 4px;
-    margin-left: 15px;
+    margin-left: -350px;
 }
 .section-checkbox-wrapper input[type="checkbox"] {
     width: 17px;
@@ -161,6 +154,7 @@
     margin-top: 24px;
 }
 
+/* Slett knapp */
 .section-delete-button {
     background-color: #444F55;
     color: white;
@@ -188,11 +182,26 @@
     }
 
     .section-card {
-        min-height: 72px;
-        padding: 0 18px;
+        width: 350px;
     }
 
     .section-card-title {
-        font-size: 18px;
+        font-size: 16px;
+    }
+    .section-delete-button {
+        padding: 8px;
+    }
+
+    .section-add-button {
+        padding: 8px;
+    }
+
+    /* TODO: fikse checkbox */
+    .section-checkbox-wrapper {
+        margin-left: 2px;
+    }
+    .section-checkbox-wrapper input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
     }
 }

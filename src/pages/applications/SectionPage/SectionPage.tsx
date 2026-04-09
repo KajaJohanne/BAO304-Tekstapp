@@ -137,7 +137,6 @@ const SectionPage = () => {
 
             <div className="section-header-wrapper">
                 {/* Header rad */}
-                <div className="section-list-header">
                     <div className="section-list-header-left">
                         {/* Legg til tekstnøkkel knapp */}
                         <Button 
@@ -155,11 +154,10 @@ const SectionPage = () => {
                             <span className="add-button-text">Legg til ny tekstnøkkel</span>
                         </Button>
                     </div>
-                    <div className="section-marker-title">Marker</div>
-                </div>
+                <div className="section-marker-title">Marker</div>
             </div>
             
-            {/* Liste med underkategorier */}
+            {/* Liste med tekstnøkler */}
             {filteredTextKeys.length === 0 ? (
                 <p className="section-empty">Ingen tekstnøkler funnet.</p>
             ) : (
