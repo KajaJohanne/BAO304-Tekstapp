@@ -20,8 +20,11 @@
 }
 
 .section-header-wrapper {
-    position: relative;
-    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 600px 90px;
+    align-items: end;
+    gap: 30px;
+    margin-bottom: 8px;
 }
 .section-list-header-left {
     display: flex;
@@ -31,6 +34,7 @@
     font-size: 18px;
     color: #444f55;
     margin: none;
+    grid-column: 1;
 }
 
 /* Legg til tekstnøkkel knapp */
@@ -51,6 +55,26 @@
     font-weight: 300;
 }
 
+/* Søkefelt, filtreringsmeny og marker tekst */
+.section-search-header {
+    display: grid;
+    grid-template-columns: 540px 44px 110px;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+.section-search-bar {
+    width: 570px;
+    max-width: 100%;
+}
+.section-marker-title {
+    font-size: 18px;
+    color: #444f55;
+    justify-self: center;
+    align-self: end;
+    transform: translateY(-22px);
+    white-space: nowrap;
+}
+
 /* Tekstnøkkel liste */
 .section-list {
     display: flex;
@@ -59,7 +83,7 @@
 }
 .section-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 90px;
+    grid-template-columns: 600px 90px;
     align-items: center;
     gap: 30px;
 }
@@ -71,7 +95,7 @@
     border: none;
     border-bottom: 1.5px solid #ff9600;
     padding: 8px;
-    width: 600px;
+    width: 100%;
 
     align-items: center;
     text-align: left;
@@ -125,18 +149,10 @@
 }
 
 /* Checkbox */
-.section-marker-title {
-    font-size: 18px;
-    color: #444f55;
-    justify-self: center;
-    margin-left: 434px;
-}
 .section-checkbox-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 4px;
-    margin-left: -350px;
 }
 .section-checkbox-wrapper input[type="checkbox"] {
     width: 17px;
@@ -197,9 +213,6 @@
     }
 
     /* TODO: fikse checkbox */
-    .section-checkbox-wrapper {
-        margin-left: 2px;
-    }
     .section-checkbox-wrapper input[type="checkbox"] {
         width: 15px;
         height: 15px;

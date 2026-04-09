@@ -5,6 +5,8 @@ import { Button, Checkbox } from "@digdir/designsystemet-react";
 
 import { type ApplicationListItem, type TextKeyListItem, getTextKeysByApplication, deleteTextKey } from "../../../../api";
 import type { SectionState } from "../../../types/section";
+import SearchBar from "../../../components/Search/SearchBar";
+import FilterMenu, { type FilterValues } from "../../../components/FilterMenu/FilterMenu";
 import "./SectionPage.css";
 
 const SectionPage = () => {
@@ -17,6 +19,11 @@ const SectionPage = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+    const [filters, setFilters] = useState<FilterValues>({
+        sort: null,
+        textTypes: null,
+        usageStatus: null,
+    });
 
     const pageState = useMemo(() => {
         if (location.state) {
@@ -148,6 +155,21 @@ const SectionPage = () => {
                             <span className="add-button-text">Legg til ny tekstnøkkel</span>
                         </Button>
                     </div>
+            </div>
+
+            <div className="section-search-header">
+                    <SearchBar
+                        value={searchTerm}
+                        onChange={setSearchTerm}
+                        placeholder="Søk etter tekstnøkkel"
+                        ariaLabel="Søk etter tekstnøkkel"
+                        className="section-search-bar"
+                    />
+
+                    <FilterMenu
+                        value={filters}
+                        onApply={setFilters}
+                    />
                 <div className="section-marker-title">Marker</div>
             </div>
             
