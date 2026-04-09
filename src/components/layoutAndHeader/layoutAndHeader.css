@@ -101,7 +101,7 @@ body {
 .dropdown-menu {
   position: absolute;
   top: 77px;
-  right: -4;
+  right: -4px;
   width: 180px;
   max-width: calc(100vw - 3px);
   background: white;
