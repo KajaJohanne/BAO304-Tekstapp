@@ -187,7 +187,7 @@ const SectionPage = () => {
                                     className="section-card"
                                     onClick={() =>
                                         // Navigerer til textKeyDetail siden
-                                        navigate("/textkeyDetails/:id", {
+                                        navigate(`/textkeyDetails/${textKey.id}`, {
                                             state: {
                                                 textKeyId: textKey.id,
                                             },
