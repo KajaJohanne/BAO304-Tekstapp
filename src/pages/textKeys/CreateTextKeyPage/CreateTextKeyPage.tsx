@@ -24,7 +24,9 @@ import type { FormErrors } from "../../../types/formErrors";
 const CreateTextKeyPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  useEffect(() => {
+  window.scrollTo(0, 0);
+  }, []);
   const [name, setName] = useState("");
   const [selectedPlacement, setSelectedPlacement] = useState("");
   const [applications, setApplications] = useState<ApplicationListItem[]>([]);

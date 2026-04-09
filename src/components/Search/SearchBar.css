@@ -47,7 +47,8 @@
 }
 .search-button svg {
   width: 32px;
-  height: 30px;
+  height: 27px;
+  color: #868d90;
 }
 .search-clear  {
   border: none;
