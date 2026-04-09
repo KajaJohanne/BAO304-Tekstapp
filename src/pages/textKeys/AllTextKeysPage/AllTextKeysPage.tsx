@@ -147,7 +147,7 @@ const AllTextKeysPage = () => {
         Legg til ny tekstnøkkel
       </Button>
 
-      {/* Søkefelt fra komponent */}
+      {/* Søkefelt of filtermeny fra komponent */}
       <div className="search-filter-row">
         <div className="search-bar-wrapper">
           <SearchBar
@@ -157,7 +157,9 @@ const AllTextKeysPage = () => {
             ariaLabel="Søk etter tekstnøkkel"
           />
         </div>
-        <FilterMenu value={filters} onApply={setFilters} />
+        <div className="filter-button-wrapper">
+          <FilterMenu value={filters} onApply={setFilters} />
+        </div>
       </div>
 
       {/* Liste over alle tekstnøkler, tom state ved ingen treff */}

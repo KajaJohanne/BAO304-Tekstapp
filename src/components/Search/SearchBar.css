@@ -8,13 +8,13 @@
 .search-input {
   flex: 1;
   border: none;
-  border-bottom: 2px solid #868d90;
+  border-bottom: 2px solid #8a8f94;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
   padding: 0 0 10px 0;
   font-size: 16px;
-  color: #868d90;
+  color: #7f868b;
 }
 .search-input input {
   border: none;
@@ -22,11 +22,11 @@
   background: transparent;
   box-shadow: none;
   font-size: 28px;
-  color: #868d90;
+  color: #7f868b;
   padding: 0 40px 12px 0;
 }
 .search-input input::placeholder {
-  color: #868d90;
+  color: #7f868b;
   opacity: 1;
 }
 .search-button {
@@ -44,11 +44,11 @@
 }
 .search-button:hover {
   background: transparent;
-  border: none;
 }
 .search-button svg {
-  width: 28px;
-  height: 25px;
+  width: 32px;
+  height: 27px;
+  color: #868d90;
 }
 .search-clear  {
   border: none;
