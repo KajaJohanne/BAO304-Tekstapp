@@ -33,6 +33,17 @@
   width: 260px;
   height: 660px;
   z-index: 1000;
+  transform: translateX(24px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+.filter-panel.open {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .filter-menu {
@@ -126,7 +137,7 @@
 }
 
 .filter-menu__chevron.open {
-  transform: rotate(0deg);
+  transform: rotate(180deg);
 }
 
 .filter-menu__actions {
