@@ -285,9 +285,11 @@ const ApplicationDetailPage = () => {
               <p>Ingen underkategorier ennå.</p>
             ) : (
               <>
-                <div className="subsection-list-header">
-                  <div />
-                  <div className="subsection-marker-title">Marker</div>
+                <div style={{ maxWidth: "600px" }}>
+                  <div className="subsection-list-header">
+                    <div />
+                    <div className="subsection-marker-title">Marker</div>
+                  </div>
                 </div>
 
                 <ul className="subsection-list">

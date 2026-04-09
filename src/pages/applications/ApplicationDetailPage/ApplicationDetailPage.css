@@ -89,6 +89,7 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 8px;
+  max-width: 600px;
 }
 
 .subsection-row .subsection-item {
@@ -110,6 +111,7 @@
 .subsection-marker-title {
   min-width: 18px;
   text-align: center;
+  padding-left: 40px;
 }
 
 .add-section-btn {
@@ -141,7 +143,7 @@
 
 .back-btn {
   font-size: 16px;
-  color: #868D90;
+  color: #868d90;
   cursor: pointer;
   margin-bottom: 20px;
   text-decoration: underline;
