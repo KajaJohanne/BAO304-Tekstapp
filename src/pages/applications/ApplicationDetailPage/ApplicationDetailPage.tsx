@@ -11,6 +11,7 @@ import {
 import "./ApplicationDetailPage.css";
 import { Button } from "@digdir/designsystemet-react";
 import { toast } from "react-toastify";
+import HomePage from "../HomePage/HomePage";
 
 const ApplicationDetailPage = () => {
   const navigate = useNavigate();
@@ -205,7 +206,9 @@ const ApplicationDetailPage = () => {
 
   return (
     <div className="application-detail">
-      <button onClick={() => navigate(-1)}>‹ Tilbake</button>
+      <p className="back-btn" onClick={() => navigate("/home")}>
+        ← Applikasjoner
+      </p>
 
       <h1>{application.name}</h1>
       <p>

@@ -138,3 +138,12 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.back-btn {
+  font-size: 16px;
+  color: #868D90;
+  cursor: pointer;
+  margin-bottom: 20px;
+  text-decoration: underline;
+  display: inline-block;
+}
