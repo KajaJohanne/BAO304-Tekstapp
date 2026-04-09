@@ -1,10 +1,10 @@
 // Første "lag" med underkategori under applikasjon?
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Checkbox, Textfield } from "@digdir/designsystemet-react";
+import { Button, Checkbox } from "@digdir/designsystemet-react";
 import { BiPlus } from "react-icons/bi";
 
-import { getApplication, type ApplicationListItem, deleteSubSections, addSubSectionToApplication } from "../../../../api";
+import { type ApplicationListItem, type TextKeyListItem, getTextKeysByApplication, deleteTextKey } from "../../../../api";
 import type { SectionState } from "../../../types/section";
 import type { SubSectionItem } from "../../../types/subSection";
 import "./SectionPage.css";
@@ -14,9 +14,13 @@ const SectionPage = () => {
     const navigate = useNavigate();
 
     const [application, setApplication] = useState<ApplicationListItem | null>(null);
+    const [textKeys, setTextKeys] = useState<TextKeyListItem[]>([]);
+    const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
+
     const [subSections, setSubSections] = useState<SubSectionItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [checkedSubSections, setCheckedSubSections] = useState<string[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const [isAddingSubSection, setIsAddingSubSection] = useState(false);
     const [newSubSectionName, setNewSubSectionName] = useState("");
     const [isSaving, setIsSaving] = useState(false);
@@ -38,30 +42,32 @@ const SectionPage = () => {
 
     useEffect(() => {
         //Henter kategori og underkateogrier
-        const fetchSection = async () => {
+        const fetchTextKeys = async () => {
             try {
                 if (!pageState) return;
 
                 sessionStorage.setItem("sectionState", JSON.stringify(pageState));
 
-                const app = await getApplication(pageState.applicationId);
-                if (!app) return;
+                const allKeys = await getTextKeysByApplication(pageState.applicationId);
 
-                setApplication(app);
+                const filtered = allKeys.filter((key) => {
+                    if (!key.placementPath || key.placementPath.length < 2) return false;
 
-                const selectedSection = app.sections.find(
-                    (section) => section.name === pageState.sectionName
-                );
+                    const keySection = key.placementPath[1];
 
-                setSubSections(selectedSection?.subSections ?? []);
+                    //Kun tekstnøkler som tilhører valgt kategori
+                    return keySection === pageState.sectionName;
+                });
+
+                setTextKeys(filtered);
             } catch (error) {
-                console.error("Feil ved henting av kategori:", error);
+                console.error("Feil ved henting av tekstnøkler:", error);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchSection();
+        fetchTextKeys();
     }, [pageState]);
 
     //Laster tekst
@@ -70,12 +76,15 @@ const SectionPage = () => {
     }
 
     //Hvis det ikke finnes noe data
-    if (!pageState || !application) {
+    if (!pageState) {
         return (
             <p className="section-error">Ingen data tilgjengelig. Gå tilbake og velg på nytt.</p>
         );
     }
 
+    const filteredTextKeys = textKeys.filter((textKey) =>
+        textKey.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
     //Slette underkategori
     const handleDeleteSelected = async () => {
         if (!application || !pageState) return;
@@ -83,67 +92,31 @@ const SectionPage = () => {
         if (checkedSubSections.length === 0) return;
 
         const confirmed = window.confirm(
-            `Er du sikker på at du vil slette?\nAntall underkategorier valgt: ${checkedSubSections.length}`
+            `Er du sikker på at du vil slette?\nAntall tekstnøkler valgt: ${checkedKeys.length}`
         );
         
         if (!confirmed) return;
 
         try {
-            const error = await deleteSubSections(
-                application.id,
-                pageState.sectionName,
-                checkedSubSections
+            const results = await Promise.all(
+                checkedKeys.map((id) => deleteTextKey(id)),
             );
 
-            if (error) {
-                console.error(error);
-                alert(error);
+            const firstError = results.find((result) => result !== null);
+            if (firstError) {
+                console.error(firstError);
+                alert(firstError);
                 return;
             }
 
             //Oppdaterer UI
-            setSubSections((prev) => 
-                prev.filter((sub) => !checkedSubSections.includes(sub.name))
+            setTextKeys((prev) => 
+                prev.filter((textKey) => !checkedKeys.includes(textKey.id))
             );
-            setCheckedSubSections([]);
+            setCheckedKeys([]);
         } catch (error) {
-            console.error("Feil ved sletting av underkategorier:", error);
+            console.error("Feil ved sletting av tekstnøkler:", error);
             alert("Noe gikk galt ved sletting.");
-        }
-    };
-
-    const handleAddSubSection = async () => {
-        if (!application || !pageState) return;
-
-        const trimmedName = newSubSectionName.trim();
-
-        if (!trimmedName) {
-            alert("Du må skrive inn navn på underkategorien.");
-            return;
-        }
-
-        setIsSaving(true);
-
-        try {
-            const error = await addSubSectionToApplication(
-                application.id,
-                pageState.sectionName,
-                trimmedName
-            );
-
-            if (error) {
-                alert(error);
-                return;
-            }
-
-            setSubSections((prev) => [...prev, { name: trimmedName }]);
-            setNewSubSectionName("");
-            setIsAddingSubSection(false);
-        } catch (error) {
-            console.error("Feil ved lagring av underkategori:", error);
-            alert("Noe gikk galt ved lagring.");
-        } finally {
-            setIsSaving(false);
         }
     };
 
@@ -155,92 +128,60 @@ const SectionPage = () => {
                 <span className="back-text">{pageState.applicationName}</span>
             </button>
 
-            <h1>Oversikt {pageState.sectionName}</h1>
+            <h1>{pageState.sectionName}</h1>
 
             <p className="section-intro">
                 Her er oversikt over tekstnøkler innenfor {pageState.applicationName},{" "}
                 {pageState.sectionName}
             </p>
 
-            <h2 className="section-current-title">{pageState.sectionName}</h2>
-
             <div className="section-header-wrapper">
                 {/* Header rad */}
                 <div className="section-list-header">
                     <div className="section-list-header-left">
-                        <span>Underkategorier</span>
-                        <button 
-                            className="section-plus-button" 
-                            aria-label="Legg til underkategori"
-                            onClick={() => setIsAddingSubSection((prev) => !prev)}
+                        {/* Legg til tekstnøkkel knapp */}
+                        <Button 
+                            onClick={() => 
+                                navigate("/create-textkey", {
+                                    state: {
+                                        applicationId: pageState.applicationId,
+                                        sectionName: pageState.sectionName,
+                                    },
+                                })
+                            }
+                            className="section-add-button"
                         >
-                            <BiPlus />
-                        </button>
+                            <span className="add-button-plus">+</span>
+                            <span className="add-button-text">Legg til ny tekstnøkkel</span>
+                        </Button>
                     </div>
                     <div className="section-marker-title">Marker</div>
                 </div>
-
-                {/* Legg til ny underkategori felt */}
-                {isAddingSubSection && (
-                    <div className="section-form-row">
-                        <div className="section-add-form">
-                            <Textfield
-                                label="Navn på underkategori"
-                                value={newSubSectionName}
-                                onChange={(e) => setNewSubSectionName(e.target.value)}
-                                placeholder="Skriv inn navn"
-                            />
-
-                            <div className="section-add-form-actions">
-                                <Button
-                                    onClick={handleAddSubSection}
-                                    disabled={isSaving || !newSubSectionName.trim()}
-                                >
-                                    Lagre
-                                </Button>
-
-                                <Button 
-                                    variant="secondary"
-                                    onClick={() => {
-                                        setIsAddingSubSection(false);
-                                        setNewSubSectionName("");
-                                    }}
-                                >
-                                    Avbryt
-                                </Button>
-                            </div>
-                        </div>
-                    <div />
-                    </div>
-                )}
             </div>
             
             {/* Liste med underkategorier */}
-            <div className="section-list">
-                {subSections.length === 0 ? (
-                    <p className="section-empty">Ingen underkategprier funnet.</p>
-                ) : (
-                    subSections.map((subSection) => {
-                        const isChecked = checkedSubSections.includes(subSection.name);
+            {filteredTextKeys.length === 0 ? (
+                <p className="section-empty">Ingen tekstnøkler funnet.</p>
+            ) : (
+                <div className="section-list">
+                    {filteredTextKeys.map((textKey) => {
+                        const isChecked = checkedKeys.includes(textKey.id);
 
                         return (
-                            <div className="section-row" key={subSection.name}>
+                            <div className="section-row" key={textKey.id}>
                                 <button 
                                     className="section-card"
                                     onClick={() =>
-                                        //Navigerer til underkategorier
-                                        navigate("/subSection", {
+                                        // Navigerer til textKeyDetail siden
+                                        navigate("/textkeyDetails/:id", {
                                             state: {
-                                                applicationId: pageState.applicationId,
-                                                applicationName: pageState.applicationName,
-                                                sectionName: pageState.sectionName,
-                                                subSectionName: subSection.name,
+                                                textKeyId: textKey.id,
                                             },
                                         })
                                     }
                                 >
-                                    <span className="section-card-title">{subSection.name}</span>
-                                    <span className="section-card-arrow">›</span>
+                                    <span className="section-card-title">{textKey.name}</span>
+                                    <span className="section-card-edit">✎</span>
                                 </button>
                                 
                                 {/* Checkboxer */}
@@ -248,30 +189,30 @@ const SectionPage = () => {
                                     <Checkbox
                                         checked={isChecked}
                                         onChange={(e) => {
-                                            const isChecked = e.target.checked;
+                                            const checked = e.target.checked;
 
-                                            setCheckedSubSections((prev) =>
-                                                isChecked
-                                                ? [...prev, subSection.name]
-                                                : prev.filter((name) => name !== subSection.name)
+                                            setCheckedKeys((prev) =>
+                                                checked
+                                                ? [...prev, textKey.id]
+                                                : prev.filter((id) => id !== textKey.id)
                                             );
                                         }}
-                                        aria-label={`Marker ${subSection.name}`}
+                                        aria-label={`Marker ${textKey.name}`}
                                     />
                                 </div>
                             </div>
                         );
-                    })
-                )}
+                    })}
             </div>
+            )}
 
             {/* Slett knapp */}
             <Button 
                 onClick={handleDeleteSelected}
-                disabled={checkedSubSections.length === 0}
+                disabled={checkedKeys.length === 0}
                 className="section-delete-button"
             >
-                Slett underkategori
+                Slett tekstnøkkel
             </Button>
         </div>
     );

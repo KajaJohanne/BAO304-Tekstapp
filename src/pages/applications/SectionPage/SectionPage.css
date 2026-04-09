@@ -37,15 +37,23 @@
     color: #444f55;
 }
 
-.section-plus-button {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 34px;
-    color: #444f55;
+.section-add-button {
+    background-color: #444f55;
+    color: white;
+    padding: 13px;
+    margin-bottom: 70px;
+  
     display: flex;
     align-items: center;
+    gap: 8px;
 }
+.add-button-text {
+    font-size: 16px;
+}
+.add-button-plus {
+    font-weight: 300;
+}
+
 .section-form-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 90px;
@@ -53,28 +61,7 @@
     gap: 30px;
     margin-bottom: 16px;
 }
-.section-add-form {
-    width: 100%;
-    max-width: 790px;
-    background: white;
-    padding: 16px 24px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.15);
-    margin-bottom: 20px;
-    box-sizing: border-box;
-}
-.section-add-form-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 12px;
-}
 
-.section-marker-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 90px;
-    align-items: center;
-    gap: 30px;
-    margin-bottom: 16px;
-}
 .section-marker-title {
     font-size: 18px;
     color: #444f55;
@@ -85,7 +72,7 @@
 .section-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 1rem;
 }
 .section-row {
     display: grid;
@@ -127,26 +114,28 @@
     box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
     border-bottom: 2px solid #ff9600;
 }
-.section-card-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 42px;
-    padding: 0 22px;
-    gap: 16px;
-}
+
 .section-card-title {
     margin: 0;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 16px;
     color: #444f55;
     flex: 1;
     min-width: 0;
 }
-.section-card-arrow {
-    font-size: 32px;
-    color: #444f55;
-    line-height: 1;
+.section-card-edit {
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    font-size: 22px;
+    cursor: pointer;
+   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.section-card-edit:hover {
+    opacity: 0.8;
 }
 
 .section-checkbox-wrapper {
