@@ -9,8 +9,8 @@ body {
 /* Contentkolonne */
 .container {
   max-width: 920px;
-  margin: 0 auto;
-  padding: 24px;
+  margin: 40px auto 80px;
+  padding: 20px;
   box-sizing: border-box;
 }
 
@@ -19,7 +19,7 @@ body {
   font-size: 16px;
   color: #868D90;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   text-decoration: underline;
   display: inline-block;
 }
@@ -30,7 +30,7 @@ body {
 
 /* Hovedtittel */
 .title {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 400;
   margin-bottom: 8px;
 }
@@ -38,7 +38,7 @@ body {
 /* Undertittel */
 .subtitle {
   font-size: 16px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 /* Tekstnøkkel */
@@ -92,15 +92,6 @@ body {
   margin-bottom: 6px;
 }
 
-/* Inputfelt */
-.textInput {
-  width: 520px;
-  height: 42px;
-  padding: 8px 12px;
-  border: 1px solid #868D90;
-  border-radius: 4px;
-  background: white;
-}
 
 /* Knapperad */
 .buttonRow {
@@ -123,4 +114,41 @@ body {
 .saveButton:hover,
 .cancelButton:hover {
   background: #272C2E;
+}
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 90px;
+}
+button svg {
+  width: 30px;
+  height: 30px;
+}
+.iconButton {
+  border: none;
+  background: transparent;
+  padding: 10px 14px; 
+  font-size: 16px;      
+  min-height: 40px;
+}
+
+.iconButton:hover {
+  background: #f0f0f0;
+  border-radius: 4px;
+  
+}
+.editInput {
+  font-size: 34px;
+  font-weight: 400;
+  width: 400px;        
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+.emptyState {
+  font-style: italic;
+  color: #868D90;
+  margin-bottom: 12px;
 }

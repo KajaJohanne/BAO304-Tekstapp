@@ -3,7 +3,7 @@ import HomePage from "../pages/applications/HomePage/HomePage";
 import CreateApplicationPage from "../pages/applications/CreateApplicationPage/CreateApplicationPage";
 import ApplicationDetailPage from "../pages/applications/ApplicationDetailPage/ApplicationDetailPage";
 import CreateTextKeyPage from "../pages/textKeys/CreateTextKeyPage/CreateTextKeyPage";
-import LoginPage from "../pages/LoginPage";
+import LoginPage from "../pages/LoginPage/LoginPage";
 import TextKeyDetailPage from "../pages/textKeys/TextKeyDetailPage/TextKeyDetailPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import SectionPage from "../pages/applications/SectionPage/SectionPage";
@@ -15,9 +15,10 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
         <Route element={<LayoutAndHeader />}>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route
             path="/create-application"

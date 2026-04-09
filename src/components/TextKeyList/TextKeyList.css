@@ -1,0 +1,101 @@
+.text-key-card {
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: box-shadow 0.2s ease;
+  border-bottom: 2px solid #ff9600;
+  padding: 8px;
+
+  --dsc-card-border-color: #444f55;
+  --dsc-card-border-width: 0px;
+  --dsc-card-block-border-width: 0px;
+
+  background-color: white;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+}
+.text-key-card * {
+  text-decoration: none;
+  color: inherit;
+}
+.text-key-card h3 {
+  font-weight: 400;
+  font-size: 16px;
+}
+.text-key-card:hover {
+  box-shadow: 0 0px 12px rgba(0, 0, 0, 0.3);
+  border-bottom: 3px solid #ff9600;
+}
+
+.edit-button {
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 22px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.text-key-card-edit-button:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 900px) {
+  .text-key-card-row {
+    grid-template-columns: minmax(0, 1fr) 80px;
+    gap: 16px;
+  }
+
+  .text-key-card-content {
+    min-height: 42px;
+    padding: 0 16px;
+  }
+
+  .text-key-card-title {
+    font-size: 18px;
+  }
+}
+
+.text-key-card {
+  cursor: pointer;
+}
+
+.text-key-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.text-key-card-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.text-key-card-title {
+  margin: 0;
+}
+
+.usage-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  border-radius: 50%;
+  border: none;
+  background-color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+}
+
+.usage-dot--active {
+  background-color: #22c55e;
+}
+
+.edit-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+}
