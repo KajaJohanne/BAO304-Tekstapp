@@ -7,7 +7,6 @@ export default function LayoutAndHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const [showEnvironments, setShowEnvironments] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -114,32 +113,10 @@ export default function LayoutAndHeader() {
                   )}
                   <button
                     className="dropdown-item logout"
-                    onClick={() => setShowLogoutConfirm(true)}
+                    onClick={handleLogut}
                   >
                     Logg ut
                   </button>
-                  {showLogoutConfirm && (
-                    <div className="modal-backdrop">
-                      <div className="modal">
-                        <p className="modal-text">
-                          Er du sikker på at du vil logge ut?
-                        </p>
-                        <div className="modal-buttons">
-                          <button onClick={() => setShowLogoutConfirm(false)}>
-                            Avbryt
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleLogut();
-                              setShowLogoutConfirm(false);
-                            }}
-                          >
-                            Logg ut
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
