@@ -4,3 +4,7 @@ export type subSectionState = {
     sectionName: string;
     subSectionName: string;
 };
+
+export type SubSectionItem = {
+    name: string;
+};

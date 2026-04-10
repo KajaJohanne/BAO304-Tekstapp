@@ -81,6 +81,18 @@ const ApplicationDetailPage = () => {
     await fetchApplication();
   };
 
+  const handleSectionClick = (sectionName: string) => {
+    if (!application) return;
+
+    navigate("/section", {
+      state: {
+        applicationId: application.id,
+        applicationName: application.name,
+        sectionName,
+      },
+    });
+  };
+
   const handleSubSectionClick = (
     sectionName: string,
     subSectionName: string,
@@ -247,7 +259,12 @@ const ApplicationDetailPage = () => {
           <div key={section.name} style={{ marginBottom: "32px" }}>
             {/* Section overskrift med knapp */}
             <div className="section-header">
-              <h3>{section.name}</h3>
+              <h3 
+                className="section-title" 
+                onClick={() => handleSectionClick(section.name)}
+              >
+                {section.name}
+              </h3>
               <button
                 type="button"
                 onClick={() =>

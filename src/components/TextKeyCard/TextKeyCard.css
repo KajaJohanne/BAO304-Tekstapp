@@ -5,17 +5,19 @@
   gap: 30px;
 }
 .text-key-card {
-  cursor: pointer;
-  transition: box-shadow 0.2s ease;
-  border-bottom: 2px solid #ff9600;
-  //padding: 8px;
-  //width: 803px;
-  --dsc-card-border-color: #444f55;
-  --dsc-card-border-width: 0px;
-  --dsc-card-block-border-width: 0px;
-  background-color: white;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
-  margin-bottom: 0;
+    cursor: pointer; 
+    transition: box-shadow 0.2s ease; 
+    border-bottom: 1.5px solid #ff9600;
+    padding: 8px;
+    width: 803px;
+
+    --dsc-card-border-color: #444f55;
+    --dsc-card-border-width: 0px;
+    --dsc-card-block-border-width: 0px;  
+
+    background-color: white;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+    margin-bottom: 0;
 }
 .text-key-card * {
   text-decoration: none;
@@ -26,8 +28,8 @@
   font-size: 16px;
 }
 .text-key-card:hover {
-  box-shadow: 0 0px 12px rgba(0, 0, 0, 0.3);
-  border-bottom: 3px solid #ff9600;
+    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+    border-bottom: 2px solid #ff9600;
 }
 .text-key-card-content {
   display: flex;
