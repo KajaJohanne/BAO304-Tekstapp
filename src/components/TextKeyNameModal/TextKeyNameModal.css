@@ -1,12 +1,12 @@
 /*CSS for å lage tekstnøkkel navn*/
 .text-key-name-modal_open-button {
     margin-top: 32px;
-    width: 250px;
-    height: 70px;
+    width: 210px;
+    height: 60px;
     background-color: #f5f5f5;
-    color: black;
+    color: #444F56;
     border: 2px solid #5b6770;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
     text-align: left;
     padding-left: 16px;
@@ -41,7 +41,7 @@
 .text-key-name-modal_text {
     margin: 0 0 32px 0;
     font-size: 18px;
-    color: #000000;
+    color: #444F56;
     max-width: 620px;
     line-height: 1.4;
     white-space: pre-line;
@@ -53,7 +53,7 @@
     border: 2px solid #ff9100;
     background-color: #f5f5f5;
     font-size: 18px;
-    color: #4f5b62;
+    color: #444F56;
     padding: 0 16px;
     margin-bottom: 32px;
     outline: none;

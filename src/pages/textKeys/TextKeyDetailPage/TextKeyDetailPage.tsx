@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./TextKeyDetailPage.css";
 import "react-toastify/dist/ReactToastify.css";
-
+import TextTypeSelector from "../../../components/TextTypeSelector/TextTypeSelector";
+import type { TextType } from "../../../../api";
 import { Button } from "@digdir/designsystemet-react";
 import { PencilIcon } from "@navikt/aksel-icons";
 import { toast, ToastContainer } from "react-toastify";
@@ -28,6 +29,7 @@ const TextKeyDetailPage = () => {
     useState<Environment[]>([]);
   const [currentEnvironment, setCurrentEnvironment] =
     useState<Environment | null>(null);
+  const [textType, setTextType] = useState<TextType | null>(null);
 
   const [formData, setFormData] = useState<TextValues>({
     bokmål: "",
@@ -91,15 +93,49 @@ const TextKeyDetailPage = () => {
 
     if (!trimmed) return "Du må fylle inn navn på tekstnøkkelen.";
     if (trimmed.includes(" ")) return "Nøkkelen kan ikke inneholde mellomrom.";
-    if (!/^[A-Za-zÆØÅæøå]+$/.test(trimmed))
+    if (!/^[A-Za-zÆØÅæøå\-.]+$/.test(trimmed))
       return "Nøkkelen kan kun inneholde bokstaver.";
 
     return "";
   };
 
+  const [fieldErrors, setFieldErrors] = useState<Partial<TextValues>>({});
+
+  const validateFields = () => {
+
+    if (!textType) {
+      toast.error("Du må velge teksttype");
+      return false;
+       }
+
+    const errors: Partial<TextValues> = {};
+    
+
+    if (!formData.bokmål.trim()) {
+      errors.bokmål = "Bokmål feltet kan ikke være tomt.";
+    }
+
+    if (!formData.nynorsk.trim()) {
+      errors.nynorsk = "Nynorsk feltet kan ikke være tomt.";
+    }
+
+    if (!formData.engelsk.trim()) {
+      errors.engelsk = "Engelsk feltet kan ikke være tomt.";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   // Lagre tekst
   const handleSave = async () => {
     if (!id || !currentEnvironment) return;
+
+    const isValid = validateFields();
+    if (!isValid) {
+      toast.error("Fyll inn alle feltene før du lagrer.");
+      return;
+    }
 
     const response = await updateEnviormentText(
       id,
@@ -139,9 +175,13 @@ const TextKeyDetailPage = () => {
 
   return (
     <div className="container">
-      <p className="backLink" onClick={() => navigate("/textkeys")}>
-        ← Tekstnøkler
-      </p>
+      <button
+    className="back-button"
+    onClick={() => navigate(-1)}
+      >
+    <span className="back-arrow">‹</span>
+    <span className="back-text">Tekstnøkler</span>
+  </button>
 
       <h1 className="title">Rediger tekstnøkkel</h1>
       <p className="subtitle">Her kan du redigere tekstnøkkelen</p>
@@ -260,17 +300,21 @@ const TextKeyDetailPage = () => {
             Du redigerer nå i:{" "}
             <strong>{currentEnvironment.toUpperCase()}</strong>
           </p>
-
+           <TextTypeSelector
+             value={textType}
+              onChange={setTextType}
+           />
           {noText && (
             <p className="emptyState">
               Ingen tekst finnes for denne tekstnøkkelen enda.
             </p>
           )}
+          
 
           <CreateTextKeyLanguagePage
             values={formData}
             onChange={handleChange}
-            errors={{}}
+            errors={fieldErrors}
           />
 
           <div className="buttonRow">
