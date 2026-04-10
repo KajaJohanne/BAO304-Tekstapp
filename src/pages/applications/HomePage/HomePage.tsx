@@ -112,16 +112,18 @@ const HomePage = () => {
       <CreateTypeSelector />
 
       <h1>Applikasjoner</h1>
-      
-      <div className="info-and-btn-container">
 
+      <div className="info-and-btn-container">
         <p>
-      Her finner du alle applikasjoner. Klikk på en applikasjon for å se detaljer,
-      eller bruk redigeringsikonet for å endre navn.
-    </p>
-        
+          Her finner du alle applikasjoner. Du kan filtrere og søke etter ønsket
+          applikasjon, eller legge til en ny.
+        </p>
+
         {/* TODO stilsett knappen bedre */}
-        <Button onClick={() => navigate("/create-application")} className="add-button">
+        <Button
+          onClick={() => navigate("/create-application")}
+          className="add-button"
+        >
           <BiPlus aria-hidden />
           Legg til ny applikasjon
         </Button>
