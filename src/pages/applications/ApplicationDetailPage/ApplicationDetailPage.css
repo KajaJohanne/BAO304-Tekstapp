@@ -10,7 +10,6 @@
   grid-template-columns: 590px 15px 6px;
   align-items: center;
   margin-bottom: 8px;
-
 }
 
 .section-header-right {
@@ -31,13 +30,16 @@
   margin-bottom: 8px;
   border-bottom: 2px solid #ff9600;
   background-color: white;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 0 6px rgba(0, 0, 0, 0.15),
+    inset 0 -1.5px 0 #ff9600;
   cursor: pointer;
 }
 
 .subsection-item:hover {
-  box-shadow: 0 0px 12px rgba(0, 0, 0, 0.3);
-  border-bottom: 3px solid #ff9600;
+  box-shadow:
+    0 0 14px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 0 #ff9600;
 }
 
 .section-name {
@@ -46,13 +48,14 @@
   gap: "16px";
   margin-bottom: "12px";
 }
+
 .section-title {
   cursor: pointer;
   display: inline-block;
   width: fit-content;
 }
 .section-title:hover {
-  border-bottom: 2px solid #ff9600;
+  box-shadow: inset 0 -2px 0 #ff9600;
 }
 
 .add-subsection-form {
@@ -180,7 +183,6 @@
 
 .add-subSection-btn:hover {
   color: #ff9600;
-  
 }
 
 .save-subSection-btn {
