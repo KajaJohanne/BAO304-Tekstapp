@@ -6,10 +6,15 @@
 }
 
 .section-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 590px 15px 6px;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 8px;
+
+}
+
+.section-header-right {
+  display: contents;
 }
 
 .subsection-list {
@@ -44,6 +49,7 @@
 .section-title {
   cursor: pointer;
   display: inline-block;
+  width: fit-content;
 }
 .section-title:hover {
   border-bottom: 2px solid #ff9600;
@@ -92,33 +98,40 @@
 }
 
 .subsection-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 600px 60px;
   align-items: center;
-  gap: 12px;
   margin-bottom: 8px;
-  max-width: 600px;
 }
 
 .subsection-row .subsection-item {
   flex: 1;
   margin-bottom: 0;
+  max-width: 600px;
 }
 
 .subsection-checkbox {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  flex-shrink: 0;
+  justify-self: center;
 }
 
 .subsection-list-header {
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+  max-width: 600px;
 }
 
 .subsection-marker-title {
-  min-width: 18px;
+  font-size: 16px;
+  color: #444f55;
   text-align: center;
-  padding-left: 40px;
+  justify-self: center;
+  font-weight: bold;
 }
 
 .add-section-btn {
@@ -126,7 +139,6 @@
   color: white;
   padding: 13px;
   margin-bottom: 70px;
-
   display: flex;
   align-items: center;
   gap: 8px;
@@ -137,7 +149,6 @@
   color: white;
   padding: 13px;
   margin-bottom: 70px;
-
   display: flex;
   align-items: center;
   gap: 8px;
@@ -155,4 +166,33 @@
   margin-bottom: 20px;
   text-decoration: underline;
   display: inline-block;
+}
+
+.add-subSection-btn {
+  background-color: #f5f5f5;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #444f55;
+  font-size: 24px;
+  text-align: center;
+}
+
+.add-subSection-btn:hover {
+  color: #ff9600;
+  
+}
+
+.save-subSection-btn {
+  background-color: transparent;
+  border: 1px solid #444f55;
+  color: #444f55;
+  font-size: 14px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.save-subSection-btn:hover {
+  border-color: #ff9600;
+  color: #ff9600;
 }

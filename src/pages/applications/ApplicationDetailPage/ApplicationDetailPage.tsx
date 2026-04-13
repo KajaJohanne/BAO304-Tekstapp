@@ -12,6 +12,7 @@ import "./ApplicationDetailPage.css";
 import { Button } from "@digdir/designsystemet-react";
 import { toast } from "react-toastify";
 import HomePage from "../HomePage/HomePage";
+import { BiPlus } from "react-icons/bi";
 
 const ApplicationDetailPage = () => {
   const navigate = useNavigate();
@@ -258,24 +259,31 @@ const ApplicationDetailPage = () => {
       ) : (
         sections.map((section) => (
           <div key={section.name} style={{ marginBottom: "32px" }}>
+
             {/* Section overskrift med knapp */}
             <div className="section-header">
-              <h3 
-                className="section-title" 
+              <h3
+                className="section-title"
                 onClick={() => handleSectionClick(section.name)}
               >
                 {section.name}
               </h3>
-              <button
-                type="button"
-                onClick={() =>
-                  setOpenSection(
-                    openSection === section.name ? null : section.name,
-                  )
-                }
-              >
-                + Legg til underkategori
-              </button>
+
+              <div className="section-header-right">
+                <button
+                  className="add-subSection-btn"
+                  type="button"
+                  title="Legg til underkategori"
+                  onClick={() =>
+                    setOpenSection(
+                      openSection === section.name ? null : section.name,
+                    )
+                  }
+                >
+                  +
+                </button>
+                <div className="subsection-marker-title">Marker</div>
+              </div>
             </div>
 
             {/* Inputfelt for ny subsection */}
@@ -289,6 +297,7 @@ const ApplicationDetailPage = () => {
                 />
                 <button
                   type="button"
+                  className="save-subSection-btn"
                   onClick={() => handleAddSubSection(section.name)}
                   disabled={isSaving}
                 >
@@ -302,13 +311,6 @@ const ApplicationDetailPage = () => {
               <p>Ingen underkategorier ennå.</p>
             ) : (
               <>
-                <div style={{ maxWidth: "600px" }}>
-                  <div className="subsection-list-header">
-                    <div />
-                    <div className="subsection-marker-title">Marker</div>
-                  </div>
-                </div>
-
                 <ul className="subsection-list">
                   {section.subSections.map((subSection) => (
                     <div key={subSection.name} className="subsection-row">
