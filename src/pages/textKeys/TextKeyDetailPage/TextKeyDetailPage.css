@@ -96,6 +96,7 @@ body {
 /* Knapperad */
 .buttonRow {
   display: flex;
+  align-items: flex-end;
   gap: 18px;
   margin-top: 30px;
 }
@@ -115,6 +116,21 @@ body {
 .cancelButton:hover {
   background: #272C2E;
 }
+.textkey-delete-button {
+  background-color: #444F55;
+  color: white;
+  padding: 12px 32px;
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.textkey-delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .headerRow {
   display: flex;
   align-items: center;

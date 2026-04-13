@@ -27,6 +27,14 @@ body {
     margin-bottom: 42px;
 }
 
+.environment-text {
+    margin: 0 0 12px 0;
+    font-weight: 400;
+    font-size: 18px;
+    color: #444F56;
+    text-align: left;
+}
+
 .text-key-preview {
     margin-top: 24px;
 }
