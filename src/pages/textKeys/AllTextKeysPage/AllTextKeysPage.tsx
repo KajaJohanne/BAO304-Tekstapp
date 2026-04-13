@@ -175,7 +175,7 @@ const AllTextKeysPage = () => {
               key={textKey.id}
               title={textKey.name}
               isInUse={Boolean(textKey.isInUse)}
-              onClick={() => navigate(`/applicationDetails/${textKey.id}`)}
+              onClick={() => navigate(`/textkeyDetails/${textKey.id}`)}
               onToggleUsage={() =>
                 handleToggleUsage(textKey.id, Boolean(textKey.isInUse))
               }
