@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./FilterMenu.css";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
-import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
+import { HiChevronDown, HiChevronUp, HiXMark } from "react-icons/hi2";
 
 export type SortOption = "lastChanged" | "createdAt" | "alphabetical";
 export type TextTypeOption =
@@ -21,6 +21,7 @@ export type FilterValues = {
 type FilterMenuProps = {
   value: FilterValues;
   onApply: (filters: FilterValues) => void;
+  showTextType?: boolean;
 };
 
 const defaultExpandedState = {
@@ -29,10 +30,16 @@ const defaultExpandedState = {
   usageStatus: false,
 };
 
-const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
+const FilterMenu = ({
+  value,
+  onApply,
+  showTextType = true,
+}: FilterMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [expanded, setExpanded] = useState(defaultExpandedState);
   const [localFilters, setLocalFilters] = useState<FilterValues>(value);
+
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -45,6 +52,25 @@ const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
       [section]: !prev[section],
     }));
   };
+
+  useEffect(() => {
+    setLocalFilters(value);
+  }, [value]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const setSingleValue = <K extends keyof FilterValues>(
     category: K,
@@ -67,6 +93,15 @@ const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
     onApply(resetValue);
   };
 
+  const handleApply = () => {
+    onApply(localFilters);
+
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (isMobile) {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <div className="filter-menu-wrapper">
       <button
@@ -80,8 +115,21 @@ const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
       </button>
 
       {isOpen && (
-        <aside className="filter-panel">
+        <aside
+          className={`filter-panel ${isOpen ? "open" : ""}`}
+          ref={menuRef}
+          aria-hidden={!isOpen}
+        >
           <div className="filter-menu">
+            <button
+              type="button"
+              className="filter-menu__close-button"
+              onClick={() => setIsOpen(false)}
+              aria-label="Lukk filtermeny"
+            >
+              <HiXMark aria-hidden />
+            </button>
+
             <div className="filter-menu__content">
               <Section
                 title="Sortering"
@@ -108,42 +156,44 @@ const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
                 />
               </Section>
 
-              <Section
-                title="Type tekst"
-                isOpen={expanded.textType}
-                onToggle={() => toggleSection("textType")}
-              >
-                <Checkbox
-                  name="textType"
-                  label="Tittel"
-                  checked={localFilters.textTypes === "Tittel"}
-                  onChange={() => setSingleValue("textTypes", "Tittel")}
-                />
-                <Checkbox
-                  name="textType"
-                  label="Brødtekst"
-                  checked={localFilters.textTypes === "Brødtekst"}
-                  onChange={() => setSingleValue("textTypes", "Brødtekst")}
-                />
-                <Checkbox
-                  name="textType"
-                  label="Feilmelding"
-                  checked={localFilters.textTypes === "Feilmelding"}
-                  onChange={() => setSingleValue("textTypes", "Feilmelding")}
-                />
-                <Checkbox
-                  name="textType"
-                  label="Knappetekst"
-                  checked={localFilters.textTypes === "Knappetekst"}
-                  onChange={() => setSingleValue("textTypes", "Knappetekst")}
-                />
-                <Checkbox
-                  name="textType"
-                  label="Hjelpetekst"
-                  checked={localFilters.textTypes === "Hjelpetekst"}
-                  onChange={() => setSingleValue("textTypes", "Hjelpetekst")}
-                />
-              </Section>
+              {showTextType && (
+                <Section
+                  title="Type tekst"
+                  isOpen={expanded.textType}
+                  onToggle={() => toggleSection("textType")}
+                >
+                  <Checkbox
+                    name="textType"
+                    label="Tittel"
+                    checked={localFilters.textTypes === "Tittel"}
+                    onChange={() => setSingleValue("textTypes", "Tittel")}
+                  />
+                  <Checkbox
+                    name="textType"
+                    label="Brødtekst"
+                    checked={localFilters.textTypes === "Brødtekst"}
+                    onChange={() => setSingleValue("textTypes", "Brødtekst")}
+                  />
+                  <Checkbox
+                    name="textType"
+                    label="Feilmelding"
+                    checked={localFilters.textTypes === "Feilmelding"}
+                    onChange={() => setSingleValue("textTypes", "Feilmelding")}
+                  />
+                  <Checkbox
+                    name="textType"
+                    label="Knappetekst"
+                    checked={localFilters.textTypes === "Knappetekst"}
+                    onChange={() => setSingleValue("textTypes", "Knappetekst")}
+                  />
+                  <Checkbox
+                    name="textType"
+                    label="Hjelpetekst"
+                    checked={localFilters.textTypes === "Hjelpetekst"}
+                    onChange={() => setSingleValue("textTypes", "Hjelpetekst")}
+                  />
+                </Section>
+              )}
 
               <Section
                 title="Bruksstatus"
@@ -177,7 +227,7 @@ const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
               <button
                 type="button"
                 className="filter-menu__button filter-menu__button--primary"
-                onClick={() => onApply(localFilters)}
+                onClick={handleApply}
               >
                 Filtrer
               </button>

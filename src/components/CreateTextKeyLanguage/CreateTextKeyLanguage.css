@@ -23,4 +23,14 @@
 .input-error {
   border: 1px solid #b42318;
 }
+.myTextarea {
+  height: auto;
+  min-height: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 12px;
+  line-height: 1.5;
+  background-color: white;
+}
+
  

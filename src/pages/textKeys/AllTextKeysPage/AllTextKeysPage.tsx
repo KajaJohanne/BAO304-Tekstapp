@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@digdir/designsystemet-react";
 import { BiPlus } from "react-icons/bi";
-
+import ListItemCard from "../../../components/ListItemCard/ListItemCard";
 import {
   getAllTextKeys,
   updateTextKeyUsageStatus,
@@ -11,7 +11,6 @@ import {
 import "./AllTextKeysPage.css";
 import "../../../components/CreateTypeSelector/CreateTypeSelector";
 import CreateTypeSelector from "../../../components/CreateTypeSelector/CreateTypeSelector";
-import TextKeyList from "../../../components/TextKeyList/TextKeyList";
 import SearchBar from "../../../components/Search/SearchBar";
 import FilterMenu, {
   type FilterValues,
@@ -147,7 +146,7 @@ const AllTextKeysPage = () => {
         Legg til ny tekstnøkkel
       </Button>
 
-      {/* Søkefelt fra komponent */}
+      {/* Søkefelt of filtermeny fra komponent */}
       <div className="search-filter-row">
         <div className="search-bar-wrapper">
           <SearchBar
@@ -172,13 +171,16 @@ const AllTextKeysPage = () => {
           </div>
         ) : (
           filteredTextKeys.map((textKey) => (
-            <TextKeyList
+            <ListItemCard
               key={textKey.id}
-              textKey={textKey}
-              onClick={() => navigate(`/textkeyDetails/${textKey.id}`)}
+              title={textKey.name}
+              isInUse={Boolean(textKey.isInUse)}
+              onClick={() => navigate(`/applicationDetails/${textKey.id}`)}
               onToggleUsage={() =>
                 handleToggleUsage(textKey.id, Boolean(textKey.isInUse))
               }
+              usageLabelActive="Marker applikasjon som ikke i bruk"
+              usageLabelInactive="Marker applikasjon som i bruk"
             />
           ))
         )}

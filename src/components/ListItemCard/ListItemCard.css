@@ -1,0 +1,85 @@
+.list-item-card {
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: box-shadow 0.2s ease;
+  padding: 8px;
+
+  --dsc-card-border-color: #444f55;
+  --dsc-card-border-width: 0px;
+  --dsc-card-block-border-width: 0px;
+
+  background-color: white;
+  box-shadow:
+    0 0 6px rgba(0, 0, 0, 0.15),
+    inset 0 -1.5px 0 #ff9600;
+}
+
+.list-item-card * {
+  text-decoration: none;
+  color: inherit;
+}
+
+.list-item-card h3 {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.list-item-card:hover {
+  box-shadow:
+    0 0 14px rgba(0, 0, 0, 0.3),
+    inset 0 -2px 0 #ff9600;
+}
+
+.list-item-card-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 42px;
+  padding: 0 16px;
+}
+
+.list-item-card-title {
+  margin: 0;
+  flex: 1;
+  font-weight: 400;
+  font-size: 20px;
+  color: #444f55;
+  min-width: 0;
+}
+
+.usage-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  border-radius: 50%;
+  border: none;
+  background-color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.usage-dot--active {
+  background-color: #22c55e;
+}
+
+.edit-icon {
+  color: #6b7280;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .list-item-card-content {
+    min-height: 42px;
+    padding: 0 16px;
+  }
+
+  .list-item-card-title {
+    font-size: 18px;
+  }
+}
