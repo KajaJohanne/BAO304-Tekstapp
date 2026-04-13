@@ -41,6 +41,13 @@
   gap: "16px";
   margin-bottom: "12px";
 }
+.section-title {
+  cursor: pointer;
+  display: inline-block;
+}
+.section-title:hover {
+  border-bottom: 2px solid #ff9600;
+}
 
 .add-subsection-form {
   display: flex;

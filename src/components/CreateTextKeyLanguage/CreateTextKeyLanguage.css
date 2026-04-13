@@ -13,7 +13,7 @@
 }
 .create-text-key-language_label {
   font-size: 18px;
-  color: #1f2937;
+  color: #444F56;
 }
 .field-error {
   margin-top: 4px;
@@ -23,4 +23,14 @@
 .input-error {
   border: 1px solid #b42318;
 }
+.myTextarea {
+  height: auto;
+  min-height: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 12px;
+  line-height: 1.5;
+  background-color: white;
+}
+
  

@@ -24,7 +24,9 @@ import type { FormErrors } from "../../../types/formErrors";
 const CreateTextKeyPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  useEffect(() => {
+  window.scrollTo(0, 0);
+  }, []);
   const [name, setName] = useState("");
   const [selectedPlacement, setSelectedPlacement] = useState("");
   const [applications, setApplications] = useState<ApplicationListItem[]>([]);
@@ -248,6 +250,14 @@ const CreateTextKeyPage = () => {
             />
             {errors.name && (<ValidationMessage>{errors.name}</ValidationMessage>)}
 
+            {/* Forhåndsvisning av nøkkel navnet */}
+            {name && (
+              <div className="text-key-preview">
+                <p className="text-key-preview_label">Forhåndsvisning av nøkkelnavn</p>
+                <p className="text-key-preview_value">{name}</p>
+              </div>
+            )}
+
             {/* komponent */}
             <TextKeyPlacementSelector 
               applications={applications}
@@ -278,7 +288,7 @@ const CreateTextKeyPage = () => {
             {/* Forhåndsvisning av nøkkel navnet */}
             {(selectedPlacement || name) && (
               <div className="text-key-preview">
-                <p className="text-key-preview_label">Forhåndsvisning av nøkkelnavn</p>
+                <p className="text-key-preview_label">Forhåndsvisning av tekstnøkkel</p>
                 <p className="text-key-preview_value">
                   {selectedPlacement && name
                       ? `${selectedPlacement}.${name}`

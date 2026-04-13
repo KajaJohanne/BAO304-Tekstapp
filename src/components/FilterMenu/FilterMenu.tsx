@@ -21,6 +21,7 @@ export type FilterValues = {
 type FilterMenuProps = {
   value: FilterValues;
   onApply: (filters: FilterValues) => void;
+  showTextType?: boolean;
 };
 
 const defaultExpandedState = {
@@ -29,7 +30,11 @@ const defaultExpandedState = {
   usageStatus: false,
 };
 
-const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
+const FilterMenu = ({
+  value,
+  onApply,
+  showTextType = true,
+}: FilterMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [expanded, setExpanded] = useState(defaultExpandedState);
   const [localFilters, setLocalFilters] = useState<FilterValues>(value);
@@ -151,42 +156,44 @@ const FilterMenu = ({ value, onApply }: FilterMenuProps) => {
                 />
               </Section>
 
-              <Section
-                title="Type tekst"
-                isOpen={expanded.textType}
-                onToggle={() => toggleSection("textType")}
-              >
-                <Checkbox
-                  name="textType"
-                  label="Tittel"
-                  checked={localFilters.textTypes === "Tittel"}
-                  onChange={() => setSingleValue("textTypes", "Tittel")}
-                />
-                <Checkbox
-                  name="textType"
-                  label="Brødtekst"
-                  checked={localFilters.textTypes === "Brødtekst"}
-                  onChange={() => setSingleValue("textTypes", "Brødtekst")}
-                />
-                <Checkbox
-                  name="textType"
-                  label="Feilmelding"
-                  checked={localFilters.textTypes === "Feilmelding"}
-                  onChange={() => setSingleValue("textTypes", "Feilmelding")}
-                />
-                <Checkbox
-                  name="textType"
-                  label="Knappetekst"
-                  checked={localFilters.textTypes === "Knappetekst"}
-                  onChange={() => setSingleValue("textTypes", "Knappetekst")}
-                />
-                <Checkbox
-                  name="textType"
-                  label="Hjelpetekst"
-                  checked={localFilters.textTypes === "Hjelpetekst"}
-                  onChange={() => setSingleValue("textTypes", "Hjelpetekst")}
-                />
-              </Section>
+              {showTextType && (
+                <Section
+                  title="Type tekst"
+                  isOpen={expanded.textType}
+                  onToggle={() => toggleSection("textType")}
+                >
+                  <Checkbox
+                    name="textType"
+                    label="Tittel"
+                    checked={localFilters.textTypes === "Tittel"}
+                    onChange={() => setSingleValue("textTypes", "Tittel")}
+                  />
+                  <Checkbox
+                    name="textType"
+                    label="Brødtekst"
+                    checked={localFilters.textTypes === "Brødtekst"}
+                    onChange={() => setSingleValue("textTypes", "Brødtekst")}
+                  />
+                  <Checkbox
+                    name="textType"
+                    label="Feilmelding"
+                    checked={localFilters.textTypes === "Feilmelding"}
+                    onChange={() => setSingleValue("textTypes", "Feilmelding")}
+                  />
+                  <Checkbox
+                    name="textType"
+                    label="Knappetekst"
+                    checked={localFilters.textTypes === "Knappetekst"}
+                    onChange={() => setSingleValue("textTypes", "Knappetekst")}
+                  />
+                  <Checkbox
+                    name="textType"
+                    label="Hjelpetekst"
+                    checked={localFilters.textTypes === "Hjelpetekst"}
+                    onChange={() => setSingleValue("textTypes", "Hjelpetekst")}
+                  />
+                </Section>
+              )}
 
               <Section
                 title="Bruksstatus"

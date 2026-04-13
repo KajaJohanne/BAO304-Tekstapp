@@ -38,6 +38,9 @@ export interface Application {
     name: string;
     subSections: { name: string }[];
   }[];
+  isInUse: boolean;
+  createdAt: string;
+  lastChanged: string;
 }
 
 // Hvordan dataen skal lagres i Firebase
@@ -74,9 +77,30 @@ export async function updateTextKeyUsageStatus(
     if (e instanceof FirebaseError) {
       return e.message;
     }
-    return "Ukjent feil ved oppdatering av bruksstatus.";
+    return "Ukjent feil ved oppdatering av bruksstatus for tekstnøkkel.";
   }
 }
+
+// for å se om applikasjon er i bruk eller ikke
+export async function updateApplicationUsageStatus(
+  documentId: string,
+  isInUse: boolean,
+): Promise <string | null> {
+  try {
+    await updateDoc(doc(db, "applications", documentId), {
+      isInUse,
+      lastChanged: new Date().toISOString(),
+    });
+
+    return null;
+  } catch(e) {
+    if (e instanceof FirebaseError) {
+      return e.message;
+    }
+    return "Ukjent feil ved oppdatering av bruksstatus for applikasjon.";
+  }
+}
+
 
 // Brukes når vi henter en liste med tekstnøkler og også trenger document id
 export interface TextKeyListItem extends TextKeyDocument {
@@ -310,6 +334,9 @@ export async function getApplication(
       id: snapshot.id,
       name: data.name,
       sections: data.sections ?? [],
+      isInUse: data.isInUse ?? false,
+      createdAt: data.createdAt,
+      lastChanged: data.lastChanged,
     };
   } catch (e) {
     console.error("Feil ved henting av applikasjon:", e);
@@ -405,10 +432,17 @@ export async function saveUser(user: User): Promise<string | null> {
 
 // Oppretter ny applikasjon i Firebase
 export async function saveApplication(
-  application: Application,
+  application: Omit<Application, "isInUse" | "createdAt" | "lastChanged">,
 ): Promise<string | null> {
   try {
-    await addDoc(collection(db, "applications"), application);
+    const now = new Date().toISOString();
+
+    await addDoc(collection(db, "applications"), {
+      ...application,
+      isInUse: false,
+      createdAt: now,
+      lastChanged: now,
+    }) ;
     return null;
   } catch (e) {
     if (e instanceof FirebaseError) {
@@ -526,6 +560,7 @@ export async function addSectionToApplication(
         ...existingSections,
         { name: sectionName.trim(), subSections: [] },
       ],
+      lastChanged: new Date().toISOString(),
     });
     return null;
   } catch (e) {
@@ -570,6 +605,7 @@ export async function deleteSubSections(
 
     await updateDoc(applicationsRef, {
       sections: updatedSections,
+      lastChanged: new Date().toISOString(),
     });
 
     return null; 

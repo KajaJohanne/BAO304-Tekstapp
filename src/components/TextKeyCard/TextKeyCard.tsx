@@ -11,7 +11,7 @@ export default function TextKeyCard({
   return (
     //List over tekstnøkler
     <div className="text-key-card-row">
-      <Card className="text-key-card" data-color="neutral">
+      <Card.Block className="text-key-card" data-color="neutral">
         <div className="text-key-card-content">
           <Heading level={3} data-size="sm" className="text-key-card-title">
             {textKey.name}
@@ -26,7 +26,7 @@ export default function TextKeyCard({
             ✎
           </button>
         </div>
-      </Card>
+      </Card.Block>
 
       {/* Markeringsbokser */}
       <div className="text-key-card-checkbox-wrapper">
