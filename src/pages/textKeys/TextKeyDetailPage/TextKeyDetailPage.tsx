@@ -15,6 +15,7 @@ import {
   type TextKeyDocument,
   type TextValues,
   type User,
+  deleteTextKey,
 } from "../../../../api";
 
 import CreateTextKeyLanguagePage from "../../../components/CreateTextKeyLanguage/CreateTextKeyLanguage";
@@ -137,6 +138,35 @@ const TextKeyDetailPage = () => {
   const noText =
     !formData.bokmål && !formData.nynorsk && !formData.engelsk;
 
+  //Slette tekstnøkkel
+  const handleDelete = async () => {
+    if (!id) return;
+    
+    const confirmed = window.confirm(
+      "Er du sikker på at du vil slette denne tekstnøkkelen?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const response = await deleteTextKey(id);
+
+      if (response) {
+        console.error(response);
+        alert(response);
+        return;
+      }
+
+      toast.success("Tekstnøkkel slettet");
+      setTimeout(() => {
+        navigate("/textkeys");
+      }, 1400);
+    } catch (error) {
+      console.error("Feil ved sletting av tekstnøkkel:", error);
+      alert("Noe gikk galt ved sletting.");
+    }
+  };
+
   return (
     <div className="container">
       <p className="backLink" onClick={() => navigate("/textkeys")}>
@@ -199,37 +229,37 @@ const TextKeyDetailPage = () => {
   </div>
 
   <Button
-  className="iconButton"
-  aria-label={isEditingName ? "Lagre" : "Rediger"}
-  onClick={async () => {
-    if (isEditingName) {
-      const error = validateName(editedName);
+    className="iconButton"
+    aria-label={isEditingName ? "Lagre" : "Rediger"}
+    onClick={async () => {
+      if (isEditingName) {
+        const error = validateName(editedName);
 
-      if (error) {
-        setNameError(error);
-        return;
+        if (error) {
+          setNameError(error);
+          return;
+        }
+
+        const response = await updateTextKeyName(id!, editedName);
+
+        if (response) {
+          toast.error(`Feil: ${response}`);
+          return;
+        }
+
+        setTextKey((prev) => {
+          if (!prev) return prev;
+          return { ...prev, name: editedName };
+        });
+
+        setIsEditingName(false);
+        toast.success("Navn lagret");
+      } else {
+        setIsEditingName(true);
+        setEditedName(textKey.name);
       }
-
-      const response = await updateTextKeyName(id!, editedName);
-
-      if (response) {
-        toast.error(`Feil: ${response}`);
-        return;
-      }
-
-      setTextKey((prev) => {
-        if (!prev) return prev;
-        return { ...prev, name: editedName };
-      });
-
-      setIsEditingName(false);
-      toast.success("Navn lagret");
-    } else {
-      setIsEditingName(true);
-      setEditedName(textKey.name);
-    }
-  }}
->
+    }}
+  >
   {isEditingName ? "Lagre" : <PencilIcon aria-hidden />}
 </Button>
 </div>
@@ -274,16 +304,24 @@ const TextKeyDetailPage = () => {
           />
 
           <div className="buttonRow">
-            <button className="saveButton" onClick={handleSave}>
+            <Button className="saveButton" onClick={handleSave}>
               Lagre
-            </button>
+            </Button>
 
-            <button
+            <Button
               className="cancelButton"
               onClick={() => navigate("/textkeys")}
             >
               Avbryt
-            </button>
+            </Button>
+
+            {/* Slett knapp */}
+            <Button 
+                  onClick={handleDelete}
+                  className="textkey-delete-button"
+              >
+                  Slett tekstnøkkel
+              </Button>
           </div>
         </>
       )}
