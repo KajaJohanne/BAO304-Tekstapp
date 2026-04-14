@@ -38,14 +38,14 @@ body {
 /* Undertittel */
 .subtitle {
   font-size: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 35px;
 }
 
 /* Tekstnøkkel */
 .textKeyName {
-  font-size: 36px;
+  font-size: 22px;
   font-weight: 400;
-  margin-bottom: 40px;
+  margin-bottom: 0;
 }
 
 /* Miljøseksjon */
@@ -145,7 +145,7 @@ button svg {
   border: none;
   background: transparent;
   padding: 10px 14px; 
-  font-size: 16px;      
+  font-size: 10px;      
   min-height: 40px;
 }
 
@@ -155,7 +155,7 @@ button svg {
   
 }
 .editInput {
-  font-size: 34px;
+  font-size: 22px;
   font-weight: 400;
   width: 400px;        
   padding: 4px 8px;
@@ -167,4 +167,18 @@ button svg {
   font-style: italic;
   color: #868D90;
   margin-bottom: 12px;
+}
+.nameSection {
+  display: flex;
+  align-items: center;
+}
+.saveMode {
+  background: #444F56;
+  color: white;
+  padding: 10px 28px;
+  border: none;
+  font-size: 13px;
+}
+.saveMode:hover {
+  background: #272C2E;
 }

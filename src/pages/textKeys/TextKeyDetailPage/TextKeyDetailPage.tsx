@@ -94,7 +94,7 @@ const TextKeyDetailPage = () => {
 
     if (!trimmed) return "Du må fylle inn navn på tekstnøkkelen.";
     if (trimmed.includes(" ")) return "Nøkkelen kan ikke inneholde mellomrom.";
-    if (!/^[A-Za-zÆØÅæøå\-.]+$/.test(trimmed))
+    if (!/^[A-Za-zÆØÅæøå\.]+$/.test(trimmed))
       return "Nøkkelen kan kun inneholde bokstaver.";
 
     return "";
@@ -269,8 +269,8 @@ const TextKeyDetailPage = () => {
   </div>
 
   <Button
-    className="iconButton"
-    aria-label={isEditingName ? "Lagre" : "Rediger"}
+      className={`iconButton ${isEditingName ? "saveMode" : ""}`}
+      aria-label={isEditingName ? "Lagre" : "Rediger"}
     onClick={async () => {
       if (isEditingName) {
         const error = validateName(editedName);
