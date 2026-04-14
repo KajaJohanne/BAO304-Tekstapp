@@ -109,8 +109,8 @@ const CreateApplicationPage = () => {
               {...register("name", {
                 required: "Du må gi et navn til applikasjonen",
                 pattern: {
-                  value: /^[a-zA-ZæøåÆØÅ0-9]+$/, // \s
-                  message: "Navnet kan bare inneholde bokstaver og tall, ingen mellomrom",
+                  value: /^[a-zA-ZæøåÆØÅ0-9\s]+$/,
+                  message: "Navnet kan bare inneholde bokstaver og tall",
                 },
                 validate: async (value) => {
                   // Sjekker mot firestore om navnet finnes
@@ -154,7 +154,10 @@ const CreateApplicationPage = () => {
           </p>
 
           {fields.map((field, index) => (
-            <div key={field.id} style={{ display: "flex", gap: "0.5rem", marginBottom: "8px" }}>
+            <div
+              key={field.id}
+              style={{ display: "flex", gap: "0.5rem", marginBottom: "8px" }}
+            >
               <input
                 className="text-input"
                 type="text"
@@ -162,7 +165,11 @@ const CreateApplicationPage = () => {
                 {...register(`sections.${index}.name`)}
                 style={{ flex: 1 }}
               />
-              <button className="btn-secondary-x" type="button" onClick={() => remove(index)}>
+              <button
+                className="btn-secondary-x"
+                type="button"
+                onClick={() => remove(index)}
+              >
                 x
               </button>
             </div>
@@ -178,16 +185,23 @@ const CreateApplicationPage = () => {
           </button>
 
           <div style={{ display: "flex", gap: "0.5rem" }}>
-            <button type="button" className="btn-secondary" onClick={() => setCurrentStep(1)}>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setCurrentStep(1)}
+            >
               Tilbake
             </button>
-            <button type="button" className="btn-secondary" onClick={() => setCurrentStep(3)}>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setCurrentStep(3)}
+            >
               Neste
             </button>
           </div>
         </div>
       )}
-
 
       {/* Trinn 3 Oppsummering */}
       {currentStep === 3 && (
@@ -217,11 +231,19 @@ const CreateApplicationPage = () => {
           </div>
 
           <div style={{ display: "flex", gap: "0.5rem" }}>
-            <button type="button" className="btn-secondary" onClick={() => setCurrentStep(2)}>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setCurrentStep(2)}
+            >
               Tilbake
             </button>
             {/* handleSubmit validerer skjeamet før onSubmit kalles */}
-            <button type="button" className="btn-secondary" onClick={handleSubmit(onSubmit)}>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={handleSubmit(onSubmit)}
+            >
               Opprett applikasjon
             </button>
           </div>
