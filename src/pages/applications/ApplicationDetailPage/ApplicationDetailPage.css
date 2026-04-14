@@ -181,11 +181,11 @@
   text-align: center;
 }
 
-.add-subSection-btn:hover {
+.add-subection-btn:hover {
   color: #ff9600;
 }
 
-.save-subSection-btn {
+.subsection-btn {
   background-color: transparent;
   border: 1px solid #444f55;
   color: #444f55;
@@ -194,7 +194,21 @@
   cursor: pointer;
 }
 
-.save-subSection-btn:hover {
+.subsection-btn:hover {
+  border-color: #ff9600;
+  color: #ff9600;
+}
+
+.section-btn {
+  background-color: transparent;
+  border: 1px solid #444f55;
+  color: #444f55;
+  font-size: 14px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.section-btn:hover {
   border-color: #ff9600;
   color: #ff9600;
 }

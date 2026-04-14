@@ -12,7 +12,6 @@ import "./ApplicationDetailPage.css";
 import { Button } from "@digdir/designsystemet-react";
 import { toast } from "react-toastify";
 
-
 const ApplicationDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -219,7 +218,7 @@ const ApplicationDetailPage = () => {
   return (
     <div className="application-detail">
       <p className="back-btn" onClick={() => navigate("/home")}>
-        ← Applikasjoner
+        ‹ Applikasjoner
       </p>
 
       <h1>{application.name}</h1>
@@ -246,9 +245,19 @@ const ApplicationDetailPage = () => {
               onChange={(e) => setNewSectionName(e.target.value)}
               placeholder="Navn på kategori"
             />
-            <button type="button" onClick={handleAddSection}>
+            <button type="button" className="section-btn" onClick={handleAddSection}>
               Lagre
             </button>
+            <button
+                  type="button"
+                  className="section-btn"
+                  onClick={() => {
+                    setIsAddingSection(false); 
+                    setNewSectionName(""); 
+                  }}
+                >
+                  Avbryt
+                </button>
           </div>
         )}
       </div>
@@ -258,7 +267,6 @@ const ApplicationDetailPage = () => {
       ) : (
         sections.map((section) => (
           <div key={section.name} style={{ marginBottom: "32px" }}>
-
             {/* Section overskrift med knapp */}
             <div className="section-header">
               <h3
@@ -296,11 +304,21 @@ const ApplicationDetailPage = () => {
                 />
                 <button
                   type="button"
-                  className="save-subSection-btn"
+                  className="subsection-btn"
                   onClick={() => handleAddSubSection(section.name)}
                   disabled={isSaving}
                 >
                   Lagre
+                </button>
+                <button
+                  type="button"
+                  className="subsection-btn"
+                  onClick={() => {
+                    setOpenSection(null); 
+                    setNewSubSectionName(""); 
+                  }}
+                >
+                  Avbryt
                 </button>
               </div>
             )}
