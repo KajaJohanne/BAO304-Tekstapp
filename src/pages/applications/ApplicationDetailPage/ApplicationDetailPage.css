@@ -7,7 +7,7 @@
 
 .section-header {
   display: grid;
-  grid-template-columns: 590px 15px 6px;
+  grid-template-columns: 590px 30px 60px;
   align-items: center;
   margin-bottom: 8px;
 }

@@ -269,7 +269,7 @@ const ApplicationDetailPage = () => {
         <p>Ingen kategorier lagt til ennå</p>
       ) : (
         sections.map((section) => (
-          <div key={section.name} style={{ marginBottom: "32px" }}>
+          <div key={section.name} style={{ marginBottom: "32px" }} className="section-header-cont">
             {/* Section overskrift med knapp */}
             <div className="section-header">
               <h3
