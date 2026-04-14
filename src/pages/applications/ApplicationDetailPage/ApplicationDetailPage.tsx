@@ -11,6 +11,8 @@ import {
 import "./ApplicationDetailPage.css";
 import { Button } from "@digdir/designsystemet-react";
 import { toast } from "react-toastify";
+import HomePage from "../HomePage/HomePage";
+import { BiPlus } from "react-icons/bi";
 
 const ApplicationDetailPage = () => {
   const navigate = useNavigate();
@@ -166,7 +168,7 @@ const ApplicationDetailPage = () => {
         ...prev,
         //oppdater bare denne sectionen sin liste
         [sectionName]: isAlreadySchecked
-          ? // Hvis den er huken av så fjernes den
+          ? // Hvis den er huket av så fjernes den
             currentlyChecked.filter((name) => name !== subSectionName)
           : // Hvis den ikke er huket av så legges den i lista
             [...currentlyChecked, subSectionName],
@@ -217,15 +219,15 @@ const ApplicationDetailPage = () => {
 
   return (
     <div className="application-detail">
-      <button onClick={() => navigate(-1)}>‹ Tilbake</button>
+      <p className="back-btn" onClick={() => navigate("/home")}>
+        ← Applikasjoner
+      </p>
 
-      <h1>Oversikt applikasjon</h1>
+      <h1>{application.name}</h1>
       <p>
         Her er oversikt over kategorier innenfor applikasjonen{" "}
         {application.name}
       </p>
-
-      <h2>{application.name}</h2>
 
       {/* Legg til ny kategori */}
       <div className="add-section-container">
@@ -257,24 +259,31 @@ const ApplicationDetailPage = () => {
       ) : (
         sections.map((section) => (
           <div key={section.name} style={{ marginBottom: "32px" }}>
+
             {/* Section overskrift med knapp */}
             <div className="section-header">
-              <h3 
-                className="section-title" 
+              <h3
+                className="section-title"
                 onClick={() => handleSectionClick(section.name)}
               >
                 {section.name}
               </h3>
-              <button
-                type="button"
-                onClick={() =>
-                  setOpenSection(
-                    openSection === section.name ? null : section.name,
-                  )
-                }
-              >
-                + Legg til underkategori
-              </button>
+
+              <div className="section-header-right">
+                <button
+                  className="add-subSection-btn"
+                  type="button"
+                  title="Legg til underkategori"
+                  onClick={() =>
+                    setOpenSection(
+                      openSection === section.name ? null : section.name,
+                    )
+                  }
+                >
+                  +
+                </button>
+                <div className="subsection-marker-title">Marker</div>
+              </div>
             </div>
 
             {/* Inputfelt for ny subsection */}
@@ -288,6 +297,7 @@ const ApplicationDetailPage = () => {
                 />
                 <button
                   type="button"
+                  className="save-subSection-btn"
                   onClick={() => handleAddSubSection(section.name)}
                   disabled={isSaving}
                 >
@@ -301,11 +311,6 @@ const ApplicationDetailPage = () => {
               <p>Ingen underkategorier ennå.</p>
             ) : (
               <>
-                <div className="subsection-list-header">
-                  <div />
-                  <div className="subsection-marker-title">Marker</div>
-                </div>
-
                 <ul className="subsection-list">
                   {section.subSections.map((subSection) => (
                     <div key={subSection.name} className="subsection-row">
