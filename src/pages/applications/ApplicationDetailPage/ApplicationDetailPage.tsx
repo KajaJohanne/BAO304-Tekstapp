@@ -105,6 +105,9 @@ const ApplicationDetailPage = () => {
         applicationName: application.name,
         sectionName,
         subSectionName,
+        from: {
+          pathname: `/applicationDetails/${application.id}`,
+        },
       },
     });
   };
@@ -259,8 +262,8 @@ const ApplicationDetailPage = () => {
           <div key={section.name} style={{ marginBottom: "32px" }}>
             {/* Section overskrift med knapp */}
             <div className="section-header">
-              <h3 
-                className="section-title" 
+              <h3
+                className="section-title"
                 onClick={() => handleSectionClick(section.name)}
               >
                 {section.name}

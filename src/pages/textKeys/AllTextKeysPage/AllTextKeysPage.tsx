@@ -27,20 +27,6 @@ const AllTextKeysPage = () => {
     usageStatus: null,
   });
 
-  /*
-  //Søkefelt
-  const filteredTextKeys = textKeys.filter((textKey) =>
-    textKey.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-  
-  // holder på valgte filtre
-  const [filter, setFilters] = useState<FilterValues>({
-    sort: [],
-    textTypes: [],
-    usageStatus: [],
-  });
-  */
-
   //Henter tekstnøkler fra Firebase
   useEffect(() => {
     const fetchTextKeys = async () => {
@@ -175,7 +161,7 @@ const AllTextKeysPage = () => {
               key={textKey.id}
               title={textKey.name}
               isInUse={Boolean(textKey.isInUse)}
-              onClick={() => navigate(`/applicationDetails/${textKey.id}`)}
+              onClick={() => navigate(`/textkeyDetails/${textKey.id}`)}
               onToggleUsage={() =>
                 handleToggleUsage(textKey.id, Boolean(textKey.isInUse))
               }
