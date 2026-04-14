@@ -13,11 +13,20 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { db, auth } from "./firebaseConfig";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 
 export type Environment = "utv" | "test" | "prod";
 export type Language = "bokmål" | "nynorsk" | "engelsk";
-export type TextType = "Tittel" | "Brødtekst" | "Feilmelding" | "Knappetekst" | "Hjelpetekst";
+export type TextType =
+  | "Tittel"
+  | "Brødtekst"
+  | "Feilmelding"
+  | "Knappetekst"
+  | "Hjelpetekst";
 
 export interface TextValues {
   bokmål: string;
@@ -65,7 +74,7 @@ export interface TextKeyDocument {
 export async function updateTextKeyUsageStatus(
   documentId: string,
   isInUse: boolean,
-): Promise <string | null> {
+): Promise<string | null> {
   try {
     await updateDoc(doc(db, "textKeys", documentId), {
       isInUse,
@@ -73,7 +82,7 @@ export async function updateTextKeyUsageStatus(
     });
 
     return null;
-  } catch(e) {
+  } catch (e) {
     if (e instanceof FirebaseError) {
       return e.message;
     }
@@ -85,7 +94,7 @@ export async function updateTextKeyUsageStatus(
 export async function updateApplicationUsageStatus(
   documentId: string,
   isInUse: boolean,
-): Promise <string | null> {
+): Promise<string | null> {
   try {
     await updateDoc(doc(db, "applications", documentId), {
       isInUse,
@@ -93,14 +102,13 @@ export async function updateApplicationUsageStatus(
     });
 
     return null;
-  } catch(e) {
+  } catch (e) {
     if (e instanceof FirebaseError) {
       return e.message;
     }
     return "Ukjent feil ved oppdatering av bruksstatus for applikasjon.";
   }
 }
-
 
 // Brukes når vi henter en liste med tekstnøkler og også trenger document id
 export interface TextKeyListItem extends TextKeyDocument {
@@ -119,7 +127,11 @@ export async function registerUser(
   allowedEnvironments: Environment[],
 ): Promise<string | null> {
   try {
-    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
 
     await updateProfile(credential.user, {
       displayName: name,
@@ -148,7 +160,7 @@ export async function registerUser(
           return e.message;
       }
     }
-    return "Ukjent feil ved opprettelse av bruker."
+    return "Ukjent feil ved opprettelse av bruker.";
   }
 }
 
@@ -156,7 +168,7 @@ export async function registerUser(
 export async function loginUser(
   email: string,
   password: string,
-): Promise<{ user: User} | { error: string}> {
+): Promise<{ user: User } | { error: string }> {
   try {
     const credential = await signInWithEmailAndPassword(auth, email, password);
 
@@ -165,13 +177,13 @@ export async function loginUser(
     const firestoreUser = userData.exists()
       ? (userData.data() as User)
       : {
-        uid: credential.user.uid,
-        name: credential.user.displayName || "Bruker",
-        email: credential.user.email || email,
-        allowedEnvironments: [],
-      };
+          uid: credential.user.uid,
+          name: credential.user.displayName || "Bruker",
+          email: credential.user.email || email,
+          allowedEnvironments: [],
+        };
 
-      return { user: firestoreUser };
+    return { user: firestoreUser };
   } catch (e) {
     if (e instanceof FirebaseError) {
       switch (e.code) {
@@ -185,7 +197,7 @@ export async function loginUser(
           return { error: e.message };
       }
     }
-    return { error: "Ukjent feil ved innlogging." }
+    return { error: "Ukjent feil ved innlogging." };
   }
 }
 
@@ -225,7 +237,7 @@ export async function saveDefaultText(
   applicationName: string,
   defaultText: TextValues,
   placementPath: string[],
-  textType: TextType
+  textType: TextType,
 ): Promise<string | null> {
   try {
     //Sjekker om tekstnøkkel finnes allerede
@@ -236,7 +248,7 @@ export async function saveDefaultText(
     }
 
     // lager tidsstempel som en string
-    const now = new Date().toISOString(); 
+    const now = new Date().toISOString();
 
     const data: TextKeyDocument = {
       name,
@@ -379,7 +391,7 @@ export async function addSubSectionToApplication(
 
       return {
         ...section,
-        subSections: [...existingSubSections, { name: subSectionName.trim() }],
+        subSections: [{ name: subSectionName.trim() }, ...existingSubSections],
       };
     });
 
@@ -442,7 +454,7 @@ export async function saveApplication(
       isInUse: false,
       createdAt: now,
       lastChanged: now,
-    }) ;
+    });
     return null;
   } catch (e) {
     if (e instanceof FirebaseError) {
@@ -470,7 +482,7 @@ export async function getAllApplications(): Promise<ApplicationListItem[]> {
 // Oppdaterer tekstnøkkel navn og lager det
 export async function updateTextKeyName(
   documentId: string,
-  newName: string
+  newName: string,
 ): Promise<string | null> {
   try {
     await updateDoc(doc(db, "textKeys", documentId), {
@@ -499,7 +511,6 @@ export async function applicationExists(name: string): Promise<boolean> {
   }
 }
 
-
 // Sletter teksnøkkel
 export const deleteTextKey = async (id: string) => {
   try {
@@ -507,11 +518,11 @@ export const deleteTextKey = async (id: string) => {
     return null;
   } catch (e) {
     if (e instanceof FirebaseError) {
-      return e.message; 
+      return e.message;
     }
-    return "Ukjent feil ved sletting av tekstnøkkel."
+    return "Ukjent feil ved sletting av tekstnøkkel.";
   }
-};  
+};
 
 // Sletter applikasjon fra firebase
 export async function deleteApplication(
@@ -519,8 +530,7 @@ export async function deleteApplication(
 ): Promise<string | null> {
   try {
     await deleteDoc(doc(db, "applications", applicationId));
-    return null; 
-
+    return null;
   } catch (e) {
     if (e instanceof FirebaseError) {
       return e.message;
@@ -571,34 +581,34 @@ export async function addSectionToApplication(
   }
 }
 
-// Sletter valgte underkategorier fra en kategori 
-// Henter applikasjonen fra Firestore, filtrerer vekk valgte subsections og lagrer den oppdaterte listen 
+// Sletter valgte underkategorier fra en kategori
+// Henter applikasjonen fra Firestore, filtrerer vekk valgte subsections og lagrer den oppdaterte listen
 export async function deleteSubSections(
-  applicationId: string, 
-  sectionName: string, 
-  subSectinNamesToDelete: string[]
+  applicationId: string,
+  sectionName: string,
+  subSectinNamesToDelete: string[],
 ): Promise<string | null> {
   try {
     const applicationsRef = doc(db, "applications", applicationId);
-    const snapshot = await getDoc(applicationsRef); 
+    const snapshot = await getDoc(applicationsRef);
 
     if (!snapshot.exists()) {
-      return "Fant ikke applikasjonen."; 
+      return "Fant ikke applikasjonen.";
     }
 
-    const data = snapshot.data() as Application; 
+    const data = snapshot.data() as Application;
 
     const updatedSections = (data.sections ?? []).map((section) => {
-      //Hvis dette ikke er riktig section, returner den uendret 
+      //Hvis dette ikke er riktig section, returner den uendret
       if (section.name !== sectionName) {
         return section;
       }
 
       // behold bare subsections som ikke er i listen over de som skal slettes
       return {
-        ...section, 
+        ...section,
         subSections: (section.subSections ?? []).filter(
-          (sub) => !subSectinNamesToDelete.includes(sub.name)
+          (sub) => !subSectinNamesToDelete.includes(sub.name),
         ),
       };
     });
@@ -608,12 +618,11 @@ export async function deleteSubSections(
       lastChanged: new Date().toISOString(),
     });
 
-    return null; 
-
+    return null;
   } catch (e) {
     if (e instanceof FirebaseError) {
       return e.message;
     }
-    return "Ukjent feil ved sletting av underkategorier."; 
+    return "Ukjent feil ved sletting av underkategorier.";
   }
 }
