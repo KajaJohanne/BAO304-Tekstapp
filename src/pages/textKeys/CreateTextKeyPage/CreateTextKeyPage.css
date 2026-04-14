@@ -36,7 +36,7 @@ body {
 }
 
 .text-key-preview {
-    margin-top: 24px;
+    margin-top: 12px;
 }
 .text-key-preview_label {
     margin: 0 0 8px 0;
@@ -44,9 +44,14 @@ body {
     color: #444F56;
 }
 .text-key-preview_value {
-    margin: 0;
-    font-size: 18px;
+    margin: 0 0 12px 0;
+    font-size: 16px;
     color: #444F56;
+
+    font-weight: bold;
+    display: inline-block;
+    padding: 10px 10px;
+    background-color: white;
 }
 .save-main-button {
     margin-top: 32px;
