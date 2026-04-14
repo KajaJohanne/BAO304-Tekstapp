@@ -4,14 +4,14 @@
 .placement-label {
     margin: 0;
     margin-bottom: 12px;
-    font-size: 16px;
+    font-size: 18px;
     color: #444F56;
 }
 .placement-button {
     width: 210px;
     height: 60px;
     border: 2px solid #5b6770;
-    background: #f5f5f5;
+    background-color: white;
     font-size: 16px;
     padding: 0 20px;
     display: flex;

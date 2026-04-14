@@ -53,6 +53,7 @@ export default function TextKeyNameModal({value, onSave, error}: TextKeyNameModa
 
     return (
         <>
+        <p className="textkey-name_label">Nøkkelnavn</p>
             <button 
                 type="button" 
                 onClick={openModal} 

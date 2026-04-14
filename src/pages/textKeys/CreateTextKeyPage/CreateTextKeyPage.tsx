@@ -63,6 +63,16 @@ const CreateTextKeyPage = () => {
   !!formData.nynorsk.trim() &&
   !!formData.engelsk.trim();
 
+  // Gjør om mellomrom i nøkkelnavn til store bokstaver
+  const toPascalCase = (value: string) => {
+    return value 
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join("");
+  };
+
   // Henter alle applikasjoner når siden lastes
   useEffect(() => {
     const fetchApplications = async () => {
@@ -198,8 +208,9 @@ const CreateTextKeyPage = () => {
 
     const placementPath = selectedPlacement
       .split(".")
-      .map((part) => part.trim())
+      .map((part) => toPascalCase(part))
       .filter(Boolean);
+
     const fullKeyName = [...placementPath, name.trim()].join(".");
 
     //Sjekker om tekstnøkkel finnes allerede
@@ -237,6 +248,11 @@ const CreateTextKeyPage = () => {
     }
   };
 
+  const formattedPlacement = selectedPlacement
+    .split(".")
+    .map((part) => toPascalCase(part))
+    .join(".");
+
   return (
     <div className="create-text-key-page_content">
       {/* Tilbake knapp, tilbake til tekstnøkler */}
@@ -268,6 +284,7 @@ const CreateTextKeyPage = () => {
                 ))}
               </div>
             </div>
+
             {/* komponent */}
             <TextTypeSelector
               value={selectedTextType}
@@ -287,13 +304,12 @@ const CreateTextKeyPage = () => {
               onSave={handleNameSave}
               error={errors.name}
             />
-            {name && (<p className="name-preview">Valgt navn: {name} </p>)}
             {errors.name && (<ValidationMessage>{errors.name}</ValidationMessage>)}
 
             {/* Forhåndsvisning av nøkkel navnet */}
             {name && (
               <div className="text-key-preview">
-                <p className="text-key-preview_label">Forhåndsvisning av nøkkelnavn</p>
+                <p className="text-key-preview_label">Forhåndsvisning av nøkkelnavn:</p>
                 <p className="text-key-preview_value">{name}</p>
               </div>
             )}
@@ -328,11 +344,11 @@ const CreateTextKeyPage = () => {
             {/* Forhåndsvisning av nøkkel navnet */}
             {(selectedPlacement || name) && (
               <div className="text-key-preview">
-                <p className="text-key-preview_label">Forhåndsvisning av tekstnøkkel</p>
+                <p className="text-key-preview_label">Forhåndsvisning av tekstnøkkel:</p>
                 <p className="text-key-preview_value">
-                  {selectedPlacement && name
-                      ? `${selectedPlacement}.${name}`
-                      : selectedPlacement || name || "Ingen nøkkel valgt"}
+                  {formattedPlacement && name
+                      ? `${formattedPlacement}.${name}`
+                      : formattedPlacement || name || "Ingen nøkkel valgt"}
                 </p>
               </div>
             )}
