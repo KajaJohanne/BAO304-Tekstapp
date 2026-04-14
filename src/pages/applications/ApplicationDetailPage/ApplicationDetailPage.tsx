@@ -11,8 +11,7 @@ import {
 import "./ApplicationDetailPage.css";
 import { Button } from "@digdir/designsystemet-react";
 import { toast } from "react-toastify";
-import HomePage from "../HomePage/HomePage";
-import { BiPlus } from "react-icons/bi";
+
 
 const ApplicationDetailPage = () => {
   const navigate = useNavigate();
