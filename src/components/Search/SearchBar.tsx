@@ -8,10 +8,11 @@ const SearchBar = ({
     onChange,
     placeholder = "Søk etter",
     ariaLabel = "Søk",
+    className = "",
 }: SearchBarProps) => {
     return (
         //Søkefelt fra designsystemet
-        <Search className="search-bar">
+        <Search className={`search-bar ${className}`}>
             <Search.Input 
                 aria-label={ariaLabel}
                 placeholder={placeholder}
@@ -20,10 +21,10 @@ const SearchBar = ({
                 className="search-input"
             />
             {value && (
-            <Search.Clear 
-                onClick={() => onChange("")}
-                className="search-clear"
-            />
+                <Search.Clear 
+                    onClick={() => onChange("")}
+                    className="search-clear"
+                />
             )}
 
             <Search.Button className="search-button">

@@ -13,6 +13,8 @@ import {
   type TextValues,
   type ApplicationListItem,
   type TextType,
+  type Environment,
+  type User,
 } from "../../../../api";
 import TextTypeSelector from "../../../components/TextTypeSelector/TextTypeSelector";
 import TextKeyNameModal from "../../../components/TextKeyNameModal/TextKeyNameModal";
@@ -24,7 +26,9 @@ import type { FormErrors } from "../../../types/formErrors";
 const CreateTextKeyPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  useEffect(() => {
+  window.scrollTo(0, 0);
+  }, []);
   const [name, setName] = useState("");
   const [selectedPlacement, setSelectedPlacement] = useState("");
   const [applications, setApplications] = useState<ApplicationListItem[]>([]);
@@ -34,7 +38,12 @@ const CreateTextKeyPage = () => {
     nynorsk: "",
     engelsk: "",
   });
-  const [selectedTextType, setSelectedTextType] = useState<TextType | null>(null);    
+  const [selectedTextType, setSelectedTextType] = useState<TextType | null>(null);
+  
+  const [allowedEnvironments, setAllowedEnvironments] =
+    useState<Environment[]>([]);
+  const [currentEnvironment, setCurrentEnvironment] =
+    useState<Environment | null>(null);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const pageState = useMemo(() => {
@@ -82,6 +91,20 @@ const CreateTextKeyPage = () => {
 
     fetchApplications();
   }, [pageState]);
+
+  // Hent bruker
+  useEffect(() => {
+    const storedUser = localStorage.getItem("currentUser");
+
+    if (storedUser) {
+      const parsedUser: User = JSON.parse(storedUser);
+      setAllowedEnvironments(parsedUser.allowedEnvironments);
+
+      if (parsedUser.allowedEnvironments.length > 0) {
+        setCurrentEnvironment(parsedUser.allowedEnvironments[0]);
+      }
+    }
+  }, []);
 
   // Oppdaterer riktig felt når brukeren skriver
   const handleChange = (field: keyof TextValues, value: string) => {
@@ -227,6 +250,24 @@ const CreateTextKeyPage = () => {
 
       <h1 className="create-text-key-page_title">Legg til ny tekstnøkkel</h1>
         <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler </p>
+            {/* Miljøvalg */}
+            <div className="environmentSection">
+              <p className="environment-text">Velg miljø</p>
+
+              <div className="environmentButtons">
+                {allowedEnvironments.map((environment) => (
+                  <button
+                    key={environment}
+                    onClick={() => setCurrentEnvironment(environment)}
+                    className={`environmentButton ${
+                      currentEnvironment === environment ? "active" : ""
+                    }`}
+                  >
+                    {environment.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
             {/* komponent */}
             <TextTypeSelector
               value={selectedTextType}
@@ -248,6 +289,14 @@ const CreateTextKeyPage = () => {
             />
             {name && (<p className="name-preview">Valgt navn: {name} </p>)}
             {errors.name && (<ValidationMessage>{errors.name}</ValidationMessage>)}
+
+            {/* Forhåndsvisning av nøkkel navnet */}
+            {name && (
+              <div className="text-key-preview">
+                <p className="text-key-preview_label">Forhåndsvisning av nøkkelnavn</p>
+                <p className="text-key-preview_value">{name}</p>
+              </div>
+            )}
 
             {/* komponent */}
             <TextKeyPlacementSelector 
@@ -279,7 +328,7 @@ const CreateTextKeyPage = () => {
             {/* Forhåndsvisning av nøkkel navnet */}
             {(selectedPlacement || name) && (
               <div className="text-key-preview">
-                <p className="text-key-preview_label">Forhåndsvisning av nøkkelnavn</p>
+                <p className="text-key-preview_label">Forhåndsvisning av tekstnøkkel</p>
                 <p className="text-key-preview_value">
                   {selectedPlacement && name
                       ? `${selectedPlacement}.${name}`

@@ -9,8 +9,8 @@ body {
 /* Contentkolonne */
 .container {
   max-width: 920px;
-  margin: 0 auto;
-  padding: 24px;
+  margin: 40px auto 80px;
+  padding: 20px;
   box-sizing: border-box;
 }
 
@@ -19,7 +19,7 @@ body {
   font-size: 16px;
   color: #868D90;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   text-decoration: underline;
   display: inline-block;
 }
@@ -38,7 +38,7 @@ body {
 /* Undertittel */
 .subtitle {
   font-size: 16px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 /* Tekstnøkkel */
@@ -92,19 +92,11 @@ body {
   margin-bottom: 6px;
 }
 
-/* Inputfelt */
-.textInput {
-  width: 520px;
-  height: 42px;
-  padding: 8px 12px;
-  border: 1px solid #868D90;
-  border-radius: 4px;
-  background: white;
-}
 
 /* Knapperad */
 .buttonRow {
   display: flex;
+  align-items: flex-end;
   gap: 18px;
   margin-top: 30px;
 }
@@ -124,6 +116,21 @@ body {
 .cancelButton:hover {
   background: #272C2E;
 }
+.textkey-delete-button {
+  background-color: #444F55;
+  color: white;
+  padding: 12px 32px;
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.textkey-delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .headerRow {
   display: flex;
   align-items: center;
