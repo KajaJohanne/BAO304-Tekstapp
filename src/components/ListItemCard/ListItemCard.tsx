@@ -34,10 +34,6 @@ export default function ListItemCard({
         <Heading level={3} data-size="sm" className="list-item-card-title">
           {title}
         </Heading>
-
-        <span className="edit-icon" aria-hidden="true">
-          ✎
-        </span>
       </div>
     </Card>
   );

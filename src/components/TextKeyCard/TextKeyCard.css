@@ -1,8 +1,9 @@
 .text-key-card-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 120px;
+  grid-template-columns: minmax(0, 1fr) 80px;
   align-items: center;
-  gap: 30px;
+  gap: 15px;
+  width: 100%;
 }
 .text-key-card {
   cursor: pointer;
@@ -14,6 +15,7 @@
   background-color: white;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
   margin-bottom: 0;
+  width: 100%;
 }
 .text-key-card * {
   text-decoration: none;
@@ -24,8 +26,8 @@
   font-size: 16px;
 }
 .text-key-card:hover {
-    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
-    border-bottom: 2px solid #ff9600;
+  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #ff9600;
 }
 .text-key-card-content {
   display: flex;
@@ -35,6 +37,30 @@
   padding: 0 22px;
   gap: 16px;
 }
+
+.text-key-card-meta {
+  display: flex;
+  align-items: center;
+  padding: 14px 22px 0 22px;
+}
+
+.usage-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  border-radius: 50%;
+  border: none;
+  background-color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.usage-dot--active {
+  background-color: #22c55e;
+}
+
 .text-key-card-title {
   margin: 0;
   font-weight: 400;
@@ -64,7 +90,7 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 18px;
-  margin-left: 70px;
+  margin-left: 0px;
 }
 .text-key-card-checkbox-wrapper input[type="checkbox"] {
   width: 17px;

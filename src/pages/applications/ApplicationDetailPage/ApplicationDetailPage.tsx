@@ -105,6 +105,9 @@ const ApplicationDetailPage = () => {
         applicationName: application.name,
         sectionName,
         subSectionName,
+        from: {
+          pathname: `/applicationDetails/${application.id}`,
+        },
       },
     });
   };
