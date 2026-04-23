@@ -49,38 +49,44 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
 
     //Valg av nivåer, rekkefølge
     const handleLevelOne = (item: string) => {
-        setSelectedLevelOne(item);
-        setSelectedLevelTwo(null);
-        setMobileStep("subCategory");
+        setSelectedLevelOne(item); //Lagrer valgt kategori
+        setSelectedLevelTwo(null); //Nullstiller underkategori
+        setMobileStep("subCategory"); //Går videre til neste steg (mobilvisning)
     };
     const handleLevelTwo = (item: string) => {
-        setSelectedLevelTwo(item);
+        setSelectedLevelTwo(item); //Lagrer valgt underkategori
     };
 
     //Lagring
     const handleSave = () => {
+        //Hvis ingen applikasjon er valgt -> alert
         if (!selectedApplication) {
             alert("Du må velge en applikasjon");
             return;
         }
+        //Hvis ingen kategori er valgt -> alert
         if (!selectedLevelOne) {
             alert("Du må velge en plassering");
             return;
         }
 
+        //Bygger nøkkelnavnet
         const placement = selectedLevelTwo
             ? `${selectedApplication.name}.${selectedLevelOne}.${selectedLevelTwo}`
             : `${selectedApplication.name}.${selectedLevelOne}`;
 
-        onSelectApplication(selectedApplication.id);
-        onSavePlacement(placement);
+        onSelectApplication(selectedApplication.id); //Sender valgt applikasjon tilbake
+        onSavePlacement(placement); //Sender selve nøkkelnavnet videre
         closeModal();
     };
 
+    //Henter kategoriene fra valgt applikasjon
     const levelOne = selectedApplication?.sections ?? [];
+    //Finner kategorien som er valgt
     const selectedSectionObject = selectedApplication?.sections?.find(
         (section) => section.name === selectedLevelOne
     );
+    //Henter underkategoriene for valgt kategori
     const levelTwo = selectedSectionObject?.subSections ?? [];
 
     const buttonText = "Velg applikasjon";
