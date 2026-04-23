@@ -143,3 +143,22 @@
     cursor: pointer;
     color: #444F56;
 }
+
+.desktop-view {
+    display: flex;
+}
+
+.mobile-view {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .desktop-view {
+        display: none;
+    }
+
+    .mobile-view {
+        display: block;
+        padding: 0 30px 30px 30px;
+    }
+}

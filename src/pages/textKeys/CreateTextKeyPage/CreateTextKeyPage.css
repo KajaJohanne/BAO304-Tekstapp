@@ -27,6 +27,9 @@ body {
     margin-bottom: 42px;
 }
 
+.environmentButtons {
+    border-color: #444F56;
+}
 .environment-text {
     margin: 0 0 12px 0;
     font-weight: 400;
