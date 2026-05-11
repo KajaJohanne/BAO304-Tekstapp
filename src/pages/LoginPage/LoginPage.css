@@ -136,7 +136,7 @@
 
 .error-message {
   display: "flex";
-  flexdirection: "column";
+  flex-direction: "column";
   gap: "1rem";
   color: #ff0000;
   font-size: 0.85rem;
