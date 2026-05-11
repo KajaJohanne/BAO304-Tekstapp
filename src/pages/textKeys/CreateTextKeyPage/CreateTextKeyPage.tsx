@@ -27,7 +27,7 @@ const CreateTextKeyPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
-  window.scrollTo(0, 0);
+    window.scrollTo(0, 0);
   }, []);
   const [name, setName] = useState("");
   const [selectedPlacement, setSelectedPlacement] = useState("");
@@ -38,10 +38,13 @@ const CreateTextKeyPage = () => {
     nynorsk: "",
     engelsk: "",
   });
-  const [selectedTextType, setSelectedTextType] = useState<TextType | null>(null);
-  
-  const [allowedEnvironments, setAllowedEnvironments] =
-    useState<Environment[]>([]);
+  const [selectedTextType, setSelectedTextType] = useState<TextType | null>(
+    null,
+  );
+
+  const [allowedEnvironments, setAllowedEnvironments] = useState<Environment[]>(
+    [],
+  );
   const [currentEnvironment, setCurrentEnvironment] =
     useState<Environment | null>(null);
 
@@ -50,22 +53,22 @@ const CreateTextKeyPage = () => {
     if (!location.state) return null;
     return location.state as CreateTextKeyPageState;
   }, [location.state]);
-  
+
   // Validering
   const isFormValid =
-  !!name.trim() &&
-  !name.trim().includes(" ") &&
-  /^[A-Za-zÆØÅæøå]+$/.test(name.trim()) &&
-  !!selectedApplicationId &&
-  !!selectedPlacement.trim() &&
-  !!selectedTextType &&
-  !!formData.bokmål.trim() &&
-  !!formData.nynorsk.trim() &&
-  !!formData.engelsk.trim();
+    !!name.trim() &&
+    !name.trim().includes(" ") &&
+    /^[A-Za-zÆØÅæøå]+$/.test(name.trim()) &&
+    !!selectedApplicationId &&
+    !!selectedPlacement.trim() &&
+    !!selectedTextType &&
+    !!formData.bokmål.trim() &&
+    !!formData.nynorsk.trim() &&
+    !!formData.engelsk.trim();
 
   // Gjør om mellomrom i nøkkelnavn til store bokstaver
   const toPascalCase = (value: string) => {
-    return value 
+    return value
       .trim()
       .split(/\s+/)
       .filter(Boolean)
@@ -79,25 +82,25 @@ const CreateTextKeyPage = () => {
       const data = await getAllApplications();
       setApplications(data);
 
-      if (pageState) {
+      if (pageState) {
         const application = data.find(
-          (app) => app.id === pageState.applicationId
+          (app) => app.id === pageState.applicationId,
         );
-      if (application) {
-        setSelectedApplicationId(pageState.applicationId);
+        if (application) {
+          setSelectedApplicationId(pageState.applicationId);
 
-        //Henter plasseringen fra subSection siden
-        const placement = pageState.subSectionName
-          ? `${application.name}.${pageState.sectionName}.${pageState.subSectionName}`
-          : `${application.name}.${pageState.sectionName}`;
+          //Henter plasseringen fra subSection siden
+          const placement = pageState.subSectionName
+            ? `${application.name}.${pageState.sectionName}.${pageState.subSectionName}`
+            : `${application.name}.${pageState.sectionName}`;
 
-        setSelectedPlacement(placement);
+          setSelectedPlacement(placement);
+        }
+        // Setter første applikasjon som valgt hvis det finnes noen
+      } else if (data.length > 0) {
+        setSelectedApplicationId(data[0].id);
       }
-      // Setter første applikasjon som valgt hvis det finnes noen
-    } else if (data.length > 0) {
-      setSelectedApplicationId(data[0].id);
-    }      
-  };
+    };
 
     fetchApplications();
   }, [pageState]);
@@ -145,7 +148,7 @@ const CreateTextKeyPage = () => {
 
     //Validering av navn på tekstnøkkel input felt
     if (!trimmedValue) {
-      newErrors.name ="Du må fylle inn navn på tekstnøkkelen.";
+      newErrors.name = "Du må fylle inn navn på tekstnøkkelen.";
     } else if (trimmedValue.includes(" ")) {
       newErrors.name = "Nøkkelen kan ikke inneholde mellomrom.";
     } else if (!/^[A-Za-zÆØÅæøå]+$/.test(trimmedValue)) {
@@ -234,7 +237,7 @@ const CreateTextKeyPage = () => {
       selectedApplication.name,
       formData,
       placementPath,
-      selectedTextType
+      selectedTextType,
     );
 
     if (response) {
@@ -256,17 +259,17 @@ const CreateTextKeyPage = () => {
   return (
     <div className="create-text-key-page_content">
       {/* Tilbake knapp, tilbake til tekstnøkler */}
-      <button
-        onClick={() => navigate("/textkeys")}
-        className="back-button"
-      >
+      <button onClick={() => navigate("/textkeys")} className="back-button">
         <span className="back-arrow">‹</span>
         <span className="back-text">Tilbake til tekstnøkler</span>
       </button>
 
       <h1 className="create-text-key-page_title">Legg til ny tekstnøkkel</h1>
-        <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler </p>
-            {/* Miljøvalg */}
+      <p className="create-text-key-page_label">
+        Her kan du lage nye tekstnøkler{" "}
+      </p>
+      {/* Miljøvalg */}
+      {/*
             <div className="environmentSection">
               <p className="environment-text">Velg miljø</p>
 
@@ -284,97 +287,110 @@ const CreateTextKeyPage = () => {
                 ))}
               </div>
             </div>
+            */}
 
-            {/* komponent */}
-            <TextTypeSelector
-              value={selectedTextType}
-              onChange={(type) => {
-                setSelectedTextType(type);
-                setErrors((prev) => ({
-                  ...prev,
-                  textType: "",
-                }));
-              }}
-            />
-            {errors.textType && (<ValidationMessage>{errors.textType}</ValidationMessage>)}
+      {/* komponent */}
+      <TextTypeSelector
+        value={selectedTextType}
+        onChange={(type) => {
+          setSelectedTextType(type);
+          setErrors((prev) => ({
+            ...prev,
+            textType: "",
+          }));
+        }}
+      />
+      {errors.textType && (
+        <ValidationMessage>{errors.textType}</ValidationMessage>
+      )}
 
-            {/* komponent */}
-            <TextKeyNameModal
-              value={name}
-              onSave={handleNameSave}
-              error={errors.name}
-            />
-            {errors.name && (<ValidationMessage>{errors.name}</ValidationMessage>)}
+      {/* komponent */}
+      <TextKeyNameModal
+        value={name}
+        onSave={handleNameSave}
+        error={errors.name}
+      />
+      {errors.name && <ValidationMessage>{errors.name}</ValidationMessage>}
 
-            {/* Forhåndsvisning av nøkkel navnet */}
-            {name && (
-              <div className="text-key-preview">
-                <p className="text-key-preview_label">Forhåndsvisning av nøkkelnavn:</p>
-                <p className="text-key-preview_value">{name}</p>
-              </div>
-            )}
+      {/* Forhåndsvisning av nøkkel navnet */}
+      {name && (
+        <div className="text-key-preview">
+          <p className="text-key-preview_label">
+            Forhåndsvisning av nøkkelnavn:
+          </p>
+          <p className="text-key-preview_value">{name}</p>
+        </div>
+      )}
 
-            {/* komponent */}
-            <TextKeyPlacementSelector 
-              applications={applications}
-              selectedPlacement={selectedPlacement}
-              selectedApplicationId={selectedApplicationId}
-              onSavePlacement={(placement) => {
-                setSelectedPlacement(placement);
-                setErrors((prev) => ({
-                  ...prev,
-                  placement: "",
-                  duplicate: "",
-                }));
-              }}
-              onSelectApplication={(applicationId) => {
-                setSelectedApplicationId(applicationId)
-                setErrors((prev) => ({
-                  ...prev,
-                  application: "",
-                }));
-              }}
-              textKeyName={name}
-            />
-            
-            {errors.application && (<ValidationMessage>{errors.application}</ValidationMessage>)}
+      {/* komponent */}
+      <TextKeyPlacementSelector
+        applications={applications}
+        selectedPlacement={selectedPlacement}
+        selectedApplicationId={selectedApplicationId}
+        onSavePlacement={(placement) => {
+          setSelectedPlacement(placement);
+          setErrors((prev) => ({
+            ...prev,
+            placement: "",
+            duplicate: "",
+          }));
+        }}
+        onSelectApplication={(applicationId) => {
+          setSelectedApplicationId(applicationId);
+          setErrors((prev) => ({
+            ...prev,
+            application: "",
+          }));
+        }}
+        textKeyName={name}
+      />
 
-            {errors.placement && (<ValidationMessage>{errors.placement}</ValidationMessage>)}
+      {errors.application && (
+        <ValidationMessage>{errors.application}</ValidationMessage>
+      )}
 
-            {/* Forhåndsvisning av nøkkel navnet */}
-            {(selectedPlacement || name) && (
-              <div className="text-key-preview">
-                <p className="text-key-preview_label">Forhåndsvisning av tekstnøkkel:</p>
-                <p className="text-key-preview_value">
-                  {formattedPlacement && name
-                      ? `${formattedPlacement}.${name}`
-                      : formattedPlacement || name || "Ingen nøkkel valgt"}
-                </p>
-              </div>
-            )}
+      {errors.placement && (
+        <ValidationMessage>{errors.placement}</ValidationMessage>
+      )}
 
-            {errors.duplicate && (<ValidationMessage>{errors.duplicate}</ValidationMessage>)}
+      {/* Forhåndsvisning av nøkkel navnet */}
+      {(selectedPlacement || name) && (
+        <div className="text-key-preview">
+          <p className="text-key-preview_label">
+            Forhåndsvisning av tekstnøkkel:
+          </p>
+          <p className="text-key-preview_value">
+            {formattedPlacement && name
+              ? `${formattedPlacement}.${name}`
+              : formattedPlacement || name || "Ingen nøkkel valgt"}
+          </p>
+        </div>
+      )}
 
-            {/* Input felt for bokmål, nynorsk og engelsk */}
-            <CreateTextKeyLanguagePage
-              values={formData}
-              onChange={handleChange}
-              errors={errors}
-            />
+      {errors.duplicate && (
+        <ValidationMessage>{errors.duplicate}</ValidationMessage>
+      )}
 
-            {/* Lagreknapp */}
-            <button  
-              type="button" 
-              onClick={handleSave}
-              className="save-main-button" 
-              disabled={!isFormValid}
-            >
-              Lagre tekstnøkkel
-            </button>  
+      {/* Input felt for bokmål, nynorsk og engelsk */}
+      <CreateTextKeyLanguagePage
+        values={formData}
+        onChange={handleChange}
+        errors={errors}
+      />
 
-            {/* Toast melding */}
-            <ToastContainer position="top-center" autoClose={8000} />
-      </div>
+      {/* Lagreknapp */}
+      <button
+        type="button"
+        onClick={handleSave}
+        className="save-main-button"
+        disabled={!isFormValid}
+      >
+        Lagre tekstnøkkel
+      </button>
+
+      {/* Toast melding */}
+      <ToastContainer position="top-center" autoClose={8000} />
+    </div>
   );
 };
 
