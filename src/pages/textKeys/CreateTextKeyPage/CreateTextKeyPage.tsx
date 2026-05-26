@@ -13,8 +13,8 @@ import {
   type TextValues,
   type ApplicationListItem,
   type TextType,
-  type Environment,
-  type User,
+  //type Environment,
+  //type User,
 } from "../../../../api";
 import TextTypeSelector from "../../../components/TextTypeSelector/TextTypeSelector";
 import TextKeyNameModal from "../../../components/TextKeyNameModal/TextKeyNameModal";
@@ -42,11 +42,13 @@ const CreateTextKeyPage = () => {
     null,
   );
 
+  /*
   const [allowedEnvironments, setAllowedEnvironments] = useState<Environment[]>(
     [],
   );
   const [currentEnvironment, setCurrentEnvironment] =
     useState<Environment | null>(null);
+    */
 
   const [errors, setErrors] = useState<FormErrors>({});
   const pageState = useMemo(() => {
@@ -105,6 +107,7 @@ const CreateTextKeyPage = () => {
     fetchApplications();
   }, [pageState]);
 
+  /*
   // Hent bruker
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
@@ -118,6 +121,7 @@ const CreateTextKeyPage = () => {
       }
     }
   }, []);
+  */
 
   // Oppdaterer riktig felt når brukeren skriver
   const handleChange = (field: keyof TextValues, value: string) => {
