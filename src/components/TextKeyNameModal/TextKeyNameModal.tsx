@@ -7,10 +7,12 @@ export default function TextKeyNameModal({value, onSave, error}: TextKeyNameModa
     const [inputValue, setInputValue] = useState("");
     const [localError, setLocalError] = useState("");
 
+    //Når verdien endrer seg -> oppdater inputfeltet
     useEffect(() => {
         setInputValue(value);
     }, [value]);
 
+    //Når feilen endrer seg -> vis feilmelding
     useEffect(() => {
         setLocalError(error || "");
     }, [error]);
@@ -53,6 +55,7 @@ export default function TextKeyNameModal({value, onSave, error}: TextKeyNameModa
 
     return (
         <>
+        <p className="textkey-name_label">Nøkkelnavn</p>
             <button 
                 type="button" 
                 onClick={openModal} 
@@ -87,6 +90,7 @@ export default function TextKeyNameModal({value, onSave, error}: TextKeyNameModa
                         <input 
                             type="text"
                             value={inputValue}
+                            //Oppdater verdien og fjern eventuell feilmelding
                             onChange={(e) => {
                                 setInputValue(e.target.value)
                                 setLocalError("");
@@ -94,7 +98,7 @@ export default function TextKeyNameModal({value, onSave, error}: TextKeyNameModa
                             placeholder="Skriv navnet her"
                             className={`text-key-name-modal_input ${localError ? "input-error" : ""}`}
                         />
-                        
+                        {/* Hvis det finnes en feil -> vis feilmelding */}
                         {localError && (
                             <p className="field-error">{localError}</p>
                         )}

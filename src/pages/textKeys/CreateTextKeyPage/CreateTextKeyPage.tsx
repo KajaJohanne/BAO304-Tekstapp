@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify"
+import { toast, ToastContainer } from "react-toastify";
+import { ValidationMessage } from "@digdir/designsystemet-react";
 import "react-toastify/dist/ReactToastify.css";
 import "./CreateTextKeyPage.css";
 import "../../../components/BackButton.css";
@@ -12,6 +13,8 @@ import {
   type TextValues,
   type ApplicationListItem,
   type TextType,
+  //type Environment,
+  //type User,
 } from "../../../../api";
 import TextTypeSelector from "../../../components/TextTypeSelector/TextTypeSelector";
 import TextKeyNameModal from "../../../components/TextKeyNameModal/TextKeyNameModal";
@@ -23,7 +26,9 @@ import type { FormErrors } from "../../../types/formErrors";
 const CreateTextKeyPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [name, setName] = useState("");
   const [selectedPlacement, setSelectedPlacement] = useState("");
   const [applications, setApplications] = useState<ApplicationListItem[]>([]);
@@ -33,26 +38,45 @@ const CreateTextKeyPage = () => {
     nynorsk: "",
     engelsk: "",
   });
-  const [selectedTextType, setSelectedTextType] = useState<TextType | null>(null);    
+  const [selectedTextType, setSelectedTextType] = useState<TextType | null>(
+    null,
+  );
 
+  /*
+  const [allowedEnvironments, setAllowedEnvironments] = useState<Environment[]>(
+    [],
+  );
+  const [currentEnvironment, setCurrentEnvironment] =
+    useState<Environment | null>(null);
+    */
 
   const [errors, setErrors] = useState<FormErrors>({});
   const pageState = useMemo(() => {
     if (!location.state) return null;
     return location.state as CreateTextKeyPageState;
   }, [location.state]);
-  
+
   // Validering
   const isFormValid =
-  !!name.trim() &&
-  !name.trim().includes(" ") &&
-  /^[A-Za-zÆØÅæøå]+$/.test(name.trim()) &&
-  !!selectedApplicationId &&
-  !!selectedPlacement.trim() &&
-  !!selectedTextType &&
-  !!formData.bokmål.trim() &&
-  !!formData.nynorsk.trim() &&
-  !!formData.engelsk.trim();
+    !!name.trim() &&
+    !name.trim().includes(" ") &&
+    /^[A-Za-zÆØÅæøå]+$/.test(name.trim()) &&
+    !!selectedApplicationId &&
+    !!selectedPlacement.trim() &&
+    !!selectedTextType &&
+    !!formData.bokmål.trim() &&
+    !!formData.nynorsk.trim() &&
+    !!formData.engelsk.trim();
+
+  // Gjør om mellomrom i nøkkelnavn til store bokstaver
+  const toPascalCase = (value: string) => {
+    return value
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join("");
+  };
 
   // Henter alle applikasjoner når siden lastes
   useEffect(() => {
@@ -60,28 +84,44 @@ const CreateTextKeyPage = () => {
       const data = await getAllApplications();
       setApplications(data);
 
-      if (pageState) {
+      if (pageState) {
         const application = data.find(
-          (app) => app.id === pageState.applicationId
+          (app) => app.id === pageState.applicationId,
         );
-      if (application) {
-        setSelectedApplicationId(pageState.applicationId);
+        if (application) {
+          setSelectedApplicationId(pageState.applicationId);
 
-        //Henter plasseringen fra subSection siden
-        const placement = pageState.subSectionName
-          ? `${application.name}.${pageState.sectionName}.${pageState.subSectionName}`
-          : `${application.name}.${pageState.sectionName}`;
+          //Henter plasseringen fra subSection siden
+          const placement = pageState.subSectionName
+            ? `${application.name}.${pageState.sectionName}.${pageState.subSectionName}`
+            : `${application.name}.${pageState.sectionName}`;
 
-        setSelectedPlacement(placement);
+          setSelectedPlacement(placement);
+        }
+        // Setter første applikasjon som valgt hvis det finnes noen
+      } else if (data.length > 0) {
+        setSelectedApplicationId(data[0].id);
       }
-      // Setter første applikasjon som valgt hvis det finnes noen
-    } else if (data.length > 0) {
-      setSelectedApplicationId(data[0].id);
-    }      
-  };
+    };
 
     fetchApplications();
   }, [pageState]);
+
+  /*
+  // Hent bruker
+  useEffect(() => {
+    const storedUser = localStorage.getItem("currentUser");
+
+    if (storedUser) {
+      const parsedUser: User = JSON.parse(storedUser);
+      setAllowedEnvironments(parsedUser.allowedEnvironments);
+
+      if (parsedUser.allowedEnvironments.length > 0) {
+        setCurrentEnvironment(parsedUser.allowedEnvironments[0]);
+      }
+    }
+  }, []);
+  */
 
   // Oppdaterer riktig felt når brukeren skriver
   const handleChange = (field: keyof TextValues, value: string) => {
@@ -112,7 +152,7 @@ const CreateTextKeyPage = () => {
 
     //Validering av navn på tekstnøkkel input felt
     if (!trimmedValue) {
-      newErrors.name ="Du må fylle inn navn på tekstnøkkelen.";
+      newErrors.name = "Du må fylle inn navn på tekstnøkkelen.";
     } else if (trimmedValue.includes(" ")) {
       newErrors.name = "Nøkkelen kan ikke inneholde mellomrom.";
     } else if (!/^[A-Za-zÆØÅæøå]+$/.test(trimmedValue)) {
@@ -175,8 +215,9 @@ const CreateTextKeyPage = () => {
 
     const placementPath = selectedPlacement
       .split(".")
-      .map((part) => part.trim())
+      .map((part) => toPascalCase(part))
       .filter(Boolean);
+
     const fullKeyName = [...placementPath, name.trim()].join(".");
 
     //Sjekker om tekstnøkkel finnes allerede
@@ -200,7 +241,7 @@ const CreateTextKeyPage = () => {
       selectedApplication.name,
       formData,
       placementPath,
-      selectedTextType
+      selectedTextType,
     );
 
     if (response) {
@@ -214,111 +255,146 @@ const CreateTextKeyPage = () => {
     }
   };
 
+  const formattedPlacement = selectedPlacement
+    .split(".")
+    .map((part) => toPascalCase(part))
+    .join(".");
+
   return (
     <div className="create-text-key-page_content">
       {/* Tilbake knapp, tilbake til tekstnøkler */}
-      <button
-        onClick={() => navigate("/textkeys")}
-        className="back-button"
-      >
+      <button onClick={() => navigate("/textkeys")} className="back-button">
         <span className="back-arrow">‹</span>
         <span className="back-text">Tilbake til tekstnøkler</span>
       </button>
 
       <h1 className="create-text-key-page_title">Legg til ny tekstnøkkel</h1>
-        <p className="create-text-key-page_label">Her kan du lage nye tekstnøkler </p>
-            {/* komponent */}
-            <TextTypeSelector
-              value={selectedTextType}
-              onChange={(type) => {
-                setSelectedTextType(type);
-                setErrors((prev) => ({
-                  ...prev,
-                  textType: "",
-                }));
-              }}
-            />
-            {errors.textType && (
-              <p className="field-error">{errors.textType}</p>
-            )}
+      <p className="create-text-key-page_label">
+        Her kan du lage nye tekstnøkler{" "}
+      </p>
+      {/* Miljøvalg */}
+      {/*
+            <div className="environmentSection">
+              <p className="environment-text">Velg miljø</p>
 
-            {/* komponent */}
-            <TextKeyNameModal
-              value={name}
-              onSave={handleNameSave}
-              error={errors.name}
-            />
-            {errors.name && (
-              <p className="field-error">{errors.name}</p>
-            )}
-
-            {/* komponent */}
-            <TextKeyPlacementSelector 
-              applications={applications}
-              selectedPlacement={selectedPlacement}
-              selectedApplicationId={selectedApplicationId}
-              onSavePlacement={(placement) => {
-                setSelectedPlacement(placement);
-                setErrors((prev) => ({
-                  ...prev,
-                  placement: "",
-                  duplicate: "",
-                }));
-              }}
-              onSelectApplication={(applicationId) => {
-                setSelectedApplicationId(applicationId)
-                setErrors((prev) => ({
-                  ...prev,
-                  application: "",
-                }));
-              }}
-              textKeyName={name}
-            />
-            
-            {errors.application && (
-              <p className="field-error">{errors.application}</p>
-            )}
-
-            {errors.placement && (
-              <p className="field-error">{errors.placement}</p>
-            )}
-
-            {/* Forhåndsvisning av nøkkel navnet */}
-            {(selectedPlacement || name) && (
-              <div className="text-key-preview">
-                <p className="text-key-preview_label">Forhåndsvisning av nøkkelnavn</p>
-                <p className="text-key-preview_value">
-                  {selectedPlacement && name
-                      ? `${selectedPlacement}.${name}`
-                      : selectedPlacement || name || "Ingen nøkkel valgt"}
-                </p>
+              <div className="environmentButtons">
+                {allowedEnvironments.map((environment) => (
+                  <button
+                    key={environment}
+                    onClick={() => setCurrentEnvironment(environment)}
+                    className={`environmentButton ${
+                      currentEnvironment === environment ? "active" : ""
+                    }`}
+                  >
+                    {environment.toUpperCase()}
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
+            */}
 
-            {errors.duplicate && (
-              <p className="field-error">{errors.duplicate}</p>
-            )}
+      {/* komponent */}
+      <TextTypeSelector
+        value={selectedTextType}
+        onChange={(type) => {
+          setSelectedTextType(type);
+          setErrors((prev) => ({
+            ...prev,
+            textType: "",
+          }));
+        }}
+      />
+      {errors.textType && (
+        <ValidationMessage>{errors.textType}</ValidationMessage>
+      )}
 
-            {/* Input felt for bokmål, nynorsk og engelsk */}
-            <CreateTextKeyLanguagePage
-              values={formData}
-              onChange={handleChange}
-              errors={errors}
-            />
+      {/* komponent */}
+      <TextKeyNameModal
+        value={name}
+        onSave={handleNameSave}
+        error={errors.name}
+      />
+      {errors.name && <ValidationMessage>{errors.name}</ValidationMessage>}
 
-            {/* Lagreknapp */}
-            <button  
-              type="button" 
-              onClick={handleSave}
-              className="save-main-button" 
-              disabled={!isFormValid}
-            >
-              Lagre tekstnøkkel
-            </button>  
+      {/* Forhåndsvisning av nøkkel navnet */}
+      {name && (
+        <div className="text-key-preview">
+          <p className="text-key-preview_label">
+            Forhåndsvisning av nøkkelnavn:
+          </p>
+          <p className="text-key-preview_value">{name}</p>
+        </div>
+      )}
 
-            {/* Toast melding */}
-            <ToastContainer position="top-center" autoClose={8000} />
-      </div>
+      {/* komponent */}
+      <TextKeyPlacementSelector
+        applications={applications}
+        selectedPlacement={selectedPlacement}
+        selectedApplicationId={selectedApplicationId}
+        onSavePlacement={(placement) => {
+          setSelectedPlacement(placement);
+          setErrors((prev) => ({
+            ...prev,
+            placement: "",
+            duplicate: "",
+          }));
+        }}
+        onSelectApplication={(applicationId) => {
+          setSelectedApplicationId(applicationId);
+          setErrors((prev) => ({
+            ...prev,
+            application: "",
+          }));
+        }}
+        textKeyName={name}
+      />
+
+      {errors.application && (
+        <ValidationMessage>{errors.application}</ValidationMessage>
+      )}
+
+      {errors.placement && (
+        <ValidationMessage>{errors.placement}</ValidationMessage>
+      )}
+
+      {/* Forhåndsvisning av nøkkel navnet */}
+      {(selectedPlacement || name) && (
+        <div className="text-key-preview">
+          <p className="text-key-preview_label">
+            Forhåndsvisning av tekstnøkkel:
+          </p>
+          <p className="text-key-preview_value">
+            {formattedPlacement && name
+              ? `${formattedPlacement}.${name}`
+              : formattedPlacement || name || "Ingen nøkkel valgt"}
+          </p>
+        </div>
+      )}
+
+      {errors.duplicate && (
+        <ValidationMessage>{errors.duplicate}</ValidationMessage>
+      )}
+
+      {/* Input felt for bokmål, nynorsk og engelsk */}
+      <CreateTextKeyLanguagePage
+        values={formData}
+        onChange={handleChange}
+        errors={errors}
+      />
+
+      {/* Lagreknapp */}
+      <button
+        type="button"
+        onClick={handleSave}
+        className="save-main-button"
+        disabled={!isFormValid}
+      >
+        Lagre tekstnøkkel
+      </button>
+
+      {/* Toast melding */}
+      <ToastContainer position="top-center" autoClose={8000} />
+    </div>
   );
 };
 

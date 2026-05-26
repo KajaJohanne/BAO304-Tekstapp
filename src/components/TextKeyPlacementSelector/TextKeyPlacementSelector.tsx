@@ -9,9 +9,16 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
     const [selectedApplication, setSelectedApplication] = useState<ApplicationListItem | null>(null);
     const [selectedLevelOne, setSelectedLevelOne] = useState<string | null>(null);
     const [selectedLevelTwo, setSelectedLevelTwo] = useState<string | null>(null);
+    const [mobileStep, setMobileStep] = useState<"application" | "category" | "subCategory">("application");
 
-    const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
+    const openModal = () => {
+        setIsOpen(true);
+        setMobileStep("application");
+    }
+    const closeModal = () => {
+        setIsOpen(false);
+        setMobileStep("application");
+    }
 
     //Henter plassering om man kommer fra applikasjon/subSection siden
     useEffect (() => {
@@ -42,37 +49,44 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
 
     //Valg av nivåer, rekkefølge
     const handleLevelOne = (item: string) => {
-        setSelectedLevelOne(item);
-        setSelectedLevelTwo(null);
+        setSelectedLevelOne(item); //Lagrer valgt kategori
+        setSelectedLevelTwo(null); //Nullstiller underkategori
+        setMobileStep("subCategory"); //Går videre til neste steg (mobilvisning)
     };
     const handleLevelTwo = (item: string) => {
-        setSelectedLevelTwo(item);
+        setSelectedLevelTwo(item); //Lagrer valgt underkategori
     };
 
     //Lagring
     const handleSave = () => {
+        //Hvis ingen applikasjon er valgt -> alert
         if (!selectedApplication) {
             alert("Du må velge en applikasjon");
             return;
         }
+        //Hvis ingen kategori er valgt -> alert
         if (!selectedLevelOne) {
             alert("Du må velge en plassering");
             return;
         }
 
+        //Bygger nøkkelnavnet
         const placement = selectedLevelTwo
             ? `${selectedApplication.name}.${selectedLevelOne}.${selectedLevelTwo}`
             : `${selectedApplication.name}.${selectedLevelOne}`;
 
-        onSelectApplication(selectedApplication.id);
-        onSavePlacement(placement);
+        onSelectApplication(selectedApplication.id); //Sender valgt applikasjon tilbake
+        onSavePlacement(placement); //Sender selve nøkkelnavnet videre
         closeModal();
     };
 
+    //Henter kategoriene fra valgt applikasjon
     const levelOne = selectedApplication?.sections ?? [];
+    //Finner kategorien som er valgt
     const selectedSectionObject = selectedApplication?.sections?.find(
         (section) => section.name === selectedLevelOne
     );
+    //Henter underkategoriene for valgt kategori
     const levelTwo = selectedSectionObject?.subSections ?? [];
 
     const buttonText = "Velg applikasjon";
@@ -105,7 +119,7 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
                     </div>
 
                     {/* Valg av applikasjon */}
-                    <div className="modal-columns">
+                    <div className="modal-columns desktop-view">
                         <div className="column">
                             <p>Applikasjoner</p>
                             {applications.map((application) => (
@@ -143,7 +157,7 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
 
                         {/* Valg av undernivå */}
                         <div className="column">
-                            <p>Under kategori</p>
+                            <p>Underkategori</p>
                             {levelTwo.map((subSection) => (
                             <button
                                 key={subSection.name}
@@ -156,6 +170,91 @@ export default function TextKeyPlacementSelector({ applications, selectedPlaceme
                             </button>
                             ))}
                         </div>
+                    </div>
+
+                    {/* Valg av applikasjon */}
+                    <div className="mobile-view">
+                        {mobileStep === "application" && (
+                        <div className="mobile-step">
+                            <p>Applikasjoner</p>
+                            {applications.map((application) => (
+                            <button
+                                key={application.id}
+                                className={`option ${selectedApplication?.id === application.id ? "selected" : ""}`}
+                                onClick={() => {
+                                    setSelectedApplication(application);
+                                    setSelectedLevelOne(null);
+                                    setSelectedLevelTwo(null);
+                                    setMobileStep("category");
+                                }}
+                                type="button"
+                            >
+                                <span>{application.name}</span>
+                                <span className="placement-arrow">›</span>
+                            </button>
+                            ))}
+                        </div>
+                        )}
+
+                        {/* Valg av hovednivå */}
+                        {mobileStep === "category" && (
+                        <div className="mobile-step">
+                            {/* Tilbake knapp */}
+                            <button 
+                                className="back-button"
+                                onClick={() => setMobileStep("application")}
+                                type="button"
+                            >
+                                <span className="back-arrow">‹</span>
+                                <span className="back-text">Applikasjoner</span>                            
+                            </button>
+
+                            <p>Kategori</p>
+                            {levelOne.map((section) => (
+                            <button
+                                key={section.name}
+                                className={`option ${selectedLevelOne === section.name ? "selected" : ""}`}
+                                onClick={() => handleLevelOne(section.name)}
+                                type="button"
+                            >
+                                <span>{section.name}</span>
+                                <span className="placement-arrow">›</span>
+                            </button>
+                            ))}
+                        </div>
+                        )}
+
+                        {/* Valg av undernivå */}
+                        {mobileStep === "subCategory" && (
+                        <div className="mobile-step">
+                            {/* Tilbake knapp */}
+                            <button 
+                                className="back-button"
+                                onClick={() => setMobileStep("category")}
+                                type="button"
+                            >
+                                <span className="back-arrow">‹</span>
+                                <span className="back-text">Kategorier</span>                            
+                            </button>
+
+                            <p>Underkategori</p>
+                            {levelTwo.length > 0 ? (
+                                levelTwo.map((subSection) => (
+                                    <button
+                                        key={subSection.name}
+                                        className={`option ${selectedLevelTwo === subSection.name ? "selected" : ""}`}
+                                        onClick={() => handleLevelTwo(subSection.name)}
+                                        type="button"
+                                    >
+                                        <span>{subSection.name}</span>
+                                        <span className="placement-arrow">›</span>
+                                    </button>
+                                ))
+                            ) : (
+                                <p>Ingen underkategorier tilgjengelig</p>
+                            )}
+                        </div>
+                        )}
                     </div>
                 </div>
             </div>

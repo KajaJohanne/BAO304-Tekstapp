@@ -101,10 +101,12 @@ body {
 
 .dropdown-menu {
   position: absolute;
-  top: 89px;
+  top: 77px;
+  right: -4px;
   width: 180px;
   background: white;
-  border: 1px solid #ddd;
+  border: 1px solid #ffffff;
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.3);
 }
 
 .dropdown-item {

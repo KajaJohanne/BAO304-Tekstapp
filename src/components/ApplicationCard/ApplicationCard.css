@@ -26,3 +26,38 @@
     box-shadow: 0 0px 12px rgba(0, 0, 0, 0.3);
     border-bottom: 3px solid #ff9600;
 }
+
+.application-card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.application-title {
+    margin: 0;
+}
+
+.application-card-edit-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+
+    display: flex;
+    align-items: center;
+}
+
+.application-input-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.application-card-edit-button {
+    padding: 6px;
+    border-radius: 6px;
+}
+
+.application-card-edit-button:hover {
+    background-color: #f3f3f3;
+}

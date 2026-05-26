@@ -1,0 +1,330 @@
+/* CSS for sectionPage */
+.section-page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+/* Tittel og intro tekst */
+.section-intro {
+    font-size: 16px;
+    color: #444f55;
+    margin-bottom: 48px;
+  }
+.section-current-title {
+    font-size: 20px;
+    font-weight: 400;
+    color: #444f55;
+    margin-bottom: 48px;
+}
+
+.section-header-wrapper {
+    display: grid;
+    grid-template-columns: 600px 90px;
+    align-items: end;
+    gap: 30px;
+    margin-bottom: 8px;
+}
+.section-list-header-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 810px;
+    font-size: 18px;
+    color: #444f55;
+    margin: none;
+    grid-column: 1;
+}
+
+/* Legg til tekstnøkkel knapp */
+.section-add-button {
+    background-color: #444f55;
+    color: white;
+    padding: 13px;
+    margin-bottom: 70px;
+  
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.add-button-text {
+    font-size: 16px;
+}
+.add-button-plus {
+    font-weight: 300;
+}
+
+/* Søkefelt, filtreringsmeny og marker tekst */
+.section-search-header {
+    display: grid;
+    grid-template-columns: 540px 44px 110px;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+.section-search-bar {
+    width: 570px;
+    max-width: 100%;
+}
+.section-marker-title {
+    font-size: 18px;
+    color: #444f55;
+    justify-self: center;
+    align-self: end;
+    transform: translateY(-22px);
+    white-space: nowrap;
+}
+
+/* Tekstnøkkel liste */
+.section-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.section-row {
+    display: grid;
+    grid-template-columns: 600px 90px;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Tekstnøkkel kort */
+.section-card {
+    cursor: pointer; 
+    transition: box-shadow 0.2s ease; 
+    border: none;
+    border-bottom: 1.5px solid #ff9600;
+    padding: 8px;
+    width: 100%;
+
+    align-items: center;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+
+    --dsc-card-border-color: #444f55;
+    --dsc-card-border-width: 0px;
+    --dsc-card-block-border-width: 0px;  
+
+    background-color: white;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+    margin-bottom: 0;
+}
+.section-card * {
+    text-decoration: none;
+    color: inherit;
+}
+.section-card h3 {
+    font-weight: 400;
+    font-size: 16px;
+}
+.section-card:hover {
+    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+    border-bottom: 2px solid #ff9600;
+}
+
+.section-card-title {
+    margin: 0;
+    font-weight: 400;
+    font-size: 16px;
+    color: #444f55;
+    flex: 1;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* Rediger ikon */
+.section-card-edit {
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    font-size: 22px;
+    cursor: pointer;
+   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.section-card-edit:hover {
+    opacity: 0.8;
+}
+
+/* Checkbox */
+.section-checkbox-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.section-checkbox-wrapper input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+}
+.section-checkbox-wrapper span:empty {
+    display: none;
+}
+
+.section-empty,
+.section-loading,
+.section-error {
+    font-size: 18px;
+    color: #444f55;
+    margin-top: 24px;
+}
+
+/* Slett knapp */
+.section-delete-button {
+    background-color: #444F55;
+    color: white;
+    padding: 13px;
+    margin-top: 40px;
+    margin-bottom: 70px;
+  
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.section-delete-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    .section-page {
+        padding: 20px;
+    }
+
+    .section-header-wrapper {
+        grid-template-columns: 1fr 80px;
+        gap: 20px;
+    }
+
+    .section-search-header {
+        grid-template-columns: 1fr 44px 80px;
+        gap: 12px;
+    }
+
+    .section-search-bar {
+        width: 100%;
+    }
+
+    .section-row {
+        grid-template-columns: 1fr 80px;
+        gap: 20px;
+    }
+
+    .section-list-header-left {
+        max-width: 100%;
+    }
+
+    .section-card {
+        width: 100%;
+    }
+
+    .section-marker-title {
+        font-size: 16px;
+        transform: translateY(-22px);
+    }
+
+    .section-add-button,
+    .section-delete-button {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 700px) {
+    .section-page {
+        padding: 16px;
+    }
+
+    .section-header-wrapper {
+        grid-template-columns: 1fr 70px;
+        gap: 16px;
+    }
+
+    .section-search-header {
+        grid-template-columns: 1fr 40px 70px;
+        gap: 10px;
+    }
+
+    .section-row {
+        grid-template-columns: 1fr 70px;
+        gap: 16px;
+    }
+
+    .section-marker-title {
+        font-size: 15px;
+        transform: translateY(-23px);
+    }
+
+    .section-card-title {
+        font-size: 15px;
+    }
+
+    .section-card-edit {
+        font-size: 20px;
+    }
+
+    .section-checkbox-wrapper input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+@media (max-width: 550px) {
+    .section-page {
+        padding: 12px;
+    }
+
+    .section-intro {
+        margin-bottom: 32px;
+    }
+
+    .section-current-title {
+        font-size: 18px;
+        margin-bottom: 32px;
+    }
+
+    .section-header-wrapper {
+        grid-template-columns: 1fr 60px;
+        gap: 12px;
+    }
+
+    .section-search-header {
+        grid-template-columns: 1fr 36px 60px;
+        gap: 8px;
+    }
+
+    .section-row {
+        grid-template-columns: 1fr 60px;
+        gap: 12px;
+    }
+
+    .section-marker-title {
+        font-size: 14px;
+        transform: translateY(-22px);
+    }
+
+    .section-card {
+        padding: 6px 8px;
+    }
+
+    .section-card-title {
+        font-size: 14px;
+    }
+
+    .section-card-edit {
+        font-size: 18px;
+    }
+
+    .section-add-button,
+    .section-delete-button {
+        padding: 8px;
+    }
+
+    .add-button-text {
+        font-size: 14px;
+    }
+}

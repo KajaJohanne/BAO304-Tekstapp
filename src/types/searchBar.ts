@@ -3,4 +3,5 @@ export interface SearchBarProps {
     onChange: (value: string) => void;
     placeholder?: string;
     ariaLabel?: string;
+    className?: string;
 }
