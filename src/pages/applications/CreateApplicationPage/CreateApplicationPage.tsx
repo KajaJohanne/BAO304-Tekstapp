@@ -11,7 +11,7 @@ type FormFields = {
   sections: { name: string }[];
 };
 
-// Oversikt over hvilet trinn i prosessen
+// Oversikt over hvilket trinn i prosessen
 type Step = 1 | 2 | 3;
 
 const CreateApplicationPage = () => {
